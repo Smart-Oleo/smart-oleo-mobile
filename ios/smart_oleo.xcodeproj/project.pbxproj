@@ -114,7 +114,6 @@
 				C956123C8543221BA4608CA3 /* Pods-smart_oleo-smart_oleoTests.debug.xcconfig */,
 				0F836C7BB556D8BC8A94CB02 /* Pods-smart_oleo-smart_oleoTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -496,7 +495,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.SmartOleo;
 				PRODUCT_NAME = smart_oleo;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -521,7 +520,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.SmartOleo;
 				PRODUCT_NAME = smart_oleo;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
