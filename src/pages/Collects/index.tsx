@@ -19,6 +19,12 @@ import {
   Status,
   CollectBody,
   TextOilNumber,
+  StatusContainer,
+  StatusList,
+  StatusContentActive,
+  StatusTextActive,
+  StatusContent,
+  StatusText,
 } from './styles';
 import Icon from 'react-native-vector-icons/Feather';
 import NoContentImage from '../../assets/images/coleta_info.jpg';
@@ -48,9 +54,15 @@ interface Address {
   state: string;
 }
 
+export interface IStatus {
+  name: string;
+  value: string;
+}
+
 const Collects: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [collects, setCollects] = useState<Collect[]>([]);
+  const [statusActive, setStatusActive] = useState<IStatus>();
 
   const getCollects = useCallback(async () => {
     setLoading(true);
@@ -75,6 +87,12 @@ const Collects: React.FC = () => {
     getCollects();
   }, [getCollects]);
 
+  const [status, setStatus] = useState<IStatus[]>([
+    {name: 'Aguardando', value: 'created'},
+    {name: 'Confirmado', value: 'confirmado'},
+    {name: 'Coletado', value: 'colected'},
+  ]);
+
   return (
     <Container>
       <Header>
@@ -88,6 +106,27 @@ const Collects: React.FC = () => {
             placeholderTextColor="#000"
           />
         </FilterView>
+        <StatusContainer>
+          <StatusList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={status}
+            keyExtractor={item => String(item.value)}
+            renderItem={({item}) => (
+              <>
+                {statusActive === item ? (
+                  <StatusContentActive onPress={() => {}}>
+                    <StatusTextActive> {item.name}</StatusTextActive>
+                  </StatusContentActive>
+                ) : (
+                  <StatusContent onPress={() => {}}>
+                    <StatusText> {item.name}</StatusText>
+                  </StatusContent>
+                )}
+              </>
+            )}
+          />
+        </StatusContainer>
       </Header>
       {!loading ? (
         <>

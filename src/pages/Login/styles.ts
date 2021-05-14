@@ -74,14 +74,28 @@ export const Text = styled.Text`
   margin-top: 12px;
 `;
 
+export const ViewBottom = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 10px;
+`;
+
 export const ForgotPassword = styled.TouchableOpacity`
-  margin-top: 24px;
   align-self: center;
 `;
 
 export const ForgotPasswordText = styled.Text`
   color: #232129;
-  font-size: 16px;
+  font-size: 14px;
+`;
+
+export const CollectorInfo = styled.TouchableOpacity`
+  align-self: center;
+`;
+
+export const CollectorInfoText = styled.Text`
+  color: #232129;
+  font-size: 14px;
 `;
 
 export const CreateAccountButton = styled.TouchableOpacity`

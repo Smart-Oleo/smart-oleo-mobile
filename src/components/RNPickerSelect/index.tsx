@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Picker, {PickerSelectProps} from 'react-native-picker-select';
 import {useField} from '@unform/core';
+import {Container} from './styles';
 interface Props extends Omit<PickerSelectProps, 'onValueChange'> {
   name: string;
 }
@@ -24,12 +25,14 @@ export default function RNPickerSelect({name, items, ...rest}: Props) {
     });
   }, [fieldName, registerField]);
   return (
-    <Picker
-      ref={pickerRef}
-      value={selectedValue}
-      onValueChange={setSelectedValue}
-      items={items}
-      {...rest}
-    />
+    <Container>
+      <Picker
+        ref={pickerRef}
+        value={selectedValue}
+        onValueChange={setSelectedValue}
+        items={items}
+        {...rest}
+      />
+    </Container>
   );
 }

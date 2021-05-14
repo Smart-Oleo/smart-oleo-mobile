@@ -7,14 +7,25 @@ export const Container = styled.View`
   background-color: #fff;
 `;
 
+export const Title = styled.Text`
+  font-size: 20px;
+  color: #000;
+  align-self: flex-start;
+  margin-right: 10px;
+`;
+
 export const Header = styled.View`
-  padding: 24px;
+  padding: 20px;
   background: #fafafa;
   padding-top: ${Platform.OS === 'android' ? 10 : getStatusBarHeight() + 24}px;
 
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+`;
+
+export const Body = styled.View`
+  margin: 10px;
 `;
 
 export const ContentUser = styled.View`

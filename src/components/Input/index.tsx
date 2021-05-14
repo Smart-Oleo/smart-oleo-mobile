@@ -23,9 +23,13 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
   ref,
 ) => {
   const inputRef = useRef<any>(null);
-  const {fieldName, registerField, defaultValue, error} = useField(name);
+  const {fieldName, registerField, defaultValue = '', error} = useField(name);
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isFilled, setIsFilled] = useState<boolean>(false);
+
+  useEffect(() => {
+    inputRef.current.value = defaultValue;
+  }, [defaultValue]);
 
   useImperativeHandle(ref, () => ({
     focus() {
@@ -33,14 +37,18 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
     },
   }));
   useEffect(() => {
-    inputRef.current.value = defaultValue;
-  }, [defaultValue]);
-
-  useEffect(() => {
-    registerField({
+    registerField<string>({
       name: fieldName,
-      path: 'value',
       ref: inputRef.current,
+      path: 'value',
+      setValue(value: string) {
+        inputRef.current.value = value;
+        inputRef.current.setNativeProps({text: value});
+      },
+      clearValue() {
+        inputRef.current.value = '';
+        inputRef.current.clear();
+      },
     });
   }, [fieldName, registerField]);
 
@@ -71,7 +79,7 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
               inputRef.current.value = value;
             }
           }}
-          placeholderTextColor="#383E71"
+          placeholderTextColor="#666360"
           {...rest}
         />
       </Container>

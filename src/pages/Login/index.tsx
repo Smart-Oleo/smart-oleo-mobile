@@ -7,11 +7,14 @@ import {
   Description,
   LogoImage,
   Text,
+  ViewBottom,
   ForgotPassword,
   ForgotPasswordText,
   CreateAccountButton,
   CreateAccountButtonText,
   FormContainer,
+  CollectorInfo,
+  CollectorInfoText,
 } from './styles';
 import {Form} from '@unform/mobile';
 import Input from '../../components/Input';
@@ -67,7 +70,6 @@ const Login: React.FC = () => {
         });
         setLoading(false);
       } catch (err) {
-        console.log(err);
         setLoading(false);
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErros(err);
@@ -114,7 +116,6 @@ const Login: React.FC = () => {
                   Faça o login no Smart Oleo para começar a ajudar o meio
                   ambiente por meio do descarte correto de óleo vegetal.
                 </Description>
-                <RootToast />
               </Header>
 
               <FormContainer>
@@ -148,15 +149,24 @@ const Login: React.FC = () => {
                   <ActivityIndicator size="large" color="#00c200" />
                 )}
 
-                <ForgotPassword
-                  onPress={() => navigation.navigate('ForgotPassword')}>
-                  <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
-                </ForgotPassword>
+                <ViewBottom>
+                  <ForgotPassword
+                    onPress={() => navigation.navigate('ForgotPassword')}>
+                    <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
+                  </ForgotPassword>
+                  <CollectorInfo
+                    onPress={() => navigation.navigate('CollectorForm')}>
+                    <CollectorInfoText>Quero ser um coletor</CollectorInfoText>
+                  </CollectorInfo>
+                </ViewBottom>
               </FormContainer>
             </Content>
           </Container>
         </ScrollView>
+
+        <RootToast />
       </KeyboardAvoidingView>
+
       <CreateAccountButton onPress={() => navigation.navigate('SignUp')}>
         <Icon name="log-in" size={20} color="#00c200" />
         <CreateAccountButtonText> Criar Conta </CreateAccountButtonText>

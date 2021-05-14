@@ -8,6 +8,8 @@ import {
   ContentPoints,
   PointsText,
   ImageHeader,
+  Title,
+  Body,
 } from './styles';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
@@ -34,9 +36,12 @@ const Home: React.FC = () => {
           <Icon name="map-pin" size={24} />
         </TouchableOpacity>
       </Header>
-      <TouchableOpacity onPress={signOut}>
-        <Text> Sair </Text>
-      </TouchableOpacity>
+      <Body>
+        <Title>Olá, {user.name}!</Title>
+        <TouchableOpacity onPress={signOut}>
+          <Text> Sair </Text>
+        </TouchableOpacity>
+      </Body>
     </Container>
   );
 };

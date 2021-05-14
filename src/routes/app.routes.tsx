@@ -11,6 +11,8 @@ import {View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Address from '../pages/Address';
 import NewAddress from '../pages/NewAddress';
+import Success from '../pages/Success';
+import EditAddress from '../pages/EditAddress';
 
 const App = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -103,6 +105,16 @@ const AppRoutes: React.FC = () => (
       name="NewAddress"
       options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
       component={NewAddress}
+    />
+    <App.Screen
+      name="Success"
+      component={Success}
+      options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
+    />
+    <App.Screen
+      name="EditAddress"
+      component={EditAddress}
+      options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
     />
   </App.Navigator>
 );

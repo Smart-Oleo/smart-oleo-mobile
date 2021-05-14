@@ -8,8 +8,9 @@ export interface ContainerProps {
 }
 
 export const TextInput = styled.TextInput`
-  color: #383e71;
+  color: #000;
   font-size: 16px;
+  flex: 1;
 `;
 
 export const ErrorMessage = styled.Text`
@@ -22,9 +23,7 @@ export const Container = styled.View<ContainerProps>`
   width: 100%;
   height: 60px;
   padding: 0 16px;
-  background: #fff;
-  border: 2px solid #000;
-  border-width: 0.4px;
+  background: #fafafa;
   border-radius: 10px;
   margin-bottom: 12px;
 

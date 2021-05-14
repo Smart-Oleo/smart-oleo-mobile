@@ -8,6 +8,7 @@ import {
   Text,
   BackToSignIn,
   BackToSignInText,
+  Description,
 } from './styles';
 import {Form} from '@unform/mobile';
 import Input from '../../components/Input';
@@ -36,7 +37,7 @@ interface SignInFormData {
   password: string;
 }
 
-const SignUp: React.FC = () => {
+const CollectorForm: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
   const [loading, setLoading] = useState<boolean>(false);
@@ -49,18 +50,10 @@ const SignUp: React.FC = () => {
 
         const schema = Yup.object().shape({
           name: Yup.string().required('Nome obrigatório'),
-          last_name: Yup.string().required('Sobrenome obrigatório'),
-          email: Yup.string().email('Digite um e-mail válido'),
-          password: Yup.string()
-            .min(6, 'A senha deve ter no mínimo 6 caracteres')
-            .required('A senha é obrigatória'),
-          confirm_password: Yup.string()
-            .required()
-            .oneOf([Yup.ref('password'), null], 'Confirmação incorreta'),
-          cellphone: Yup.string()
-            .min(11, 'Deve conter 11 caracteres')
-            .max(11, 'Deve conter 11 caracteres')
-            .required('Celular obrigatório'),
+          email: Yup.string()
+            .email('Digite um e-mail válido')
+            .required('O email deve ser informado'),
+          cellphone: Yup.string().required('Sobrenome obrigatório'),
         });
 
         await schema.validate(data, {
@@ -127,11 +120,11 @@ const SignUp: React.FC = () => {
             <Content>
               <Header>
                 <LogoImage source={imageLogo} />
-                <Text> Cadastro</Text>
-                {/* <Description>
-                  Informe seu email ou telefone cadastrado na plataforma para
-                  recuperar a sua palavra chave
-                </Description> */}
+                <Text> Desejo ser um coletor </Text>
+                <Description>
+                  Informe os campos abaixos e aguarde nossa análise para ser um
+                  de nossos coletores
+                </Description>
               </Header>
 
               <Form ref={formRef} onSubmit={handleSignUp}>
@@ -142,12 +135,6 @@ const SignUp: React.FC = () => {
                   autoCapitalize="none"
                 />
                 <Input
-                  name="last_name"
-                  icon="user"
-                  placeholder="Segundo nome"
-                  autoCapitalize="none"
-                />
-                <Input
                   name="email"
                   icon="mail"
                   placeholder="Digite o email"
@@ -155,25 +142,9 @@ const SignUp: React.FC = () => {
                   autoCapitalize="none"
                 />
                 <Input
-                  name="password"
-                  icon="lock"
-                  placeholder="Informe a senha"
-                  secureTextEntry
-                  autoCorrect={false}
-                  autoCapitalize="none"
-                />
-                <Input
-                  name="confirm_password"
-                  icon="lock"
-                  placeholder="Confirme sua senha"
-                  secureTextEntry
-                  autoCorrect={false}
-                  autoCapitalize="none"
-                />
-                <Input
                   name="cellphone"
                   icon="phone"
-                  placeholder="Informe o número"
+                  placeholder="Digite o celular"
                   autoCapitalize="none"
                 />
               </Form>
@@ -198,4 +169,4 @@ const SignUp: React.FC = () => {
   );
 };
 
-export default SignUp;
+export default CollectorForm;

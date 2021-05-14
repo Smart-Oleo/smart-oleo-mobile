@@ -20,7 +20,7 @@ import {
   ViewIcon,
 } from './styles';
 import Icon from 'react-native-vector-icons/Feather';
-import NoContentImage from '../../assets/images/brinde_info.jpg';
+// import NoContentImage from '../../assets/images/brinde_info.jpg';
 import api from '../../services/api';
 import {Alert, View, ActivityIndicator} from 'react-native';
 import _ from 'lodash';
@@ -73,7 +73,6 @@ const Store: React.FC = () => {
   );
 
   const refreshList = useCallback(async () => {
-    console.log('caiu aqui');
     setRefreshing(true);
     await loadProducts(1, '', true);
     setRefreshing(false);
@@ -123,9 +122,11 @@ const Store: React.FC = () => {
           onEndReached={() => loadProducts()}
           ListFooterComponent={
             loading && (
-              <View style={{flex: 1, justifyContent: 'center'}}>
-                <ActivityIndicator size="small" color="#228B22" />
-              </View>
+              <ActivityIndicator
+                size="small"
+                color="#228B22"
+                style={{alignSelf: 'center', width: '100%'}}
+              />
             )
           }
           renderItem={({item}) => (

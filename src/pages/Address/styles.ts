@@ -1,23 +1,22 @@
 import styled from 'styled-components/native';
-import {Platform} from 'react-native';
+import {Platform, FlatList} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import {Address} from '.';
 
 export const Container = styled.View`
   flex: 1;
   background-color: #fff;
-  padding: 0 30px ${Platform.OS === 'android' ? 150 : 40}px;
+  padding: 0 20px ${Platform.OS === 'android' ? 150 : 40}px;
 `;
 
 export const ContainerAddress = styled.View`
-  margin: 10px;
+  margin-top: 20px;
   border: 0.4px solid #c0c0c0;
-  height: 80px;
   border-radius: 10px;
   background-color: #fff;
   flex-direction: row;
   align-items: center;
   padding: 10px;
-  position: relative;
 `;
 
 export const Text = styled.Text`
@@ -25,6 +24,7 @@ export const Text = styled.Text`
   color: #000;
   line-height: 20px;
   font-weight: 400;
+  padding-right: 10px;
 `;
 
 export const BackButton = styled.TouchableOpacity`
@@ -54,6 +54,10 @@ export const ImageNoContent = styled.Image`
   border-radius: 50px;
 `;
 
+export const AddressList = styled(FlatList as new () => FlatList<Address>)`
+  margin: 10px;
+`;
+
 export const TextNoContent = styled.Text`
   font-size: 18px;
   font-weight: bold;
@@ -73,6 +77,16 @@ export const ButtonView = styled(LinearGradient)`
   align-items: center;
 `;
 
+export const ViewReference = styled.View`
+  padding-top: 6px;
+`;
+
+export const TextReference = styled.Text`
+  color: #000;
+  font-weight: bold;
+  font-size: 14px;
+`;
+
 export const ButtonProduct = styled.TouchableOpacity`
   width: 100%;
   padding: 10px;
@@ -85,4 +99,18 @@ export const TextButton = styled.Text`
   color: #fff;
   font-weight: bold;
   font-size: 14px;
+`;
+
+export const ButtonHeader = styled.TouchableOpacity`
+  height: 30px;
+  width: 20px;
+  position: absolute;
+  right: 0px;
+`;
+
+export const Title = styled.Text`
+  font-size: 20px;
+  color: #000;
+  margin-top: 20px;
+  align-self: flex-start;
 `;

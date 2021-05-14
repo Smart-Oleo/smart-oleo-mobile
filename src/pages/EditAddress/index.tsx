@@ -30,16 +30,20 @@ interface Address {
   reference: string;
 }
 
-const NewAddress: React.FC = () => {
+const EditAddress: React.FC = (...props: any) => {
   const formRef = useRef<FormHandles>(null);
+
+  const addressEdit = props[0].route.params.address;
+
   const navigation = useNavigation();
   const [loadingCep, setLoadingCep] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [address, setAddress] = useState<string>('');
-  const [district, setDistrict] = useState<string>('');
-  const [city, setCity] = useState<string>('');
-  const [state, setState] = useState<string>('');
+  const [address, setAddress] = useState<string>(addressEdit.address);
+  const [district, setDistrict] = useState<string>(addressEdit.district);
+  const [city, setCity] = useState<string>(addressEdit.city);
+  const [state, setState] = useState<string>(addressEdit.state);
 
+  console.log(addressEdit);
   // const address = formRef.current?.getFieldValue('address');
   // const district = formRef.current?.getFieldValue('district');
   // const city = formRef.current?.getFieldValue('city');
@@ -64,8 +68,6 @@ const NewAddress: React.FC = () => {
           .required('Estado é obrigatório'),
         reference: Yup.string().required('Referência é obrigatória'),
       });
-
-      console.log('Passou aqui', data);
 
       await schema.validate(data, {
         abortEarly: false,
@@ -163,11 +165,14 @@ const NewAddress: React.FC = () => {
             </BackButton>
 
             <Header>
-              <Title> Novo endereço</Title>
+              <Title> Editar endereço</Title>
               {loadingCep && <ActivityIndicator size="small" color="#000" />}
             </Header>
 
-            <Form ref={formRef} onSubmit={handleCreate}>
+            <Form
+              initialData={addressEdit}
+              ref={formRef}
+              onSubmit={handleCreate}>
               <Input
                 name="zipcode"
                 icon="navigation"
@@ -183,8 +188,8 @@ const NewAddress: React.FC = () => {
                 name="address"
                 icon="map-pin"
                 placeholder="Endereço"
-                value={address}
                 autoCapitalize="none"
+                value={address}
                 onSubmitEditing={() => numberInputRef.current?.focus()}
               />
               <Input
@@ -201,16 +206,16 @@ const NewAddress: React.FC = () => {
                 icon="map-pin"
                 placeholder="Bairro"
                 value={district}
-                returnKeyType="send"
+                returnKeyType="next"
                 onSubmitEditing={() => cityInputRef.current?.focus()}
               />
               <Input
                 ref={cityInputRef}
                 name="city"
                 icon="map"
-                placeholder="Cidade"
                 value={city}
-                returnKeyType="send"
+                placeholder="Cidade"
+                returnKeyType="next"
                 onSubmitEditing={() => complementInputRef.current?.focus()}
               />
               <Input
@@ -225,9 +230,9 @@ const NewAddress: React.FC = () => {
                 ref={stateInputRef}
                 name="state"
                 icon="map"
+                value={state}
                 placeholder="Estado"
                 returnKeyType="send"
-                value={state}
                 onSubmitEditing={() => referenceInputRef.current?.focus()}
               />
               <Input
@@ -242,7 +247,7 @@ const NewAddress: React.FC = () => {
                 <Button
                   onPress={() => formRef.current?.submitForm()}
                   isLoading={false}>
-                  Adicionar Endereço
+                  Confirmar
                 </Button>
               ) : (
                 <ActivityIndicator size="large" color="#000" />
@@ -256,4 +261,4 @@ const NewAddress: React.FC = () => {
   );
 };
 
-export default NewAddress;
+export default EditAddress;

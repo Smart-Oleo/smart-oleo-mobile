@@ -1,7 +1,7 @@
 import styled from 'styled-components/native';
 import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 import {FlatList} from 'react-native';
-import {Collect} from '.';
+import {Collect, IStatus} from '.';
 
 export const Container = styled.View`
   flex: 1;
@@ -12,8 +12,8 @@ export const Header = styled.View`
   padding: 22px;
   background: #fafafa;
   padding-top: ${getStatusBarHeight() + 24}px;
-
-  flex-direction: row;
+  /* 
+  flex-direction: row; */
   justify-content: space-between;
   align-items: center;
 `;
@@ -129,4 +129,42 @@ export const EnderecoText = styled.Text`
   font-size: 12px;
   color: #a9a9a9;
   font-weight: bold;
+`;
+
+export const StatusContainer = styled.View`
+  margin-top: 6px;
+  justify-content: center;
+  align-items: center;
+  height: 34px;
+`;
+
+export const StatusContent = styled.TouchableOpacity`
+  align-items: center;
+  background-color: #3e3b47;
+  padding: 8px 12px;
+  margin-right: 8px;
+  border-radius: 10px;
+`;
+export const StatusText = styled.Text`
+  font-size: 14px;
+  font-weight: bold;
+  color: #f4ede8;
+`;
+
+export const StatusContentActive = styled.TouchableOpacity`
+  align-items: center;
+  background-color: tomato;
+  padding: 8px 12px;
+  margin-right: 8px;
+  border-radius: 10px;
+`;
+
+export const StatusTextActive = styled.Text`
+  font-size: 16px;
+  font-weight: bold;
+  color: #f4ede8;
+`;
+
+export const StatusList = styled(FlatList as new () => FlatList<IStatus>)`
+  margin-top: 0px;
 `;
