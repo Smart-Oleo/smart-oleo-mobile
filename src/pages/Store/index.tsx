@@ -22,7 +22,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 // import NoContentImage from '../../assets/images/brinde_info.jpg';
 import api from '../../services/api';
-import {Alert, View, ActivityIndicator} from 'react-native';
+import {Alert, ActivityIndicator} from 'react-native';
 import _ from 'lodash';
 
 export interface Product {
@@ -44,7 +44,6 @@ const Store: React.FC = () => {
 
   const loadProducts = useCallback(
     async (pageNumber = page, input = '', shouldRefresh = false) => {
-      console.log(pageNumber, total, input, loading, shouldRefresh);
       if (pageNumber === total) {
         return;
       }

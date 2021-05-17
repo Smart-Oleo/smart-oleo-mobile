@@ -29,9 +29,12 @@ const ModalOptions: React.FC<PropsModal> = ({
     onRequestClose();
   }, [onRequestClose]);
 
-  const removeOption = useCallback(() => {
-    requestDelete();
-  }, [requestDelete]);
+  const removeOption = useCallback(
+    (item: Address) => {
+      requestDelete(item);
+    },
+    [requestDelete],
+  );
 
   const navigateEditAddress = useCallback(() => {
     onRequestClose();

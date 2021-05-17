@@ -25,7 +25,7 @@ export const Container = styled.View<ContainerProps>`
   padding: 0 16px;
   background: #fafafa;
   border-radius: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 
   flex-direction: row;
   align-items: center;

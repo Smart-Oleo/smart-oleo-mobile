@@ -30,6 +30,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import NoContentImage from '../../assets/images/coleta_info.jpg';
 import api from '../../services/api';
 import {ActivityIndicator, View} from 'react-native';
+import _ from 'lodash';
 // import {ActivityIndicator} from 'react-native';
 
 export interface Collect {
@@ -64,32 +65,86 @@ const Collects: React.FC = () => {
   const [collects, setCollects] = useState<Collect[]>([]);
   const [statusActive, setStatusActive] = useState<IStatus>();
 
-  const getCollects = useCallback(async () => {
-    setLoading(true);
-    try {
-      await api
-        .get('collects')
-        .then(res => {
-          console.log(res.data);
-          setCollects(res.data.data);
-          setLoading(false);
-        })
-        .catch(err => {
-          console.log(err);
-          setLoading(false);
-        });
-    } catch (err) {
-      setLoading(false);
-    }
-  }, []);
+  const [total, setTotal] = useState<Number>(0);
+  const [page, setPage] = useState<Number>(1);
+  // const [filter, setFilter] = useState<String>('');
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+
+  const getCollects = useCallback(
+    async (
+      pageNumber = page,
+      input = '',
+      shouldRefresh = false,
+      status = '',
+    ) => {
+      if (pageNumber === total) {
+        return;
+      }
+      if (loading) {
+        return;
+      }
+      setLoading(true);
+      try {
+        await api
+          .get(
+            `collects?pageNumber=${
+              pageNumber - 1
+            }&pageView=8&filter=${input}&status=${status}`,
+          )
+          .then(res => {
+            console.log(res.data);
+            setCollects(
+              shouldRefresh ? res.data.data : [...collects, ...res.data.data],
+            );
+            setTotal(res.data.pages + 1);
+            setLoading(false);
+          })
+          .catch(err => {
+            console.log(err);
+            setLoading(false);
+          });
+      } catch (err) {
+        setLoading(false);
+      }
+      setPage(pageNumber + 1);
+    },
+    [collects, page, loading, total],
+  );
+
+  const refreshList = useCallback(async () => {
+    setRefreshing(true);
+    await getCollects(1, '', true);
+    setRefreshing(false);
+  }, [getCollects]);
+
+  const filterCollects = useCallback(
+    (input: string) => {
+      const search = _.debounce(getCollects, 1500);
+      search(1, input, true, statusActive?.value);
+    },
+    [getCollects, statusActive],
+  );
+
+  const filterByStatus = useCallback(
+    (value: IStatus) => {
+      setStatusActive(value);
+      getCollects(1, '', true, value.value);
+    },
+    [getCollects],
+  );
+
+  const cleanStatus = useCallback(() => {
+    setStatusActive({name: '', value: ''});
+    getCollects(1, '', true);
+  }, [getCollects]);
 
   useEffect(() => {
     getCollects();
-  }, [getCollects]);
+  }, []);
 
   const [status, setStatus] = useState<IStatus[]>([
     {name: 'Aguardando', value: 'created'},
-    {name: 'Confirmado', value: 'confirmado'},
+    {name: 'Agendado', value: 'waiting'},
     {name: 'Coletado', value: 'colected'},
   ]);
 
@@ -100,9 +155,9 @@ const Collects: React.FC = () => {
           <Icon name="search" size={24} color="#312e38" />
           <FilterText
             placeholder="Pesquisar Coletas..."
-            // onChangeText={text => {
-            //   filterRestaurants(text);
-            // }}
+            onChangeText={text => {
+              filterCollects(text);
+            }}
             placeholderTextColor="#000"
           />
         </FilterView>
@@ -115,11 +170,11 @@ const Collects: React.FC = () => {
             renderItem={({item}) => (
               <>
                 {statusActive === item ? (
-                  <StatusContentActive onPress={() => {}}>
+                  <StatusContentActive onPress={cleanStatus}>
                     <StatusTextActive> {item.name}</StatusTextActive>
                   </StatusContentActive>
                 ) : (
-                  <StatusContent onPress={() => {}}>
+                  <StatusContent onPress={() => filterByStatus(item)}>
                     <StatusText> {item.name}</StatusText>
                   </StatusContent>
                 )}
@@ -138,6 +193,19 @@ const Collects: React.FC = () => {
               // ListFooterComponent={
               //   loading && <ActivityIndicator size="large" color="#FE2E2E" />
               // }
+              onRefresh={refreshList}
+              refreshing={refreshing}
+              onEndReachedThreshold={0.2}
+              onEndReached={() => getCollects()}
+              ListFooterComponent={
+                loading && (
+                  <ActivityIndicator
+                    size="small"
+                    color="#228B22"
+                    style={{alignSelf: 'center', width: '100%'}}
+                  />
+                )
+              }
               showsVerticalScrollIndicator={false}
               renderItem={({item}) => (
                 <ContainerCollect key={item.id}>
@@ -146,10 +214,12 @@ const Collects: React.FC = () => {
                       <CollectNumber> N°: {item.collect_number} </CollectNumber>
                     </CollectNumberView>
 
-                    <ViewStatus>
+                    <ViewStatus status={item.status}>
                       <Status>
-                        <Icon name="clock" size={12} color="#fff" />{' '}
-                        Aguardando...
+                        <Icon name="clock" size={12} color="#fff" />
+                        {item.status === 'created' && ' Aguardando...'}
+                        {item.status === 'waiting' && ' Agendado...'}
+                        {item.status === 'collected' && ' Coletado'}
                       </Status>
                     </ViewStatus>
                   </CollectHeader>

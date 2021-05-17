@@ -8,12 +8,16 @@ import Button from '../../components/Button';
 import api from '../../services/api';
 import imageLogo from '../../assets/images/logo_horizontal.png';
 import {KeyboardAvoidingView, ScrollView, Platform} from 'react-native';
+import * as Yup from 'yup';
+import getValidationErros from '../../utils/getValidationErrors';
+import Toast from 'react-native-toast-message';
+import RootToast from '../../components/Toast';
 
 interface CollectData {
   liters_oil: number;
   period_preference: string;
-  observations: string;
   address_id: string;
+  observations: string;
 }
 
 interface Select {
@@ -40,23 +44,72 @@ const NewCollect: React.FC = () => {
             label: res.data[i].address + ', ' + res.data[i].number,
           });
         }
-
         arr.splice(0, 1);
         setAddressOption(arr);
-
-        // setAddressOption([
-        //   {value: res.data[i].id, label: res.data[i].address},
-        // ]);
-
-        console.log('aqui');
       })
       .catch(err => {
         console.log(err);
       });
   }, []);
 
-  const handleSubmit = useCallback(async (data: Object) => {
-    formRef.current?.setErrors({});
+  const handleSubmit = useCallback(async (data: CollectData) => {
+    try {
+      formRef.current?.setErrors({});
+
+      // data.liters_oil = parseInt(data.liters_oil);
+
+      const schema = Yup.object().shape({
+        liters_oil: Yup.number()
+          .integer('Deve ser um número inteiro')
+          .moreThan(1, 'A quantidade deve ser maior que 1')
+          .required('Endereço obrigatório'),
+        period_preference: Yup.string().required(
+          'O período deve ser informado',
+        ),
+        address_id: Yup.string().required('O endereço deve ser informado'),
+        observations: Yup.string(),
+      });
+
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+
+      console.log(data);
+
+      await api
+        .post('collects', data)
+        .then(res => {
+          Toast.show({
+            type: 'success',
+            position: 'top',
+            text1: 'Tudo certo!',
+            text2: `A coleta de nº ${res.data.collect_number} foi criada.`,
+            visibilityTime: 4000,
+            autoHide: true,
+            topOffset: 200,
+            bottomOffset: 40,
+          });
+        })
+        .catch(err => {
+          Toast.show({
+            type: 'error',
+            position: 'top',
+            text1: 'Ops! Houve um problema.',
+            text2: err.response.data.error
+              ? err.response.data.error
+              : 'Ops! Houve algum problema',
+            visibilityTime: 4000,
+            autoHide: true,
+            topOffset: 200,
+            bottomOffset: 40,
+          });
+        });
+    } catch (err) {
+      const errors = getValidationErros(err);
+
+      formRef.current?.setErrors(errors);
+      return;
+    }
   }, []);
 
   console.log(addressOption);
@@ -77,7 +130,7 @@ const NewCollect: React.FC = () => {
           <Title> Crie uma nova coleta.</Title>
           <Form
             ref={formRef}
-            onSubmit={() => {}}
+            onSubmit={handleSubmit}
             initialData={{user: pickerOptions[0].value}}>
             <Input
               name="liters_oil"
@@ -99,7 +152,7 @@ const NewCollect: React.FC = () => {
                 label: 'Informe o endereço',
                 color: '#000',
               }}
-              name="address"
+              name="address_id"
               onOpen={loadAdresses}
               items={addressOption}
             />
@@ -108,7 +161,6 @@ const NewCollect: React.FC = () => {
               icon="message-circle"
               placeholder="Observações"
               autoCapitalize="none"
-              keyboardType="numeric"
               numberOfLines={4}
             />
             <Button
@@ -119,6 +171,7 @@ const NewCollect: React.FC = () => {
           </Form>
         </Container>
       </ScrollView>
+      <RootToast />
     </KeyboardAvoidingView>
   );
 };

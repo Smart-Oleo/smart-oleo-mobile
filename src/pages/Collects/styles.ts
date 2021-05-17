@@ -1,7 +1,11 @@
-import styled from 'styled-components/native';
+import styled, {css} from 'styled-components/native';
 import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 import {FlatList} from 'react-native';
 import {Collect, IStatus} from '.';
+
+export interface StatusProps {
+  status: string;
+}
 
 export const Container = styled.View`
   flex: 1;
@@ -105,13 +109,28 @@ export const TextOilNumber = styled.Text`
   color: #000;
 `;
 
-export const ViewStatus = styled.View`
+export const ViewStatus = styled.View<StatusProps>`
   justify-content: center;
   align-items: center;
-  background-color: #545b62;
+
   padding: 4px;
   border-radius: 4px;
   margin: 4px;
+  ${props =>
+    props.status === 'created' &&
+    css`
+      background-color: #545b62;
+    `};
+  ${props =>
+    props.status === 'waiting' &&
+    css`
+      background-color: #daa520;
+    `};
+  ${props =>
+    props.status === 'collected' &&
+    css`
+      background-color: #32cd32;
+    `};
 `;
 
 export const Status = styled.Text`
@@ -140,7 +159,7 @@ export const StatusContainer = styled.View`
 
 export const StatusContent = styled.TouchableOpacity`
   align-items: center;
-  background-color: #3e3b47;
+  background-color: #2f4f4f;
   padding: 8px 12px;
   margin-right: 8px;
   border-radius: 10px;
@@ -153,7 +172,7 @@ export const StatusText = styled.Text`
 
 export const StatusContentActive = styled.TouchableOpacity`
   align-items: center;
-  background-color: tomato;
+  background-color: #daa520;
   padding: 8px 12px;
   margin-right: 8px;
   border-radius: 10px;

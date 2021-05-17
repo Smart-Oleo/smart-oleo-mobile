@@ -28,6 +28,29 @@ export const Body = styled.View`
   margin: 10px;
 `;
 
+export const Badge = styled.View`
+  background-color: red;
+  padding: 2px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 40px;
+  position: absolute;
+  top: -10px;
+  right: -8px;
+  height: 20px;
+  width: 20px;
+`;
+
+export const TextBadge = styled.Text`
+  color: #fff;
+  font-weight: bold;
+`;
+
+export const ContentHeader = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
 export const ContentUser = styled.View`
   flex-direction: row;
   align-items: center;

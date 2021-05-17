@@ -40,11 +40,6 @@ const NewAddress: React.FC = () => {
   const [city, setCity] = useState<string>('');
   const [state, setState] = useState<string>('');
 
-  // const address = formRef.current?.getFieldValue('address');
-  // const district = formRef.current?.getFieldValue('district');
-  // const city = formRef.current?.getFieldValue('city');
-  // const state = formRef.current?.getFieldValue('state');
-
   const handleCreate = useCallback(
     async (data: Address) => {
       setLoading(true);
@@ -64,8 +59,6 @@ const NewAddress: React.FC = () => {
           .required('Estado é obrigatório'),
         reference: Yup.string().required('Referência é obrigatória'),
       });
-
-      console.log('Passou aqui', data);
 
       await schema.validate(data, {
         abortEarly: false,

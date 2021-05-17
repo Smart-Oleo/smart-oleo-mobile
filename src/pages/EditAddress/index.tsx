@@ -18,6 +18,7 @@ import Button from '../../components/Button';
 import api from '../../services/api';
 import Toast from 'react-native-toast-message';
 import RootToast from '../../components/Toast';
+import getValidationErros from '../../utils/getValidationErrors';
 
 interface Address {
   address: string;
@@ -51,52 +52,73 @@ const EditAddress: React.FC = (...props: any) => {
 
   const handleCreate = useCallback(
     async (data: Address) => {
-      setLoading(true);
-      formRef.current?.setErrors({});
+      try {
+        setLoading(true);
+        formRef.current?.setErrors({});
 
-      const schema = Yup.object().shape({
-        address: Yup.string().required('Endereço obrigatório'),
-        number: Yup.string().required('Número obrigatório'),
-        zipcode: Yup.string()
-          .max(8, 'Deve conter 8 caracteres')
-          .required('Cep obrigatório'),
-        district: Yup.string().required('Bairro é obrigatório'),
-        city: Yup.string().required('Cidade é obrigatório'),
-        state: Yup.string()
-          .min(2, 'Deve conter 2 caracteres')
-          .max(2, 'Deve conter 2 caracteres')
-          .required('Estado é obrigatório'),
-        reference: Yup.string().required('Referência é obrigatória'),
-      });
-
-      await schema.validate(data, {
-        abortEarly: false,
-      });
-
-      await api
-        .post('address', data)
-        .then(res => {
-          console.log(res);
-          setLoading(false);
-          navigation.navigate('Success', {
-            message: 'Endereço cadastrado.',
-          });
-        })
-        .catch(err => {
-          console.log(err);
-          setLoading(false);
-          Toast.show({
-            type: 'error',
-            position: 'top',
-            text1: 'Ops! Houve um problema',
-            text2: err.response.data.error,
-            visibilityTime: 4000,
-            autoHide: true,
-            topOffset: 200,
-            bottomOffset: 40,
-          });
+        const schema = Yup.object().shape({
+          address: Yup.string().required('Endereço obrigatório'),
+          number: Yup.string().required('Número obrigatório'),
+          zipcode: Yup.string()
+            .max(8, 'Deve conter 8 caracteres')
+            .required('Cep obrigatório'),
+          district: Yup.string().required('Bairro é obrigatório'),
+          city: Yup.string().required('Cidade é obrigatório'),
+          state: Yup.string()
+            .min(2, 'Deve conter 2 caracteres')
+            .max(2, 'Deve conter 2 caracteres')
+            .required('Estado é obrigatório'),
+          reference: Yup.string().required('Referência é obrigatória'),
         });
-      setLoading(false);
+
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+
+        await api
+          .post('address', data)
+          .then(res => {
+            console.log(res);
+            setLoading(false);
+            navigation.navigate('Success', {
+              message: 'Endereço cadastrado.',
+            });
+          })
+          .catch(err => {
+            console.log(err);
+            setLoading(false);
+            Toast.show({
+              type: 'error',
+              position: 'top',
+              text1: 'Ops! Houve um problema',
+              text2: err.response.data.error,
+              visibilityTime: 4000,
+              autoHide: true,
+              topOffset: 200,
+              bottomOffset: 40,
+            });
+          });
+        setLoading(false);
+      } catch (err) {
+        setLoading(false);
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErros(err);
+
+          formRef.current?.setErrors(errors);
+          return;
+        }
+
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          text1: 'Ops! houve algum Erro!',
+          text2: 'Verifique suas informações.',
+          visibilityTime: 4000,
+          autoHide: true,
+          topOffset: 200,
+          bottomOffset: 10,
+        });
+      }
     },
     [navigation],
   );

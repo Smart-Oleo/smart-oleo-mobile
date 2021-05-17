@@ -25,6 +25,7 @@ import {useNavigation} from '@react-navigation/native';
 import api from '../../services/api';
 import ModalOptions from './ModalOptions';
 import ModalDelete from './ModelDelete';
+import {Alert} from 'react-native';
 
 export interface Address {
   id: string;
@@ -54,14 +55,12 @@ const Address: React.FC = () => {
     [visible],
   );
 
-  // const toggleModalDelete = useCallback(() => {
-  //   setVisibleDelete(!visibleDelete);
-  // }, [visibleDelete]);
+  const toggleModalDelete = useCallback(() => {
+    setVisibleDelete(!visibleDelete);
+  }, [visibleDelete]);
 
-  const openDeleteOption = useCallback(() => {
-    setVisible(false);
-    console.log('vai abrir aqui, hein');
-    setVisibleDelete(true);
+  const responseDelete = useCallback((res: any) => {
+    // console.log(res);
   }, []);
 
   const loadAdresses = useCallback(async () => {
@@ -74,6 +73,38 @@ const Address: React.FC = () => {
         console.log(err);
       });
   }, []);
+
+  const handleRemoveAddress = useCallback(
+    async (id: string) => {
+      await api.delete(`address/remove/${id}`);
+      loadAdresses();
+    },
+    [loadAdresses],
+  );
+
+  const openDeleteOption = useCallback(
+    (item: Address) => {
+      console.log('ITEM AQUIIIIIIII', item);
+      setVisible(false);
+      Alert.alert(
+        'Remover Endereço',
+        'Tem certeza que deseja remover o endereço?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => Alert.alert('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'Confirmar',
+            onPress: () => {},
+            style: 'default',
+          },
+        ],
+      );
+    },
+    [handleRemoveAddress],
+  );
 
   useEffect(() => {
     loadAdresses();
@@ -173,6 +204,13 @@ const Address: React.FC = () => {
         onRequestClose={toggleModal}
         item={selected}
         requestDelete={openDeleteOption}
+      />
+      <ModalDelete
+        visible={visibleDelete}
+        onRequestClose={toggleModalDelete}
+        item={selected}
+        requestDelete={openDeleteOption}
+        response={responseDelete}
       />
     </Container>
   );

@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import api from '../../services/api';
 import {launchImageLibrary} from 'react-native-image-picker';
+import getValidationErros from '../../utils/getValidationErrors';
 
 interface ProfileFormData {
   name: string;
@@ -89,15 +90,27 @@ const Profile: React.FC = () => {
               }
             : {}),
         };
-        const response = await api.put('users', formData);
-
-        updateUser(response.data.user);
+        await api
+          .put('users', formData)
+          .then(resp => {
+            updateUser(resp.data.user);
+          })
+          .catch(err => {
+            Alert.alert(
+              err.response.data.error
+                ? err.response.data.error
+                : 'Ops! Houve algum problema',
+            );
+          });
 
         setLoading(false);
         Alert.alert('Perfil atualizado com sucesso!');
       } catch (err) {
         setLoading(false);
-        Alert.alert(err.response.data.error);
+        const errors = getValidationErros(err);
+
+        formRef.current?.setErrors(errors);
+        return;
       }
     },
     [updateUser],

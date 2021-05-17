@@ -13,6 +13,7 @@ import Address from '../pages/Address';
 import NewAddress from '../pages/NewAddress';
 import Success from '../pages/Success';
 import EditAddress from '../pages/EditAddress';
+import Notifications from '../pages/Notifications';
 
 const App = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -54,7 +55,7 @@ function Tabs() {
         name="NewCollect"
         component={NewCollect}
         options={() => ({
-          tabBarLabel: '',
+          tabBarLabel: 'Criar',
           tabBarIcon: ({}) => (
             <View>
               <LinearGradient
@@ -114,6 +115,11 @@ const AppRoutes: React.FC = () => (
     <App.Screen
       name="EditAddress"
       component={EditAddress}
+      options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
+    />
+    <App.Screen
+      name="Notifications"
+      component={Notifications}
       options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
     />
   </App.Navigator>
