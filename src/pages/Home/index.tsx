@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {Text, TouchableOpacity} from 'react-native';
 import {useAuth} from '../../hooks/auth';
 import {
@@ -17,9 +17,26 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 import Card from '../../components/Card';
+import api from '../../services/api';
 const Home: React.FC = () => {
   const {signOut, user} = useAuth();
   const navigation = useNavigation();
+  const [totalNotification, setTotalNotificaiton] = useState<number>(0);
+
+  const loadNotifications = useCallback(async () => {
+    await api
+      .get('notifications/total')
+      .then(res => {
+        setTotalNotificaiton(res.data.total);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    loadNotifications();
+  }, []);
 
   return (
     <Container>
@@ -45,7 +62,7 @@ const Home: React.FC = () => {
             onPress={() => navigation.navigate('Notifications')}>
             <Icon name="bell" size={24} />
             <Badge>
-              <TextBadge>7</TextBadge>
+              <TextBadge>{totalNotification} </TextBadge>
             </Badge>
           </TouchableOpacity>
         </ContentHeader>

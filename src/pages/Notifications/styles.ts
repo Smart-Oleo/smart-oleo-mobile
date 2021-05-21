@@ -1,6 +1,7 @@
 import styled from 'styled-components/native';
+import {FlatList} from 'react-native';
 // import {Platform} from 'react-native';
-
+import {Notification} from './index';
 export const Container = styled.View`
   flex: 1;
   background-color: #fff;
@@ -32,7 +33,6 @@ export const ContainerNotification = styled.View`
   padding: 10px;
   border-bottom-width: 1px;
   border-color: #dcdcdc;
-  height: 100px;
   justify-content: space-between;
   padding-bottom: 20px;
   background-color: #fafafa;
@@ -81,3 +81,43 @@ export const DescriptionNoContent = styled.Text`
   margin: 30px;
   text-align: center;
 `;
+
+export const NotificationList = styled(
+  FlatList as new () => FlatList<Notification>,
+)``;
+
+export const ContainerButtons = styled.Text`
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 20px;
+  align-items: center;
+`;
+
+export const ButtonAcept = styled.TouchableOpacity`
+  border-radius: 10px;
+  background-color: green;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  align-self: center;
+`;
+
+export const TextAcept = styled.Text`
+  color: #fff;
+  font-weight: bold;
+`;
+
+// export const ButtonNoAcept = styled.TouchableOpacity`
+//   border-radius: 10px;
+//   background-color: #fff;
+//   justify-content: center;
+//   align-items: center;
+//   padding: 10px;
+//   width: 40%;
+//   border: 1px solid black;
+// `;
+
+// export const TextNoAcept = styled.Text`
+//   color: #000;
+//   font-weight: bold;
+// `;

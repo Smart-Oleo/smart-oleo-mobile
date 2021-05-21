@@ -29,12 +29,14 @@ import Background from '../../components/Background';
 import imageLogo from '../../assets/images/logo_horizontal.png';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
+import RootToast from '../../components/Toast';
 
 import api from '../../services/api';
 
-interface SignInFormData {
+interface FormCollector {
+  name: string;
   email: string;
-  password: string;
+  cellphone: string;
 }
 
 const CollectorForm: React.FC = () => {
@@ -42,65 +44,71 @@ const CollectorForm: React.FC = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSignUp = useCallback(
-    async (data: SignInFormData) => {
-      setLoading(true);
-      try {
-        formRef.current?.setErrors({});
+  const handleSignUp = useCallback(async (data: FormCollector) => {
+    setLoading(true);
+    try {
+      formRef.current?.setErrors({});
 
-        const schema = Yup.object().shape({
-          name: Yup.string().required('Nome obrigatório'),
-          email: Yup.string()
-            .email('Digite um e-mail válido')
-            .required('O email deve ser informado'),
-          cellphone: Yup.string().required('Sobrenome obrigatório'),
-        });
+      const schema = Yup.object().shape({
+        name: Yup.string().required('Nome obrigatório'),
+        email: Yup.string()
+          .email('Digite um e-mail válido')
+          .required('O email deve ser informado'),
+        cellphone: Yup.string().required('Sobrenome obrigatório'),
+      });
 
-        await schema.validate(data, {
-          abortEarly: false,
-        });
+      await schema.validate(data, {
+        abortEarly: false,
+      });
 
-        await api
-          .post('users', data)
-          .then(res => {
-            setLoading(false);
-            Alert.alert(
-              `Por favor ${res.data.user.name}, Verifique seu email/contato de confirmação`,
-            );
-            navigation.goBack();
-          })
-          .catch(err => {
-            setLoading(false);
-            console.log(err.response);
-            Alert.alert(
-              err.response.data.error
-                ? err.response.data.error
-                : 'Ops! Houve algum problema',
-            );
+      await api
+        .post('collectors/want', data)
+        .then(() => {
+          setLoading(false);
+          Toast.show({
+            type: 'success',
+            position: 'top',
+            text1: `Tudo certo, ${data.name}!`,
+            text2: 'Nós entraremos em contato.',
+            visibilityTime: 4000,
+            autoHide: true,
+            topOffset: 200,
+            bottomOffset: 40,
           });
-      } catch (err) {
-        setLoading(false);
-        if (err instanceof Yup.ValidationError) {
-          const errors = getValidationErros(err);
-
-          formRef.current?.setErrors(errors);
-          return;
-        }
-
-        Toast.show({
-          type: 'error',
-          position: 'bottom',
-          text1: 'Erro ao fazer o login!',
-          text2: 'O email ou senha estão incorretos',
-          visibilityTime: 4000,
-          autoHide: true,
-          topOffset: 200,
-          bottomOffset: 10,
+          // Alert.alert(
+          //   `Por favor ${res.data.user.name}, Verifique seu email/contato de confirmação`,
+          // );
+          // navigation.goBack();
+        })
+        .catch(err => {
+          setLoading(false);
+          Alert.alert(
+            err.response.data.error
+              ? err.response.data.error
+              : 'Ops! Houve algum problema',
+          );
         });
+    } catch (err) {
+      setLoading(false);
+      if (err instanceof Yup.ValidationError) {
+        const errors = getValidationErros(err);
+
+        formRef.current?.setErrors(errors);
+        return;
       }
-    },
-    [navigation],
-  );
+
+      Toast.show({
+        type: 'error',
+        position: 'bottom',
+        text1: 'Erro ao fazer o login!',
+        text2: 'O email ou senha estão incorretos',
+        visibilityTime: 4000,
+        autoHide: true,
+        topOffset: 200,
+        bottomOffset: 10,
+      });
+    }
+  }, []);
 
   return (
     <>
@@ -160,6 +168,7 @@ const CollectorForm: React.FC = () => {
             </Content>
           </Container>
         </ScrollView>
+        <RootToast />
       </KeyboardAvoidingView>
       <BackToSignIn onPress={() => navigation.navigate('Login')}>
         <Icon name="arrow-left" size={20} color="#00c200" />

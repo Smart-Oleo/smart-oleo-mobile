@@ -131,6 +131,7 @@ const EditAddress: React.FC = (...props: any) => {
         .then(res => {
           setLoadingCep(false);
 
+          console.log(res);
           formRef.current?.setData({
             zipcode: cep,
             address: res.data.logradouro,
