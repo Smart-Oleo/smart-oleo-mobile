@@ -24,6 +24,8 @@ import Icon from 'react-native-vector-icons/Feather';
 import api from '../../services/api';
 import {Alert, ActivityIndicator} from 'react-native';
 import _ from 'lodash';
+import ModalRescue from './ModalRescue';
+import {useNavigation} from '@react-navigation/native';
 
 export interface Product {
   id: string;
@@ -35,12 +37,24 @@ export interface Product {
   promotional_points: number;
 }
 const Store: React.FC = () => {
+  const navigation = useNavigation();
+
   const [products, setProducts] = useState<Product[]>([]);
   const [total, setTotal] = useState<Number>(0);
   const [page, setPage] = useState<Number>(1);
   // const [filter, setFilter] = useState<String>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [visible, setVisible] = useState<boolean>(false);
+  const [selected, setSelected] = useState<Object>();
+
+  const toggleModal = useCallback(
+    (item: Object) => {
+      setSelected(item);
+      setVisible(!visible);
+    },
+    [visible],
+  );
 
   const loadProducts = useCallback(
     async (pageNumber = page, input = '', shouldRefresh = false) => {
@@ -153,7 +167,8 @@ const Store: React.FC = () => {
                 start={{x: 0.2, y: 0.6}}
                 end={{x: 0, y: 0}}
                 colors={['#228B22', '#00FF00']}>
-                <ButtonProduct>
+                <ButtonProduct
+                  onPress={() => navigation.navigate('Rescue', {id: item.id})}>
                   <TextButton>
                     Resgatar <Icon name="shopping-bag" size={14} />
                   </TextButton>
@@ -165,6 +180,12 @@ const Store: React.FC = () => {
           )}
         />
       </Content>
+      <ModalRescue
+        visible={visible}
+        onRequestClose={toggleModal}
+        item={selected}
+        // requestDelete={openDeleteOption}
+      />
       {/* <Content>
         <ImageNoContent source={NoContentImage} />
         <TextNoContent> A Loja está vazia 😢 </TextNoContent>

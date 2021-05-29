@@ -18,6 +18,8 @@ import Button from '../../components/Button';
 import api from '../../services/api';
 import Toast from 'react-native-toast-message';
 import RootToast from '../../components/Toast';
+import Address from '../Address';
+import getValidationErros from '../../utils/getValidationErrors';
 
 interface Address {
   address: string;
@@ -30,64 +32,80 @@ interface Address {
   reference: string;
 }
 
+interface AddressByCep {
+  zipcode: string;
+  address: string;
+  district: string;
+  city: string;
+  state: string;
+}
+
 const NewAddress: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
   const [loadingCep, setLoadingCep] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [address, setAddress] = useState<string>('');
-  const [district, setDistrict] = useState<string>('');
-  const [city, setCity] = useState<string>('');
-  const [state, setState] = useState<string>('');
+  const [addressByCep, setAddressByCep] = useState<AddressByCep>();
 
   const handleCreate = useCallback(
     async (data: Address) => {
       setLoading(true);
-      formRef.current?.setErrors({});
 
-      const schema = Yup.object().shape({
-        address: Yup.string().required('Endereço obrigatório'),
-        number: Yup.string().required('Número obrigatório'),
-        zipcode: Yup.string()
-          .max(8, 'Deve conter 8 caracteres')
-          .required('Cep obrigatório'),
-        district: Yup.string().required('Bairro é obrigatório'),
-        city: Yup.string().required('Cidade é obrigatório'),
-        state: Yup.string()
-          .min(2, 'Deve conter 2 caracteres')
-          .max(2, 'Deve conter 2 caracteres')
-          .required('Estado é obrigatório'),
-        reference: Yup.string().required('Referência é obrigatória'),
-      });
+      data.zipcode = data.zipcode.replace('-', '');
+      console.log(data);
+      try {
+        formRef.current?.setErrors({});
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
-
-      await api
-        .post('address', data)
-        .then(res => {
-          console.log(res);
-          setLoading(false);
-          navigation.navigate('Success', {
-            message: 'Endereço cadastrado.',
-          });
-        })
-        .catch(err => {
-          console.log(err);
-          setLoading(false);
-          Toast.show({
-            type: 'error',
-            position: 'top',
-            text1: 'Ops! Houve um problema',
-            text2: err.response.data.error,
-            visibilityTime: 4000,
-            autoHide: true,
-            topOffset: 200,
-            bottomOffset: 40,
-          });
+        const schema = Yup.object().shape({
+          address: Yup.string().required('Endereço obrigatório'),
+          number: Yup.string().required('Número obrigatório'),
+          zipcode: Yup.string()
+            .max(8, 'Deve conter 8 caracteres')
+            .required('Cep obrigatório'),
+          district: Yup.string().required('Bairro é obrigatório'),
+          city: Yup.string().required('Cidade é obrigatório'),
+          state: Yup.string()
+            .min(2, 'Deve conter 2 caracteres')
+            .max(2, 'Deve conter 2 caracteres')
+            .required('Estado é obrigatório'),
+          reference: Yup.string().required('Referência é obrigatória'),
         });
-      setLoading(false);
+
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+
+        await api
+          .post('address', data)
+          .then(res => {
+            console.log(res);
+            setLoading(false);
+            navigation.navigate('Success', {
+              message: 'Endereço cadastrado.',
+            });
+          })
+          .catch(err => {
+            console.log(err);
+            setLoading(false);
+            Toast.show({
+              type: 'error',
+              position: 'top',
+              text1: 'Ops! Houve um problema',
+              text2: err.response.data.error,
+              visibilityTime: 4000,
+              autoHide: true,
+              topOffset: 200,
+              bottomOffset: 40,
+            });
+          });
+        setLoading(false);
+      } catch (err) {
+        setLoading(false);
+        const errors = getValidationErros(err);
+
+        formRef.current?.setErrors(errors);
+        return;
+      }
     },
     [navigation],
   );
@@ -98,20 +116,15 @@ const NewAddress: React.FC = () => {
       api
         .get(`address/getbycep/${cep}`)
         .then(res => {
+          console.log(res);
           setLoadingCep(false);
-
-          formRef.current?.setData({
-            zipcode: cep,
+          setAddressByCep({
+            zipcode: res.data.cep,
             address: res.data.logradouro,
-            district: res.data.bairro,
-            city: res.data.localidade,
+            city: res.data.logradouro,
             state: res.data.uf,
+            district: res.data.bairro,
           });
-
-          setAddress(res.data.logradouro);
-          setDistrict(res.data.bairro);
-          setCity(res.data.localidade);
-          setState(res.data.uf);
         })
         .catch(err => {
           setLoadingCep(false);
@@ -160,7 +173,10 @@ const NewAddress: React.FC = () => {
               {loadingCep && <ActivityIndicator size="small" color="#000" />}
             </Header>
 
-            <Form ref={formRef} onSubmit={handleCreate}>
+            <Form
+              ref={formRef}
+              initialData={addressByCep}
+              onSubmit={handleCreate}>
               <Input
                 name="zipcode"
                 icon="navigation"
@@ -176,7 +192,7 @@ const NewAddress: React.FC = () => {
                 name="address"
                 icon="map-pin"
                 placeholder="Endereço"
-                value={address}
+                // value={address}
                 autoCapitalize="none"
                 onSubmitEditing={() => numberInputRef.current?.focus()}
               />
@@ -193,7 +209,7 @@ const NewAddress: React.FC = () => {
                 name="district"
                 icon="map-pin"
                 placeholder="Bairro"
-                value={district}
+                // value={district}
                 returnKeyType="send"
                 onSubmitEditing={() => cityInputRef.current?.focus()}
               />
@@ -202,7 +218,7 @@ const NewAddress: React.FC = () => {
                 name="city"
                 icon="map"
                 placeholder="Cidade"
-                value={city}
+                // value={city}
                 returnKeyType="send"
                 onSubmitEditing={() => complementInputRef.current?.focus()}
               />
@@ -220,7 +236,7 @@ const NewAddress: React.FC = () => {
                 icon="map"
                 placeholder="Estado"
                 returnKeyType="send"
-                value={state}
+                // value={state}
                 onSubmitEditing={() => referenceInputRef.current?.focus()}
               />
               <Input

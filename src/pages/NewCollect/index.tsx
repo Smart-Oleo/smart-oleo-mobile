@@ -112,8 +112,6 @@ const NewCollect: React.FC = () => {
     }
   }, []);
 
-  console.log(addressOption);
-
   return (
     <KeyboardAvoidingView
       style={{

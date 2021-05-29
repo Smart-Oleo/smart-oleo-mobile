@@ -22,6 +22,7 @@ const Home: React.FC = () => {
   const {signOut, user} = useAuth();
   const navigation = useNavigation();
   const [totalNotification, setTotalNotificaiton] = useState<number>(0);
+  const [points, setPoints] = useState<number>(0);
 
   const loadNotifications = useCallback(async () => {
     await api
@@ -34,8 +35,21 @@ const Home: React.FC = () => {
       });
   }, []);
 
+  const loadPoints = useCallback(async () => {
+    await api
+      .get('users/my-wallet')
+      .then(res => {
+        console.log(res.data);
+        setPoints(res.data.points);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
+
   useEffect(() => {
     loadNotifications();
+    loadPoints();
   }, []);
 
   return (
@@ -50,7 +64,7 @@ const Home: React.FC = () => {
         )}
 
         <ContentPoints>
-          <PointsText> 100</PointsText>
+          <PointsText>{points}</PointsText>
           <Icon name="droplet" size={16} />
         </ContentPoints>
         <ContentHeader>

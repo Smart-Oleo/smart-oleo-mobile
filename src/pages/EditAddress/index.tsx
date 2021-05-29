@@ -31,6 +31,14 @@ interface Address {
   reference: string;
 }
 
+interface AddressByCep {
+  zipcode: string;
+  address: string;
+  district: string;
+  city: string;
+  state: string;
+}
+
 const EditAddress: React.FC = (...props: any) => {
   const formRef = useRef<FormHandles>(null);
 
@@ -39,16 +47,14 @@ const EditAddress: React.FC = (...props: any) => {
   const navigation = useNavigation();
   const [loadingCep, setLoadingCep] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [address, setAddress] = useState<string>(addressEdit.address);
-  const [district, setDistrict] = useState<string>(addressEdit.district);
-  const [city, setCity] = useState<string>(addressEdit.city);
-  const [state, setState] = useState<string>(addressEdit.state);
 
   console.log(addressEdit);
   // const address = formRef.current?.getFieldValue('address');
   // const district = formRef.current?.getFieldValue('district');
   // const city = formRef.current?.getFieldValue('city');
   // const state = formRef.current?.getFieldValue('state');
+
+  const [addressByCep, setAddressByCep] = useState<AddressByCep>();
 
   const handleCreate = useCallback(
     async (data: Address) => {
@@ -139,11 +145,6 @@ const EditAddress: React.FC = (...props: any) => {
             city: res.data.localidade,
             state: res.data.uf,
           });
-
-          setAddress(res.data.logradouro);
-          setDistrict(res.data.bairro);
-          setCity(res.data.localidade);
-          setState(res.data.uf);
         })
         .catch(err => {
           setLoadingCep(false);
@@ -212,7 +213,6 @@ const EditAddress: React.FC = (...props: any) => {
                 icon="map-pin"
                 placeholder="Endereço"
                 autoCapitalize="none"
-                value={address}
                 onSubmitEditing={() => numberInputRef.current?.focus()}
               />
               <Input
@@ -228,7 +228,6 @@ const EditAddress: React.FC = (...props: any) => {
                 name="district"
                 icon="map-pin"
                 placeholder="Bairro"
-                value={district}
                 returnKeyType="next"
                 onSubmitEditing={() => cityInputRef.current?.focus()}
               />
@@ -236,7 +235,6 @@ const EditAddress: React.FC = (...props: any) => {
                 ref={cityInputRef}
                 name="city"
                 icon="map"
-                value={city}
                 placeholder="Cidade"
                 returnKeyType="next"
                 onSubmitEditing={() => complementInputRef.current?.focus()}
@@ -253,7 +251,6 @@ const EditAddress: React.FC = (...props: any) => {
                 ref={stateInputRef}
                 name="state"
                 icon="map"
-                value={state}
                 placeholder="Estado"
                 returnKeyType="send"
                 onSubmitEditing={() => referenceInputRef.current?.focus()}

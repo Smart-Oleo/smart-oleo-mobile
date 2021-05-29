@@ -16,8 +16,6 @@ import {
   ContainerButtons,
   ButtonAcept,
   TextAcept,
-  ButtonNoAcept,
-  TextNoAcept,
 } from './styles';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
