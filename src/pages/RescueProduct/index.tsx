@@ -12,6 +12,7 @@ import {
   ValuePoints,
   TitleDescription,
   MyWallet,
+  AlertMessage,
 } from './styles';
 import {Form} from '@unform/mobile';
 import Input from '../../components/Input';
@@ -32,6 +33,7 @@ import getValidationErros from '../../utils/getValidationErrors';
 import RNPickerSelect from '../../components/RNPickerSelect';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
+import NumericInput from 'react-native-numeric-input';
 
 interface ProfileFormData {
   name: string;
@@ -61,6 +63,12 @@ interface Product {
   updated_at: Date;
 }
 
+interface Data {
+  quantity: number;
+  product_id: string;
+  destination_id: string;
+}
+
 const RescueProduct: React.FC = (...props: any) => {
   const navigation = useNavigation();
 
@@ -69,6 +77,7 @@ const RescueProduct: React.FC = (...props: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [product, setProduct] = useState<Product>();
   const [addressOption, setAddressOption] = useState<Select[]>([]);
+  const [quantity, setQuantity] = useState<number>(1);
 
   const [points, setPoints] = useState<number>(0);
 
@@ -76,7 +85,6 @@ const RescueProduct: React.FC = (...props: any) => {
     await api
       .get(`products/${props[0].route.params.id}`)
       .then(res => {
-        console.log(res.data);
         setProduct(res.data);
       })
       .catch(err => {
@@ -88,7 +96,6 @@ const RescueProduct: React.FC = (...props: any) => {
     await api
       .get('users/my-wallet')
       .then(res => {
-        console.log(res.data);
         setPoints(res.data.points);
       })
       .catch(err => {
@@ -99,6 +106,45 @@ const RescueProduct: React.FC = (...props: any) => {
   useEffect(() => {
     loadProduct();
     loadPoints();
+  }, []);
+
+  const handleSubmit = useCallback(async (data: Data) => {
+    data.quantity = quantity;
+    data.product_id = props[0].route.params.id;
+    try {
+      formRef.current?.setErrors({});
+
+      // data.liters_oil = parseInt(data.liters_oil);
+
+      const schema = Yup.object().shape({
+        quantity: Yup.number()
+          .integer('Deve ser um número inteiro')
+          .moreThan(0, 'A quantidade deve ser maior que 1')
+          .required('O campo é obrigatório'),
+        product_id: Yup.string().required('O produto deve ser informado'),
+        address_id: Yup.string().required('O endereço deve ser informado'),
+      });
+
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+
+      console.log(data);
+
+      await api
+        .post('user-products', data)
+        .then(res => {
+          navigation.navigate('Success', {
+            message: 'Endereço cadastrado.',
+          });
+        })
+        .catch(err => {});
+    } catch (err) {
+      const errors = getValidationErros(err);
+
+      formRef.current?.setErrors(errors);
+      return;
+    }
   }, []);
 
   const handleGoBack = useCallback(() => {
@@ -122,27 +168,6 @@ const RescueProduct: React.FC = (...props: any) => {
       .catch(err => {
         console.log(err);
       });
-  }, []);
-
-  const handleUpdateAvatar = useCallback(async () => {
-    launchImageLibrary(
-      {
-        mediaType: 'photo',
-        includeBase64: false,
-      },
-      response => {
-        if (response.didCancel) {
-          return;
-        }
-        if (response.errorMessage) {
-          Alert.alert('Erro ao atualizar imagem');
-        }
-
-        const source = {uri: response.uri};
-
-        console.log(source);
-      },
-    );
   }, []);
 
   return (
@@ -175,16 +200,31 @@ const RescueProduct: React.FC = (...props: any) => {
             </TitleDescription>
             <Form
               ref={formRef}
-              onSubmit={() => {}}
+              onSubmit={handleSubmit}
               // initialData={{user: pickerOptions[0].value}}
             >
-              <Input
+              <NumericInput
+                value={quantity}
+                type="plus-minus"
+                totalWidth={100}
+                totalHeight={36}
+                minValue={1}
+                iconSize={22}
+                valueType="real"
+                maxValue={10}
+                rounded
+                containerStyle={{marginTop: 10, marginBottom: 10}}
+                onChange={value => {
+                  setQuantity(value);
+                }}
+              />
+              {/* <Input
                 name="quantity"
                 icon="hash"
                 placeholder="Quantidade"
                 autoCapitalize="none"
                 keyboardType="numeric"
-              />
+              /> */}
               <RNPickerSelect
                 placeholder={{
                   label: 'Informe o endereço',
@@ -200,10 +240,21 @@ const RescueProduct: React.FC = (...props: any) => {
               isLoading={false}>
               Confirmar
             </Button>
+            {product?.price_points &&
+              product?.price_points * quantity > points && (
+                <AlertMessage>
+                  {' '}
+                  Atenção: Você não tem saldo suficiente.{' '}
+                </AlertMessage>
+              )}
+
             <TitleDescription>
               Minha carteira: <MyWallet> {points} </MyWallet>
             </TitleDescription>
 
+            <TitleDescription>
+              Total: <MyWallet> {points} </MyWallet>
+            </TitleDescription>
             <TitleDescription> Descrição do produto </TitleDescription>
             <Description> {product?.description} </Description>
           </Container>

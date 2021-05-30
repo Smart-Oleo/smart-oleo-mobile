@@ -49,6 +49,14 @@ export const TitleDescription = styled.Text`
   align-self: flex-start;
 `;
 
+export const AlertMessage = styled.Text`
+  font-size: 14px;
+  color: red;
+  margin: 10px 0;
+  font-weight: bold;
+  align-self: flex-start;
+`;
+
 export const ValuePoints = styled.Text`
   font-size: 20px;
   color: #009e00;
