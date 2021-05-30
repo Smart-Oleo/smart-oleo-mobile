@@ -18,6 +18,7 @@ export const Title = styled.Text`
 `;
 
 export const UserAvatarButton = styled.TouchableOpacity``;
+export const ButtonSignOut = styled.TouchableOpacity``;
 
 export const UserAvatar = styled.Image`
   width: 156px;

@@ -207,7 +207,7 @@ const Profile: React.FC = () => {
               />
               <Button
                 onPress={() => formRef.current?.submitForm()}
-                isLoading={false}>
+                isLoading={loading}>
                 Confirmar Alterações
               </Button>
             </Form>
