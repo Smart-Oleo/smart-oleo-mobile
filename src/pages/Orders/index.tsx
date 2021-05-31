@@ -161,12 +161,12 @@ const Orders: React.FC = () => {
         showsVerticalScrollIndicator={false}
         renderItem={({item}) => (
           <ContainerOrder key={item.id}>
-            <ImageProduct source={{uri: item.product.image}} />
+            <ImageProduct source={{uri: item?.product.image}} />
             <ContainerDetail>
               <TitleProduct numberOfLines={2}>
-                {item.product.title}
+                {item?.product.title}
               </TitleProduct>
-              <InfoText> Pedido: #{item.order_number}</InfoText>
+              <InfoText> Pedido: #{item?.order_number}</InfoText>
             </ContainerDetail>
           </ContainerOrder>
         )}

@@ -91,11 +91,8 @@ const Home: React.FC = () => {
         </ContentHeader>
       </Header>
       <Body>
-        <Title>Olá, {user.name}!</Title>
+        <Title>Olá, {user?.name}!</Title>
         <Card />
-        <TouchableOpacity onPress={signOut}>
-          <Text> Sair </Text>
-        </TouchableOpacity>
       </Body>
     </Container>
   );

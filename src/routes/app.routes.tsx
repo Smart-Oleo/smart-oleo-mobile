@@ -16,6 +16,7 @@ import EditAddress from '../pages/EditAddress';
 import Notifications from '../pages/Notifications';
 import RescueProduct from '../pages/RescueProduct';
 import Orders from '../pages/Orders';
+import CollectDetail from '../pages/CollectDetail';
 
 const App = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -132,6 +133,11 @@ const AppRoutes: React.FC = () => (
     <App.Screen
       name="Orders"
       component={Orders}
+      options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
+    />
+    <App.Screen
+      name="CollectDetail"
+      component={CollectDetail}
       options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
     />
   </App.Navigator>

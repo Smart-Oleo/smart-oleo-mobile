@@ -31,6 +31,8 @@ import NoContentImage from '../../assets/images/coleta_info.jpg';
 import api from '../../services/api';
 import {ActivityIndicator, View} from 'react-native';
 import _ from 'lodash';
+import {useNavigation} from '@react-navigation/native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 // import {ActivityIndicator} from 'react-native';
 
 export interface Collect {
@@ -61,6 +63,7 @@ export interface IStatus {
 }
 
 const Collects: React.FC = () => {
+  const navigation = useNavigation();
   const [loading, setLoading] = useState<boolean>(false);
   const [collects, setCollects] = useState<Collect[]>([]);
   const [statusActive, setStatusActive] = useState<IStatus>();
@@ -146,6 +149,7 @@ const Collects: React.FC = () => {
     {name: 'Aguardando', value: 'created'},
     {name: 'Agendado', value: 'waiting'},
     {name: 'Coletado', value: 'colected'},
+    {name: 'Cancelada', value: 'canceled'},
   ]);
 
   return (
@@ -208,7 +212,11 @@ const Collects: React.FC = () => {
               }
               showsVerticalScrollIndicator={false}
               renderItem={({item}) => (
-                <ContainerCollect key={item.id}>
+                <ContainerCollect
+                  key={item.id}
+                  onPress={() =>
+                    navigation.navigate('CollectDetail', {id: item.id})
+                  }>
                   <CollectHeader>
                     <CollectNumberView>
                       <CollectNumber> N°: {item.collect_number} </CollectNumber>
@@ -219,10 +227,12 @@ const Collects: React.FC = () => {
                         <Icon name="clock" size={12} color="#fff" />
                         {item.status === 'created' && ' Aguardando...'}
                         {item.status === 'waiting' && ' Agendado...'}
-                        {item.status === 'collected' && ' Coletado'}
+                        {item.status === 'collected' && 'Coletado'}
+                        {item.status === 'canceled' && 'Cancelada'}
                       </Status>
                     </ViewStatus>
                   </CollectHeader>
+
                   <CollectBody>
                     <TextOilNumber>
                       Litros p/ coleta: {item.liters_oil}L{' '}

@@ -55,14 +55,6 @@ const Address: React.FC = () => {
     [visible],
   );
 
-  const toggleModalDelete = useCallback(() => {
-    setVisibleDelete(!visibleDelete);
-  }, [visibleDelete]);
-
-  const responseDelete = useCallback((res: any) => {
-    // console.log(res);
-  }, []);
-
   const loadAdresses = useCallback(async () => {
     await api
       .get('address/user')
@@ -76,15 +68,22 @@ const Address: React.FC = () => {
 
   const handleRemoveAddress = useCallback(
     async (id: string) => {
-      await api.delete(`address/remove/${id}`);
-      loadAdresses();
+      await api
+        .delete(`address/remove/${id}`)
+        .then(res => {
+          console.log(res);
+          Alert.alert('O endereço foi removido!');
+          loadAdresses();
+        })
+        .catch(err => {
+          Alert.alert('Houve um erro ao remover o endereço!' + err);
+        });
     },
     [loadAdresses],
   );
 
   const openDeleteOption = useCallback(
     (item: Address) => {
-      console.log('ITEM AQUIIIIIIII', item);
       setVisible(false);
       Alert.alert(
         'Remover Endereço',
@@ -97,7 +96,7 @@ const Address: React.FC = () => {
           },
           {
             text: 'Confirmar',
-            onPress: () => {},
+            onPress: () => handleRemoveAddress(item.id),
             style: 'default',
           },
         ],
@@ -204,13 +203,6 @@ const Address: React.FC = () => {
         onRequestClose={toggleModal}
         item={selected}
         requestDelete={openDeleteOption}
-      />
-      <ModalDelete
-        visible={visibleDelete}
-        onRequestClose={toggleModalDelete}
-        item={selected}
-        requestDelete={openDeleteOption}
-        response={responseDelete}
       />
     </Container>
   );

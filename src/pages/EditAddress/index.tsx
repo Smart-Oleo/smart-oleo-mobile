@@ -54,10 +54,11 @@ const EditAddress: React.FC = (...props: any) => {
   // const city = formRef.current?.getFieldValue('city');
   // const state = formRef.current?.getFieldValue('state');
 
-  const [addressByCep, setAddressByCep] = useState<AddressByCep>();
+  // const [addressByCep, setAddressByCep] = useState<AddressByCep>();
 
   const handleCreate = useCallback(
     async (data: Address) => {
+      data.zipcode = data.zipcode.replace('-', '');
       try {
         setLoading(true);
         formRef.current?.setErrors({});
@@ -136,15 +137,21 @@ const EditAddress: React.FC = (...props: any) => {
         .get(`address/getbycep/${cep}`)
         .then(res => {
           setLoadingCep(false);
-
+          console.log(formRef);
+          addressEdit.address = res.data.logradouro;
           console.log(res);
-          formRef.current?.setData({
-            zipcode: cep,
-            address: res.data.logradouro,
-            district: res.data.bairro,
-            city: res.data.localidade,
-            state: res.data.uf,
-          });
+          // formRef.current?.setData({
+          //   zipcode: cep,
+          //   address: res.data.logradouro,
+          //   district: res.data.bairro,
+          //   city: res.data.localidade,
+          //   state: res.data.uf,
+          // });
+          // formRef.current?.setFieldValue('zipcode', cep);
+          // formRef.current?.setFieldValue('address', res.data.logradouro);
+          // formRef.current?.setFieldValue('district', res.data.bairro);
+          // formRef.current?.setFieldValue('city', res.data.localidade);
+          // formRef.current?.setFieldValue('state', res.data.uf);
         })
         .catch(err => {
           setLoadingCep(false);

@@ -48,7 +48,6 @@ export default function RNPickerSelect({name, items, ...rest}: Props) {
           onValueChange={setSelectedValue}
           items={items}
           useNativeAndroidPickerStyle={false}
-          fixAndroidTouchableBug
           {...rest}
         />
       </Container>

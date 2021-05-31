@@ -31,6 +31,7 @@ const ModalOptions: React.FC<PropsModal> = ({
 
   const removeOption = useCallback(
     (item: Address) => {
+      console.log('ANNNNN', item);
       requestDelete(item);
     },
     [requestDelete],
@@ -59,11 +60,11 @@ const ModalOptions: React.FC<PropsModal> = ({
             Editar <Icon name="edit-2" size={16} color="#a9a9a9" />{' '}
           </TextButton>
         </ButtonOptions>
-        <ButtonOptions onPress={removeOption}>
+        {/* <ButtonOptions onPress={() => removeOption(item)}>
           <TextButton>
             Remover <Icon name="trash" size={16} color="#a9a9a9" />{' '}
           </TextButton>
-        </ButtonOptions>
+        </ButtonOptions> */}
       </Container>
     </Modal>
   );

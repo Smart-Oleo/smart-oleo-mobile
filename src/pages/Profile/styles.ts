@@ -18,13 +18,27 @@ export const Title = styled.Text`
 `;
 
 export const UserAvatarButton = styled.TouchableOpacity``;
-export const ButtonSignOut = styled.TouchableOpacity``;
+export const ButtonSignOut = styled.TouchableOpacity`
+  margin-top: 60px;
+  left: -10px;
+  background-color: #2f4f4f;
+  padding: 10px;
+  width: 60px;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const SignOutText = styled.Text`
+  font-weight: bold;
+  color: #fff;
+`;
 
 export const UserAvatar = styled.Image`
   width: 156px;
   height: 156px;
   border-radius: 98px;
-  margin-top: 64px;
+  margin-top: 30px;
   align-self: center;
   border-color: #fafafa;
   border-width: 1px;

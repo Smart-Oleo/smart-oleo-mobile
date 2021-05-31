@@ -131,6 +131,11 @@ export const ViewStatus = styled.View<StatusProps>`
     css`
       background-color: #32cd32;
     `};
+  ${props =>
+    props.status === 'canceled' &&
+    css`
+      background-color: red;
+    `};
 `;
 
 export const Status = styled.Text`

@@ -236,6 +236,12 @@ const RescueProduct: React.FC = (...props: any) => {
               />
             </Form>
             <Button
+              enabled={
+                !!(
+                  product?.price_points &&
+                  product?.price_points * quantity > points
+                )
+              }
               onPress={() => formRef.current?.submitForm()}
               isLoading={false}>
               Confirmar

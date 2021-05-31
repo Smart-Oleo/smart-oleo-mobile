@@ -114,14 +114,6 @@ const Notifications: React.FC = () => {
                   'dd/MM/yyy HH:MM',
                 )}
               </DateNotification>
-              <ContainerButtons>
-                <ButtonAcept>
-                  <TextAcept> Aceitar </TextAcept>
-                </ButtonAcept>
-                {/* <ButtonNoAcept>
-                  <TextNoAcept> Recusar </TextNoAcept>
-                </ButtonNoAcept> */}
-              </ContainerButtons>
             </ContainerNotification>
           )}
         />

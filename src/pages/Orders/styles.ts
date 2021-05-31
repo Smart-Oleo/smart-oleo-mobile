@@ -60,3 +60,7 @@ export const InfoText = styled.Text`
   font-weight: bold;
   color: #000;
 `;
+
+export const ContainerInfo = styled.View`
+  padding: 4px;
+`;

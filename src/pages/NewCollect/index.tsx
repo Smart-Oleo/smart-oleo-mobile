@@ -37,6 +37,7 @@ const NewCollect: React.FC = () => {
     await api
       .get('address/user')
       .then(res => {
+        console.log(res);
         const arr: [{value: string; label: string}] = [{value: '', label: ''}];
         for (let i = 0; i < res.data.length; i++) {
           arr.push({

@@ -1,5 +1,12 @@
 import React, {useRef, useCallback, useState} from 'react';
-import {Container, Title, UserAvatarButton, UserAvatar} from './styles';
+import {
+  Container,
+  Title,
+  UserAvatarButton,
+  UserAvatar,
+  ButtonSignOut,
+  SignOutText,
+} from './styles';
 import {Form} from '@unform/mobile';
 import Input from '../../components/Input';
 import {FormHandles} from '@unform/core';
@@ -28,7 +35,7 @@ interface ProfileFormData {
 
 const Profile: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
-  const {user, updateUser} = useAuth();
+  const {user, updateUser, signOut} = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
 
   const lastNameInputRef = useRef<TextInput>(null);
@@ -147,6 +154,9 @@ const Profile: React.FC = () => {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           <Container>
+            <ButtonSignOut onPress={signOut}>
+              <SignOutText> Sair </SignOutText>
+            </ButtonSignOut>
             <UserAvatarButton onPress={handleUpdateAvatar}>
               <UserAvatar source={{uri: user.photo}} />
             </UserAvatarButton>
