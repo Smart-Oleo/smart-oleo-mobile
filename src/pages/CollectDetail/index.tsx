@@ -33,6 +33,7 @@ export interface Schedulle {
   date: Date;
   period: string;
   user_status: string;
+  collector: Collector;
 }
 
 interface Address {
@@ -44,6 +45,15 @@ interface Address {
   complement: string;
   state: string;
   reference: string;
+}
+
+interface Collector {
+  id: string;
+  name: string;
+  last_name: string;
+  email: string;
+  cellphone: string;
+  photo: string;
 }
 
 const CollectDetail: React.FC = (...props: any) => {
