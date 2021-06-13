@@ -28,6 +28,7 @@ interface ProfileFormData {
   name: string;
   last_name: string;
   cellphone: string;
+  email: string;
   old_password: string;
   password: string;
   password_confirmation: string;
@@ -43,6 +44,7 @@ const Profile: React.FC = () => {
   const oldPasswordInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
   const confirmPasswordInputRef = useRef<TextInput>(null);
+  const emailInputRef = useRef<TextInput>(null);
 
   const handleUpdate = useCallback(
     async (data: ProfileFormData) => {
@@ -57,6 +59,7 @@ const Profile: React.FC = () => {
             .max(11, 'O telefone deve conter 11 digitos')
             .min(11, 'O telefone deve conter 11 digitos')
             .required('Sobrenome Obrigatório!'),
+          email: Yup.string().email('Email incorreto!'),
           old_password: Yup.string(),
           password: Yup.string().when('old_password', {
             is: (val: any) => !!val.length,
@@ -80,6 +83,7 @@ const Profile: React.FC = () => {
           name,
           last_name,
           cellphone,
+          email,
           old_password,
           password,
           password_confirmation,
@@ -89,6 +93,7 @@ const Profile: React.FC = () => {
           name,
           last_name,
           cellphone,
+          email,
           ...(old_password
             ? {
                 old_password,
@@ -183,6 +188,15 @@ const Profile: React.FC = () => {
                 name="cellphone"
                 icon="phone"
                 placeholder="Digite o telefone"
+                autoCorrect={false}
+                autoCapitalize="none"
+                onSubmitEditing={() => emailInputRef.current?.focus()}
+              />
+              <Input
+                ref={emailInputRef}
+                name="email"
+                icon="mail"
+                placeholder="Informe o email"
                 autoCorrect={false}
                 autoCapitalize="none"
                 onSubmitEditing={() => oldPasswordInputRef.current?.focus()}

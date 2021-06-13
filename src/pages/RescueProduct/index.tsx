@@ -20,20 +20,15 @@ import {FormHandles} from '@unform/core';
 import Button from '../../components/Button';
 import {useAuth} from '../../hooks/auth';
 import * as Yup from 'yup';
-import {
-  KeyboardAvoidingView,
-  ScrollView,
-  TextInput,
-  Platform,
-  Alert,
-} from 'react-native';
+import {KeyboardAvoidingView, ScrollView, Platform} from 'react-native';
 import api from '../../services/api';
-import {launchImageLibrary} from 'react-native-image-picker';
 import getValidationErros from '../../utils/getValidationErrors';
 import RNPickerSelect from '../../components/RNPickerSelect';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 import NumericInput from 'react-native-numeric-input';
+import Toast from 'react-native-toast-message';
+import RootToast from '../../components/Toast';
 
 interface ProfileFormData {
   name: string;
@@ -122,23 +117,42 @@ const RescueProduct: React.FC = (...props: any) => {
           .moreThan(0, 'A quantidade deve ser maior que 1')
           .required('O campo é obrigatório'),
         product_id: Yup.string().required('O produto deve ser informado'),
-        address_id: Yup.string().required('O endereço deve ser informado'),
+        destination_id: Yup.string().required('O endereço deve ser informado'),
       });
 
       await schema.validate(data, {
         abortEarly: false,
       });
 
-      console.log(data);
-
       await api
         .post('user-products', data)
         .then(res => {
-          navigation.navigate('Success', {
-            message: 'Endereço cadastrado.',
+          loadPoints();
+          Toast.show({
+            type: 'success',
+            position: 'top',
+            text1: 'Tudo certo!',
+            text2: 'Aguarde o envio do produto',
+            visibilityTime: 4000,
+            autoHide: true,
+            topOffset: 200,
+            bottomOffset: 40,
           });
         })
-        .catch(err => {});
+        .catch(err => {
+          Toast.show({
+            type: 'error',
+            position: 'top',
+            text1: 'Ops! Houve um problema.',
+            text2: err.response.data.error
+              ? err.response.data.error
+              : 'Ops! Houve algum problema',
+            visibilityTime: 4000,
+            autoHide: true,
+            topOffset: 200,
+            bottomOffset: 40,
+          });
+        });
     } catch (err) {
       const errors = getValidationErros(err);
 
@@ -230,22 +244,33 @@ const RescueProduct: React.FC = (...props: any) => {
                   label: 'Informe o endereço',
                   color: '#000',
                 }}
-                name="address_id"
+                name="destination_id"
                 onOpen={loadAdresses}
                 items={addressOption}
               />
             </Form>
-            <Button
-              enabled={
-                !!(
+            {!(
+              product?.price_points && product?.price_points * quantity > points
+            ) && (
+              <Button
+                enabled={
+                  !!(
+                    product?.price_points &&
+                    !(product?.price_points * quantity > points)
+                  )
+                }
+                activeOpacity={
                   product?.price_points &&
-                  product?.price_points * quantity > points
-                )
-              }
-              onPress={() => formRef.current?.submitForm()}
-              isLoading={false}>
-              Confirmar
-            </Button>
+                  !(product?.price_points * quantity > points)
+                    ? 0.6
+                    : 1
+                }
+                onPress={() => formRef.current?.submitForm()}
+                isLoading={false}>
+                Confirmar
+              </Button>
+            )}
+
             {product?.price_points &&
               product?.price_points * quantity > points && (
                 <AlertMessage>
@@ -265,6 +290,7 @@ const RescueProduct: React.FC = (...props: any) => {
             <Description> {product?.description} </Description>
           </Container>
         </ScrollView>
+        <RootToast />
       </KeyboardAvoidingView>
     </>
   );

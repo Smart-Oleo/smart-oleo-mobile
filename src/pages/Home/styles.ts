@@ -1,7 +1,7 @@
 import styled from 'styled-components/native';
 import {getStatusBarHeight} from 'react-native-iphone-x-helper';
-import {Platform} from 'react-native';
-
+import {Platform, FlatList} from 'react-native';
+import {HighlightsI} from '.';
 export const Container = styled.View`
   flex: 1;
   background-color: #fff;
@@ -46,6 +46,12 @@ export const TextBadge = styled.Text`
   font-weight: bold;
 `;
 
+export const HighligthsList = styled(
+  FlatList as new () => FlatList<HighlightsI>,
+)`
+  margin: 10px 0px;
+`;
+
 export const ContentHeader = styled.View`
   flex-direction: row;
   align-items: center;
@@ -72,4 +78,53 @@ export const ImageHeader = styled.Image`
   border-radius: 40px;
   border-color: #00c200;
   border-width: 1px;
+`;
+
+export const Content = styled.View`
+  margin: 10px;
+`;
+export const ContentHeaderList = styled.View`
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const TitleList = styled.Text`
+  color: #222455;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 6px;
+`;
+
+export const TitleUser = styled.Text`
+  color: #222455;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 6px;
+`;
+
+export const TextRight = styled.Text`
+  color: #009abe;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0;
+  opacity: 0.8;
+`;
+
+export const ContentUserHeader = styled.View`
+  flex-direction: row;
+`;
+
+export const UserContainer = styled.View`
+  left: 0px;
+  width: 66%;
+  height: 100px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 2px 3px 2px #808080;
+  elevation: 10;
+  margin-left: 6px;
+  margin-bottom: 10px;
+  justify-content: center;
+  align-items: center;
 `;

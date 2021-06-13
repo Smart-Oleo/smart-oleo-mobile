@@ -64,3 +64,55 @@ export const InfoText = styled.Text`
 export const ContainerInfo = styled.View`
   padding: 4px;
 `;
+
+export const EmpresaDetail = styled.TouchableOpacity`
+  margin: 6px 0px;
+  opacity: 1;
+  background: #ffffff 0% 0% no-repeat padding-box;
+  box-shadow: 2px 3px 2px #808080;
+  border-radius: 10px;
+  padding: 10px;
+  elevation: 10;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+export const EmpresaImage = styled.Image`
+  height: 80px;
+  width: 80px;
+  border-radius: 10px;
+`;
+
+export const EmpresaContent = styled.View`
+  flex: 1;
+  margin-left: 10px;
+`;
+
+export const EmpresaText = styled.Text`
+  font-size: 14px;
+  color: #000;
+  font-weight: bold;
+`;
+
+export const NameView = styled.View`
+  width: 300px;
+`;
+export const EnderecoContent = styled.View`
+  margin: 0px 6px;
+  padding-top: 6px;
+`;
+export const EnderecoText = styled.Text`
+  font-size: 12px;
+  color: #a9a9a9;
+  font-weight: bold;
+`;
+
+export const ReviewContent = styled.View`
+  flex-direction: row;
+  justify-content: center;
+`;
+
+export const ReviewText = styled.Text`
+  font-size: 16px;
+  color: #000;
+  font-weight: bold;
+`;

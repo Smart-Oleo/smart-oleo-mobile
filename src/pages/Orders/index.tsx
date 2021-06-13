@@ -11,12 +11,21 @@ import {
   ContainerDetail,
   TitleProduct,
   InfoText,
+  EmpresaDetail,
+  EmpresaContent,
+  EmpresaImage,
+  EmpresaText,
+  EnderecoContent,
+  EnderecoText,
+  NameView,
+  ReviewContent,
+  ReviewText,
 } from './styles';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 import _ from 'lodash';
 import api from '../../services/api';
-import {Text} from '../Login/styles';
+import {Text} from 'react-native';
 import {ActivityIndicator} from 'react-native';
 
 export interface Order {
@@ -24,16 +33,18 @@ export interface Order {
   order_number: string;
   quantity: number;
   status: number;
+  image: string;
   response: string;
   created_at: Date;
   product: Product;
-  destination: Address;
+  destiny: Address;
 }
 
 interface Product {
   id: string;
   title: string;
   image: string;
+  price_points: number;
 }
 
 export interface Address {
@@ -160,15 +171,55 @@ const Orders: React.FC = () => {
         }
         showsVerticalScrollIndicator={false}
         renderItem={({item}) => (
-          <ContainerOrder key={item.id}>
-            <ImageProduct source={{uri: item?.product.image}} />
-            <ContainerDetail>
-              <TitleProduct numberOfLines={2}>
-                {item?.product.title}
-              </TitleProduct>
-              <InfoText> Pedido: #{item?.order_number}</InfoText>
-            </ContainerDetail>
-          </ContainerOrder>
+          <EmpresaDetail key={item.id}>
+            <EmpresaImage source={{uri: item.product.image}} />
+            <EmpresaContent>
+              <NameView>
+                <EmpresaText>{item?.product.title}</EmpresaText>
+                <EmpresaText style={{marginTop: 4}}>
+                  N ordem:{' '}
+                  <Text style={{color: 'green'}}> {item.order_number} </Text>
+                </EmpresaText>
+                <EmpresaText style={{marginTop: 4}}>
+                  Status{' '}
+                  <Text style={{color: 'tomato'}}>
+                    {item.status === 1 && 'Aguardando confirmação'}
+                    {item.status === 2 && 'Enviado'}
+                    {item.status === 3 && 'Recebido'}
+                  </Text>
+                </EmpresaText>
+                <EmpresaText style={{marginTop: 4}}>
+                  Quantidade:{' '}
+                  <Text style={{color: 'tomato'}}>{item.quantity}x</Text>
+                </EmpresaText>
+              </NameView>
+              <EnderecoContent>
+                <EnderecoText numberOfLines={2}>
+                  {item.destiny?.address} - {item.destiny?.number} /{' '}
+                  {item.destiny?.zipcode}
+                </EnderecoText>
+                <EnderecoText numberOfLines={2}>
+                  {item.destiny?.district} - {item.destiny?.city}/{' '}
+                  {item.destiny?.state}
+                </EnderecoText>
+              </EnderecoContent>
+            </EmpresaContent>
+            <ReviewContent>
+              <ReviewText style={{color: 'tomato'}}>
+                {' '}
+                {item.product.price_points}P{' '}
+              </ReviewText>
+            </ReviewContent>
+          </EmpresaDetail>
+          // <ContainerOrder key={item.id}>
+          //   <ImageProduct source={{uri: item?.product.image}} />
+          //   <ContainerDetail>
+          //     <TitleProduct numberOfLines={2}>
+          //       {item?.product.title}
+          //     </TitleProduct>
+          //     <InfoText> Pedido: #{item?.order_number}</InfoText>
+          //   </ContainerDetail>
+          // </ContainerOrder>
         )}
       />
     </Container>

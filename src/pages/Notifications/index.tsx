@@ -13,9 +13,6 @@ import {
   TextNoContent,
   DescriptionNoContent,
   NotificationList,
-  ContainerButtons,
-  ButtonAcept,
-  TextAcept,
 } from './styles';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
@@ -25,7 +22,7 @@ import Imagem from '../../assets/images/notification.jpg';
 import api from '../../services/api';
 
 export interface Notification {
-  id: string;
+  _id: string;
   content: string;
   recipient_id: string;
   link: string;
@@ -41,17 +38,30 @@ const Notifications: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const handleReadAndNavigate = useCallback(
+    async (read: boolean, id: string, route: string, params: string) => {
+      if (!read) {
+        await api.post(`notifications/read/${id}`);
+      }
+      console.log(params);
+      if (!params) {
+        navigation.navigate(route);
+      } else {
+        navigation.navigate(route, {id: params});
+      }
+    },
+    [navigation],
+  );
+
   const loadNotifications = useCallback(async () => {
     setLoading(true);
     await api
       .get('notifications/list')
       .then(res => {
-        console.log(res.data.data);
         setNotifications(res.data.data);
         setLoading(false);
       })
       .catch(err => {
-        console.log(err);
         setLoading(false);
       });
   }, []);
@@ -83,7 +93,7 @@ const Notifications: React.FC = () => {
       {notifications.length > 0 ? (
         <NotificationList
           data={notifications}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item._id}
           // style={{ marginTop: 200}}
           // ListFooterComponent={
           //   loading && <ActivityIndicator size="large" color="#FE2E2E" />
@@ -104,7 +114,17 @@ const Notifications: React.FC = () => {
           //   )
           // }
           renderItem={({item}) => (
-            <ContainerNotification>
+            <ContainerNotification
+              key={item._id}
+              status={item.read}
+              onPress={() =>
+                handleReadAndNavigate(
+                  item.read,
+                  item._id,
+                  item.link,
+                  item.params,
+                )
+              }>
               <TitleNotification numberOfLines={3}>
                 {item.content}
               </TitleNotification>

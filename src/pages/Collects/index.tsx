@@ -32,7 +32,6 @@ import api from '../../services/api';
 import {ActivityIndicator, View} from 'react-native';
 import _ from 'lodash';
 import {useNavigation} from '@react-navigation/native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 // import {ActivityIndicator} from 'react-native';
 
 export interface Collect {

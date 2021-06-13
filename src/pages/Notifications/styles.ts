@@ -1,7 +1,12 @@
-import styled from 'styled-components/native';
+import styled, {css} from 'styled-components/native';
 import {FlatList} from 'react-native';
 // import {Platform} from 'react-native';
 import {Notification} from './index';
+
+export interface StatusProps {
+  status: boolean;
+}
+
 export const Container = styled.View`
   flex: 1;
   background-color: #fff;
@@ -29,13 +34,22 @@ export const Title = styled.Text`
   margin-top: 50px;
 `;
 
-export const ContainerNotification = styled.View`
+export const ContainerNotification = styled.TouchableOpacity<StatusProps>`
   padding: 10px;
   border-bottom-width: 1px;
   border-color: #dcdcdc;
   justify-content: space-between;
   padding-bottom: 20px;
   background-color: #fafafa;
+
+  ${props =>
+    props.status !== true
+      ? css`
+          background-color: #fafafa;
+        `
+      : css`
+          background-color: #fff;
+        `};
 `;
 
 export const ImageNotification = styled.Image`

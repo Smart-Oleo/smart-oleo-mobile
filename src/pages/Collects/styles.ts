@@ -73,9 +73,10 @@ export const ContainerCollect = styled.TouchableOpacity`
   margin: 6px 0px;
   opacity: 1;
   background: #ffffff 0% 0% no-repeat padding-box;
+  box-shadow: 2px 3px 2px #808080;
   border-radius: 10px;
-  border: 1px solid #0000001a;
   padding: 10px;
+  elevation: 10;
   justify-content: space-between;
 `;
 

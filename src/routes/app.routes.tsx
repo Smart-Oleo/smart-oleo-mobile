@@ -52,8 +52,20 @@ function Tabs() {
         activeTintColor: '#00c200',
         inactiveTintColor: 'gray',
       }}>
-      <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Collects" component={Collects} />
+      <Tab.Screen
+        name="Home"
+        options={() => ({
+          tabBarLabel: 'Início',
+        })}
+        component={Home}
+      />
+      <Tab.Screen
+        name="Collects"
+        options={() => ({
+          tabBarLabel: 'Coletas',
+        })}
+        component={Collects}
+      />
       <Tab.Screen
         name="NewCollect"
         component={NewCollect}
@@ -85,8 +97,20 @@ function Tabs() {
           ),
         })}
       />
-      <Tab.Screen name="Store" component={Store} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen
+        name="Store"
+        options={() => ({
+          tabBarLabel: 'Loja',
+        })}
+        component={Store}
+      />
+      <Tab.Screen
+        name="Profile"
+        options={() => ({
+          tabBarLabel: 'Perfil',
+        })}
+        component={Profile}
+      />
       {/* <Tab.Screen name="Notificacoes" component={Notifications}/>
         <Tab.Screen name="Perfil" component={Profile} /> */}
     </Tab.Navigator>

@@ -52,7 +52,6 @@ const NewAddress: React.FC = () => {
       setLoading(true);
 
       data.zipcode = data.zipcode.replace('-', '');
-      console.log(data);
       try {
         formRef.current?.setErrors({});
 
@@ -119,7 +118,7 @@ const NewAddress: React.FC = () => {
           console.log(res);
           setLoadingCep(false);
           setAddressByCep({
-            zipcode: res.data.cep,
+            zipcode: res.data.cep.replace('-', ''),
             address: res.data.logradouro,
             city: res.data.logradouro,
             state: res.data.uf,

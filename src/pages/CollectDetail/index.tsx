@@ -9,13 +9,27 @@ import {
   Text,
   CancelButton,
   CancelButtonText,
+  EnderecoContent,
+  EnderecoText,
+  CollectHeaderContent,
+  ViewStatus,
+  Status,
+  CollectText,
+  ContentSchedule,
+  Divisor,
+  CollectorContent,
+  CollectorImage,
+  ButtonView,
+  ButtonProduct,
+  TextButton,
 } from './styles';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
-
+import {format} from 'date-fns';
 import api from '../../services/api';
-import {Alert} from 'react-native';
-
+import {Alert, KeyboardAvoidingView, ScrollView} from 'react-native';
+import Toast from 'react-native-toast-message';
+import RootToast from '../../components/Toast';
 export interface Collect {
   id: string;
   collect_number: string;
@@ -63,7 +77,7 @@ const CollectDetail: React.FC = (...props: any) => {
 
   const loadCollect = useCallback(async () => {
     setLoading(true);
-    console.log(props[0]);
+    console.log(props[0]?.route.params.id);
     await api
       .get(`collects/${props[0]?.route.params.id}`)
       .then(res => {
@@ -86,7 +100,6 @@ const CollectDetail: React.FC = (...props: any) => {
   }, [navigation]);
 
   const handleCancel = useCallback(async () => {
-    console.log(props[0]?.route.params.id);
     await api
       .post(`collects/cancel/${props[0]?.route.params.id}`)
       .then(() => {
@@ -96,6 +109,45 @@ const CollectDetail: React.FC = (...props: any) => {
         Alert.alert('Erro' + err);
       });
   }, [props, loadCollect]);
+
+  const handleConfirm = useCallback(
+    async (schedule_id: string, response: string) => {
+      await api
+        .post('schedules/confirm', {
+          schedule_id: schedule_id,
+          response: response,
+        })
+        .then(res => {
+          console.log(res);
+          loadCollect();
+          Toast.show({
+            type: 'success',
+            position: 'top',
+            text1: 'Tudo certo!',
+            text2: `A coleta ${collect?.collect_number} foi respondida.`,
+            visibilityTime: 4000,
+            autoHide: true,
+            topOffset: 200,
+            bottomOffset: 40,
+          });
+        })
+        .catch(err => {
+          Toast.show({
+            type: 'error',
+            position: 'top',
+            text1: 'Ops! Houve um problema.',
+            text2: err.response.data.error
+              ? err.response.data.error
+              : 'Ops! Houve algum problema',
+            visibilityTime: 4000,
+            autoHide: true,
+            topOffset: 200,
+            bottomOffset: 40,
+          });
+        });
+    },
+    [],
+  );
 
   const openCancelOption = useCallback(() => {
     Alert.alert(
@@ -117,31 +169,130 @@ const CollectDetail: React.FC = (...props: any) => {
   }, [handleCancel]);
 
   return (
-    // <KeyboardAvoidingView
-    //   style={{flex: 1, backgroundColor: '#fff'}}
-    //   behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    //   enabled>
-    //   <ScrollView
-    //     keyboardShouldPersistTaps="handled"
-    //     showsVerticalScrollIndicator={false}>
-    <Container>
-      <Header>
-        <BackButton onPress={handleGoBack}>
-          <Icon name="chevron-left" size={24} />
-        </BackButton>
-        <Title> Coleta </Title>
-      </Header>
-      <ContainerCollect>
-        <Text> #{collect?.collect_number}</Text>
-      </ContainerCollect>
-      {collect?.status === 'created' && (
-        <CancelButton onPress={openCancelOption}>
-          <CancelButtonText> Cancelar coleta </CancelButtonText>
-        </CancelButton>
-      )}
-    </Container>
-    //   </ScrollView>
-    // </KeyboardAvoidingView>
+    <KeyboardAvoidingView
+      style={{
+        flex: 1,
+        backgroundColor: '#fff',
+      }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      enabled>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}>
+        <Container>
+          <Header>
+            <BackButton onPress={handleGoBack}>
+              <Icon name="chevron-left" size={24} />
+            </BackButton>
+            <Title> Coleta </Title>
+          </Header>
+          <ContainerCollect>
+            <CollectHeaderContent>
+              <Text> #{collect?.collect_number}</Text>
+              <ViewStatus status={collect?.status}>
+                <Status>
+                  <Icon name="clock" size={12} color="#fff" />
+                  {collect?.status === 'created' && ' Aguardando...'}
+                  {collect?.status === 'waiting' && ' Agendado...'}
+                  {collect?.status === 'collected' && 'Coletado'}
+                  {collect?.status === 'canceled' && 'Cancelada'}
+                </Status>
+              </ViewStatus>
+            </CollectHeaderContent>
+            <CollectText style={{marginTop: 4}}>
+              Quantidade:{' '}
+              <Text style={{color: 'tomato'}}>{collect?.liters_oil}L</Text>
+            </CollectText>
+            <CollectText style={{marginTop: 4}}>
+              Perído de preferência:{' '}
+              <Text style={{color: 'tomato'}}>
+                {collect?.period_preference === 'morning' && 'Manhã'}
+                {collect?.period_preference === 'evening' && 'Tarde'}
+                {collect?.period_preference === 'night' && 'Noite'}
+              </Text>
+            </CollectText>
+            <CollectText style={{marginTop: 4}}>
+              Observações :{' '}
+              <Text style={{fontSize: 14}}>
+                {!collect?.observations
+                  ? 'Não há observações'
+                  : collect?.observations}{' '}
+              </Text>
+            </CollectText>
+            <EnderecoContent>
+              <EnderecoText numberOfLines={2}>
+                {collect?.address.address} - {collect?.address.number} /{' '}
+                {collect?.address.zipcode}
+              </EnderecoText>
+              <EnderecoText numberOfLines={2}>
+                {collect?.address.district} - {collect?.address.city}/{' '}
+                {collect?.address.state}
+              </EnderecoText>
+            </EnderecoContent>
+            {collect?.schedule && (
+              <ContentSchedule>
+                <Divisor />
+                <Text> Informações agendamento </Text>
+                <CollectText style={{marginTop: 10}}>
+                  Data do agendamento :{' '}
+                  <Text style={{fontSize: 14, color: 'tomato'}}>
+                    {format(
+                      new Date(collect?.schedule.date.toLocaleString()),
+                      'dd/MM/yyy',
+                    )}
+                  </Text>
+                </CollectText>
+                <CollectText style={{marginTop: 4}}>
+                  Perído da coleta:{' '}
+                  <Text style={{color: 'tomato'}}>
+                    {collect?.schedule.period === 'morning' && 'Manhã'}
+                    {collect?.schedule.period === 'evening' && 'Tarde'}
+                    {collect?.schedule.period === 'night' && 'Noite'}
+                  </Text>
+                </CollectText>
+                <CollectText style={{marginTop: 4}}>Coletor: </CollectText>
+                <CollectorContent>
+                  <CollectorImage
+                    source={{uri: collect?.schedule.collector.photo}}
+                  />
+                  <Text> {collect?.schedule.collector.name}</Text>
+                </CollectorContent>
+                {collect?.schedule.user_status === 'waiting' && (
+                  <>
+                    <ButtonView
+                      start={{x: 0.2, y: 0.6}}
+                      end={{x: 0, y: 0}}
+                      colors={['#228B22', '#00FF00']}>
+                      <ButtonProduct
+                        onPress={() =>
+                          handleConfirm(collect?.schedule?.id, 'aproved')
+                        }>
+                        <TextButton>Confirmar Agendamento</TextButton>
+                      </ButtonProduct>
+                    </ButtonView>
+                    <ButtonView
+                      start={{x: 0.2, y: 0.6}}
+                      end={{x: 0, y: 0}}
+                      style={{marginTop: 10}}
+                      colors={['#B22222', '#A52A2A']}>
+                      <ButtonProduct onPress={() => handleConfirm('rejected')}>
+                        <TextButton> Rejeitar Agendamento</TextButton>
+                      </ButtonProduct>
+                    </ButtonView>
+                  </>
+                )}
+              </ContentSchedule>
+            )}
+          </ContainerCollect>
+          {collect?.status === 'created' && (
+            <CancelButton onPress={openCancelOption}>
+              <CancelButtonText> Cancelar coleta </CancelButtonText>
+            </CancelButton>
+          )}
+        </Container>
+      </ScrollView>
+      <RootToast />
+    </KeyboardAvoidingView>
   );
 };
 

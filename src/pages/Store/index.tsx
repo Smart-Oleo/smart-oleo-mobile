@@ -22,7 +22,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 // import NoContentImage from '../../assets/images/brinde_info.jpg';
 import api from '../../services/api';
-import {Alert, ActivityIndicator} from 'react-native';
+import {Alert, ActivityIndicator, View} from 'react-native';
 import _ from 'lodash';
 import ModalRescue from './ModalRescue';
 import {useNavigation} from '@react-navigation/native';
@@ -135,11 +135,18 @@ const Store: React.FC = () => {
           onEndReached={() => loadProducts()}
           ListFooterComponent={
             loading && (
-              <ActivityIndicator
-                size="small"
-                color="#228B22"
-                style={{alignSelf: 'center', width: '100%'}}
-              />
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <ActivityIndicator
+                  size="small"
+                  color="#228B22"
+                  style={{alignSelf: 'center', width: '100%'}}
+                />
+              </View>
             )
           }
           renderItem={({item}) => (

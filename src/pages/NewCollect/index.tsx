@@ -75,8 +75,6 @@ const NewCollect: React.FC = () => {
         abortEarly: false,
       });
 
-      console.log(data);
-
       await api
         .post('collects', data)
         .then(res => {
