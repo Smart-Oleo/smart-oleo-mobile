@@ -90,7 +90,16 @@ export const EmpresaImage = styled.Image`
 `;
 
 export const EmpresaContent = styled.View`
-  /* flex: 1; */
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+
+  background-color: ${colors.success};
+  padding: 2px 4px;
+  border-radius: 4px;
+  position: absolute;
+  top: -10px;
+  left: 10px;
 `;
 
 export const EmpresaText = styled.Text`

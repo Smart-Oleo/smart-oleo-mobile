@@ -161,12 +161,16 @@ const Orders: React.FC = () => {
           <EmpresaDetail key={item.id}>
             <EmpresaImage source={{uri: item.product.image}} />
 
-            {/* <ReviewContent>
-              <ReviewText style={{color: 'tomato'}}>
-                {' '}
-                {item.product.price_points}P{' '}
-              </ReviewText>
-            </ReviewContent> */}
+            <EmpresaContent>
+              <EmpresaTextInfo style={{color: colors.white, marginTop: 0}}>
+                {item.product.price_points}
+              </EmpresaTextInfo>
+              <Icon
+                name="droplet"
+                color={colors.white}
+                size={metrics.iconSize - 12}
+              />
+            </EmpresaContent>
             <NameView>
               <EnderecoTitle numberOfLines={1}>
                 {item?.product.title}
@@ -178,26 +182,6 @@ const Orders: React.FC = () => {
                   {item.order_number}{' '}
                 </EmpresaTextInfo>
               </EmpresaText>
-              {/* <EmpresaText>
-                Status:{' '}
-
-                {item.status === 1 && (
-                  <EmpresaTextInfo style={{color: colors.darkgray}}>
-                    aguardando confirmação
-                  </EmpresaTextInfo>
-                )}
-                {item.status === 2 && (
-                  <EmpresaTextInfo style={{color: colors.success}}>
-                    enviado
-                  </EmpresaTextInfo>
-                )}
-                {item.status === 3 && (
-                  <EmpresaTextInfo style={{color: colors.gray}}>
-                    recebido
-                  </EmpresaTextInfo>
-                )}
-              </EmpresaText> */}
-
               <EmpresaText>
                 Quantidade: <EmpresaTextInfo>{item.quantity}x</EmpresaTextInfo>
               </EmpresaText>
@@ -206,6 +190,26 @@ const Orders: React.FC = () => {
                 <EmpresaTextInfo numberOfLines={1}>
                   {item.destiny?.address} - {item.destiny?.number}
                 </EmpresaTextInfo>
+              </EmpresaText>
+              <EmpresaText>
+                Status:{' '}
+                {item.status === 1 && (
+                  <EmpresaTextInfo
+                    style={{color: colors.darkgray, fontSize: 16}}>
+                    aguardando confirmação
+                  </EmpresaTextInfo>
+                )}
+                {item.status === 2 && (
+                  <EmpresaTextInfo
+                    style={{color: colors.success, fontSize: 16}}>
+                    enviado
+                  </EmpresaTextInfo>
+                )}
+                {item.status === 3 && (
+                  <EmpresaTextInfo style={{color: colors.gray, fontSize: 16}}>
+                    recebido
+                  </EmpresaTextInfo>
+                )}
               </EmpresaText>
             </NameView>
             {/* <EnderecoContent>
