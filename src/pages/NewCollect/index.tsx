@@ -1,17 +1,33 @@
 import React, {useRef, useCallback, useState} from 'react';
-import {Container, Title, LogoImage} from './styles';
+import {Container} from './../../styles/global/general';
+import {
+  Content,
+  Title,
+  LogoImage,
+  ModalBox,
+  SelectBottom,
+  TextSelect,
+  ModalBoxContainer,
+  ModalHeader,
+  SelectText,
+  SelectItem,
+  Hidden,
+} from './styles';
 import Input from '../../components/Input';
-import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
 import RNPickerSelect from '../../components/RNPickerSelect';
 import Button from '../../components/Button';
 import api from '../../services/api';
 import imageLogo from '../../assets/images/logo_horizontal.png';
-import {KeyboardAvoidingView, ScrollView, Platform} from 'react-native';
+import {KeyboardAvoidingView, ScrollView, Platform, Image} from 'react-native';
 import * as Yup from 'yup';
 import getValidationErros from '../../utils/getValidationErrors';
 import Toast from 'react-native-toast-message';
 import RootToast from '../../components/Toast';
+import {colors, metrics} from '../../styles/global';
+import ArrowDown from '../../assets/images/arrow_down.png';
+import ArrowUp from '../../assets/images/arrow_up.png';
+import Icon from 'react-native-vector-icons/Feather';
 
 interface CollectData {
   liters_oil: number;
@@ -26,6 +42,10 @@ interface Select {
 }
 const NewCollect: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+  const [isOpenPreference, setIsOpenPreference] = useState(false);
+  const [isOpenAddress, setIsOpenAddress] = useState(false);
+  const [preference, setPreference] = useState(null);
+  const [address, setAddress] = useState(null);
   const [addressOption, setAddressOption] = useState<Select[]>([]);
   const pickerOptions = [
     {value: 'morning', label: 'Manhã'},
@@ -54,6 +74,7 @@ const NewCollect: React.FC = () => {
   }, []);
 
   const handleSubmit = useCallback(async (data: CollectData) => {
+    console.log(data);
     try {
       formRef.current?.setErrors({});
 
@@ -112,64 +133,226 @@ const NewCollect: React.FC = () => {
   }, []);
 
   return (
-    <KeyboardAvoidingView
-      style={{
-        flex: 1,
-        backgroundColor: '#fff',
-      }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      enabled>
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}>
-        <Container>
-          <LogoImage source={imageLogo} />
-          <Title> Crie uma nova coleta.</Title>
-          <Form
-            ref={formRef}
-            onSubmit={handleSubmit}
-            initialData={{user: pickerOptions[0].value}}>
-            <Input
-              name="liters_oil"
-              icon="package"
-              placeholder="Litros para coleta"
-              autoCapitalize="none"
-              keyboardType="numeric"
-            />
-            <RNPickerSelect
-              name="period_preference"
-              placeholder={{
-                label: 'Informe o período de preferência',
-                color: '#000',
-              }}
-              items={pickerOptions}
-            />
-            <RNPickerSelect
-              placeholder={{
-                label: 'Informe o endereço',
-                color: '#000',
-              }}
-              name="address_id"
-              onOpen={loadAdresses}
-              items={addressOption}
-            />
-            <Input
-              name="observations"
-              icon="message-circle"
-              placeholder="Observações"
-              autoCapitalize="none"
-              numberOfLines={4}
-            />
-            <Button
-              onPress={() => formRef.current?.submitForm()}
-              isLoading={false}>
-              Confirmar
-            </Button>
-          </Form>
-        </Container>
-      </ScrollView>
-      <RootToast />
-    </KeyboardAvoidingView>
+    <>
+      <KeyboardAvoidingView
+        style={{
+          flex: 1,
+          backgroundColor: colors.white,
+        }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        enabled>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          <Container>
+            <Content
+              ref={formRef}
+              onSubmit={handleSubmit}
+              initialData={{user: pickerOptions[0].value}}>
+              <LogoImage source={imageLogo} />
+              <Title> Crie uma nova coleta</Title>
+              {Platform.OS === 'ios' ? (
+                <>
+                  <RNPickerSelect
+                    name="period_preference"
+                    placeholder={{
+                      label: 'Informe o período de preferência',
+                      color: colors.gray,
+                    }}
+                    items={pickerOptions}
+                    Icon={() =>
+                      isOpenPreference ? (
+                        <Image source={ArrowUp} />
+                      ) : (
+                        <Image source={ArrowDown} />
+                      )
+                    }
+                    onClose={() => setIsOpenPreference(false)}
+                    onOpen={() => setIsOpenPreference(true)}
+                    style={{
+                      iconContainer: {
+                        top: 6,
+                        right: 10,
+                      },
+                      placeholder: {
+                        color: colors.lightgray,
+                        fontSize: 16,
+                      },
+                    }}
+                  />
+                  <RNPickerSelect
+                    placeholder={{
+                      label: 'Informe o endereço',
+                      color: colors.gray,
+                    }}
+                    name="address_id"
+                    onOpen={() => {
+                      loadAdresses();
+                      setIsOpenAddress(true);
+                    }}
+                    items={addressOption}
+                    Icon={() =>
+                      isOpenAddress ? (
+                        <Image source={ArrowUp} />
+                      ) : (
+                        <Image source={ArrowDown} />
+                      )
+                    }
+                    onClose={() => setIsOpenAddress(false)}
+                    style={{
+                      iconContainer: {
+                        top: 6,
+                        right: 10,
+                      },
+                      placeholder: {
+                        color: colors.lightgray,
+                        fontSize: 16,
+                      },
+                    }}
+                  />
+                </>
+              ) : (
+                <>
+                  {/* <Hidden
+                    name="period_preference"
+                    defaultValue={preference?.value}
+                  />
+                  <Hidden
+                    name="address_id"
+                    vdefaultValuealue={address?.value}
+                  /> */}
+                  <SelectBottom
+                    name="period_preference"
+                    onPress={() => setIsOpenPreference(!isOpenPreference)}>
+                    <TextSelect
+                      style={{
+                        color:
+                          preference !== null
+                            ? colors.darkgray
+                            : colors.lightgray,
+                      }}>
+                      {preference === null
+                        ? 'Selecione o período de preferência'
+                        : preference.label}
+                    </TextSelect>
+                    {isOpenPreference ? (
+                      <Image source={ArrowUp} style={{marginRight: 8}} />
+                    ) : (
+                      <Image source={ArrowDown} style={{marginRight: 8}} />
+                    )}
+                  </SelectBottom>
+                  <SelectBottom
+                    name="address_id"
+                    onPress={() => {
+                      setIsOpenAddress(!isOpenAddress);
+                      loadAdresses();
+                    }}>
+                    <TextSelect
+                      style={{
+                        color:
+                          address !== null ? colors.darkgray : colors.lightgray,
+                      }}>
+                      {address === null
+                        ? 'Selecione o endereço'
+                        : address.label}
+                    </TextSelect>
+                    {isOpenAddress ? (
+                      <Image source={ArrowUp} style={{marginRight: 8}} />
+                    ) : (
+                      <Image source={ArrowDown} style={{marginRight: 8}} />
+                    )}
+                  </SelectBottom>
+                </>
+              )}
+              <Input
+                name="liters_oil"
+                icon="package"
+                placeholder="Litros para coleta"
+                autoCapitalize="none"
+                keyboardType="numeric"
+              />
+              <Input
+                name="observations"
+                icon="message-circle"
+                placeholder="Observações"
+                autoCapitalize="none"
+                numberOfLines={4}
+              />
+              <Button
+                onPress={() => formRef.current?.submitForm()}
+                isLoading={false}>
+                Confirmar
+              </Button>
+            </Content>
+          </Container>
+        </ScrollView>
+        <RootToast />
+      </KeyboardAvoidingView>
+      {Platform.OS === 'android' && (
+        <>
+          {isOpenPreference && (
+            <ModalBox
+              isOpen={isOpenPreference}
+              position="bottom"
+              onClosed={setIsOpenPreference}
+              keyboardTopOffset={0}
+              swipeToClose
+              backdropPressToClose={false}>
+              <ModalBoxContainer>
+                <ModalHeader onPress={() => setIsOpenPreference(false)}>
+                  <Title>Selecione o período de preferência</Title>
+
+                  <Image
+                    source={ArrowDown}
+                    style={{marginRight: 8, marginBottom: 5}}
+                  />
+                </ModalHeader>
+                {pickerOptions.map(option => (
+                  <SelectItem
+                    key={option.value}
+                    onPress={() => {
+                      setPreference(option);
+                      setIsOpenPreference(false);
+                    }}>
+                    <SelectText>{option.label}</SelectText>
+                  </SelectItem>
+                ))}
+              </ModalBoxContainer>
+            </ModalBox>
+          )}
+          {isOpenAddress && (
+            <ModalBox
+              isOpen={isOpenAddress}
+              position="bottom"
+              onClosed={setIsOpenAddress}
+              keyboardTopOffset={0}
+              swipeToClose
+              backdropPressToClose={false}>
+              <ModalBoxContainer>
+                <ModalHeader onPress={() => setIsOpenAddress(false)}>
+                  <Title>Selecione o endereço</Title>
+
+                  <Image
+                    source={ArrowDown}
+                    style={{marginRight: 8, marginBottom: 5}}
+                  />
+                </ModalHeader>
+                {addressOption.map(option => (
+                  <SelectItem
+                    key={option.value}
+                    onPress={() => {
+                      setAddress(option);
+                      setIsOpenAddress(false);
+                    }}>
+                    <SelectText>{option.label}</SelectText>
+                  </SelectItem>
+                ))}
+              </ModalBoxContainer>
+            </ModalBox>
+          )}
+        </>
+      )}
+    </>
   );
 };
 

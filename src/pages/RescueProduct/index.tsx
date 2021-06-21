@@ -13,6 +13,21 @@ import {
   TitleDescription,
   MyWallet,
   AlertMessage,
+  ContainerTitle,
+  Card,
+  CardBody,
+  ViewInfo,
+  ContainerView,
+  ContainerBody,
+  BottomInfo,
+  Hr,
+  SelectBottom,
+  TextSelect,
+  ModalBox,
+  ModalBoxContainer,
+  ModalHeader,
+  SelectItem,
+  SelectText,
 } from './styles';
 import {Form} from '@unform/mobile';
 import Input from '../../components/Input';
@@ -20,7 +35,7 @@ import {FormHandles} from '@unform/core';
 import Button from '../../components/Button';
 import {useAuth} from '../../hooks/auth';
 import * as Yup from 'yup';
-import {KeyboardAvoidingView, ScrollView, Platform} from 'react-native';
+import {KeyboardAvoidingView, ScrollView, Platform, Image} from 'react-native';
 import api from '../../services/api';
 import getValidationErros from '../../utils/getValidationErrors';
 import RNPickerSelect from '../../components/RNPickerSelect';
@@ -29,6 +44,13 @@ import {useNavigation} from '@react-navigation/native';
 import NumericInput from 'react-native-numeric-input';
 import Toast from 'react-native-toast-message';
 import RootToast from '../../components/Toast';
+import {colors, metrics} from '../../styles/global';
+import Eye from '../../assets/images/eye.png';
+import EyeClosed from '../../assets/images/eye_closed.png';
+import Paper from '../../assets/images/paper.png';
+import Wallet from '../../assets/images/wallet.png';
+import ArrowDown from '../../assets/images/arrow_down.png';
+import ArrowUp from '../../assets/images/arrow_up.png';
 
 interface ProfileFormData {
   name: string;
@@ -73,8 +95,10 @@ const RescueProduct: React.FC = (...props: any) => {
   const [product, setProduct] = useState<Product>();
   const [addressOption, setAddressOption] = useState<Select[]>([]);
   const [quantity, setQuantity] = useState<number>(1);
-
+  const [isOpenDetails, setIsOpenDetails] = useState<boolean>(false);
+  const [isOpenAdress, setIsOpenAdress] = useState<boolean>(false);
   const [points, setPoints] = useState<number>(0);
+  const [address, setAddress] = useState(null);
 
   const loadProduct = useCallback(async () => {
     await api
@@ -187,7 +211,7 @@ const RescueProduct: React.FC = (...props: any) => {
   return (
     <>
       <KeyboardAvoidingView
-        style={{flex: 1, backgroundColor: '#fff'}}
+        style={{flex: 1, backgroundColor: colors.secundary}}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         enabled>
         <ScrollView
@@ -196,59 +220,168 @@ const RescueProduct: React.FC = (...props: any) => {
           <Container>
             <Header>
               <BackButton onPress={handleGoBack}>
-                <Icon name="chevron-left" size={24} />
+                <Icon
+                  name="chevron-left"
+                  size={metrics.iconSize}
+                  color={colors.gray}
+                />
+                <HeaderTitle> Resgatar Produto </HeaderTitle>
               </BackButton>
-              <HeaderTitle> Resgatar Produto </HeaderTitle>
-              {/* {loadingCep && <ActivityIndicator size="small" color="#000" />} */}
             </Header>
-            <ContainerImage>
-              <ProductPhoto source={{uri: product?.image}} />
-            </ContainerImage>
-
-            <Title> {product?.title} </Title>
-            <ValuePoints> {product?.price_points}</ValuePoints>
-
+            <Card>
+              <ContainerImage>
+                <ProductPhoto source={{uri: product?.image}} />
+              </ContainerImage>
+              <CardBody>
+                <ContainerTitle>
+                  <Title style={{width: '85%'}} numberOfLines={1}>
+                    {' '}
+                    {product?.title}{' '}
+                  </Title>
+                  <ValuePoints> {product?.price_points}</ValuePoints>
+                  <Icon
+                    name="droplet"
+                    size={metrics.iconSize - 12}
+                    color={colors.success}
+                  />
+                </ContainerTitle>
+                <ContainerBody>
+                  <BottomInfo onPress={() => setIsOpenDetails(!isOpenDetails)}>
+                    {isOpenDetails ? (
+                      <Image source={Eye} style={{marginRight: 5}} />
+                    ) : (
+                      <Image source={EyeClosed} style={{marginRight: 5}} />
+                    )}
+                    <MyWallet>Detalhes </MyWallet>
+                  </BottomInfo>
+                  <ContainerView>
+                    <ViewInfo>
+                      <Image source={Paper} style={{marginRight: 5}} />
+                      <MyWallet>Minha carteira: {points} </MyWallet>
+                    </ViewInfo>
+                    <ViewInfo>
+                      <Image source={Wallet} style={{marginRight: 5}} />
+                      <MyWallet>Total: {points} </MyWallet>
+                    </ViewInfo>
+                  </ContainerView>
+                </ContainerBody>
+                {isOpenDetails && (
+                  <>
+                    <Hr />
+                    <TitleDescription> Descrição do produto </TitleDescription>
+                    <Description>{product?.description} </Description>
+                  </>
+                )}
+              </CardBody>
+            </Card>
+            <Hr />
             <TitleDescription>
-              Selecione a quantidade e o endereço de entrega e confirme o
+              Selecione o endereço e a quantidade {'\n'}para confirmar o seu
               resgate.
             </TitleDescription>
+
             <Form
               ref={formRef}
               onSubmit={handleSubmit}
               // initialData={{user: pickerOptions[0].value}}
             >
-              <NumericInput
-                value={quantity}
-                type="plus-minus"
-                totalWidth={100}
-                totalHeight={36}
-                minValue={1}
-                iconSize={22}
-                valueType="real"
-                maxValue={10}
-                rounded
-                containerStyle={{marginTop: 10, marginBottom: 10}}
-                onChange={value => {
-                  setQuantity(value);
-                }}
-              />
-              {/* <Input
-                name="quantity"
-                icon="hash"
-                placeholder="Quantidade"
-                autoCapitalize="none"
-                keyboardType="numeric"
-              /> */}
-              <RNPickerSelect
-                placeholder={{
-                  label: 'Informe o endereço',
-                  color: '#000',
-                }}
-                name="destination_id"
-                onOpen={loadAdresses}
-                items={addressOption}
-              />
+              <ContainerBody>
+                <NumericInput
+                  value={quantity}
+                  type="plus-minus"
+                  totalWidth={100}
+                  totalHeight={35}
+                  minValue={1}
+                  iconSize={22}
+                  valueType="integer"
+                  maxValue={10}
+                  rounded
+                  containerStyle={{
+                    marginTop: 10,
+                    marginBottom: 10,
+
+                    borderWidth: 0.5,
+                  }}
+                  inputStyle={{
+                    borderWidth: 0.2,
+                    backgroundColor: colors.white,
+                    borderColor: colors.lightgray,
+                  }}
+                  separatorWidth={0.5}
+                  borderColor={colors.lightgray}
+                  onChange={value => {
+                    setQuantity(value);
+                  }}
+                  editable={false}
+                />
+
+                {Platform.OS === 'ios' ? (
+                  <RNPickerSelect
+                    placeholder={{
+                      label: 'Selecione o endereço',
+                      color: colors.lightgray,
+                    }}
+                    name="destination_id"
+                    items={addressOption}
+                    Icon={() =>
+                      isOpenAdress ? (
+                        <Image source={ArrowUp} />
+                      ) : (
+                        <Image source={ArrowDown} />
+                      )
+                    }
+                    onClose={() => setIsOpenAdress(false)}
+                    onOpen={() => {
+                      loadAdresses();
+                      setIsOpenAdress(true);
+                    }}
+                    style={{
+                      viewContainer: {
+                        backgroundColor: colors.white,
+                        borderRadius: 5,
+                        width: '70%',
+                        height: 35,
+                        justifyContent: 'center',
+                        top: 4,
+                      },
+                      iconContainer: {
+                        top: 6,
+                        right: 10,
+                      },
+                      placeholder: {
+                        color: colors.lightgray,
+                        fontSize: 16,
+                      },
+                      inputIOSContainer: {
+                        marginLeft: 10,
+                      },
+                    }}
+                  />
+                ) : (
+                  <SelectBottom
+                    onPress={() => {
+                      setIsOpenAdress(!isOpenAdress);
+                      loadAdresses();
+                    }}>
+                    <TextSelect
+                      style={{
+                        color:
+                          address !== null ? colors.darkgray : colors.lightgray,
+                      }}>
+                      {address === null
+                        ? 'Selecione o endereço'
+                        : address.label}
+                    </TextSelect>
+                    {isOpenAdress ? (
+                      <Image source={ArrowUp} style={{marginRight: 2}} />
+                    ) : (
+                      <Image source={ArrowDown} style={{marginRight: 2}} />
+                    )}
+                  </SelectBottom>
+                )}
+              </ContainerBody>
             </Form>
+            <Hr />
             {!(
               product?.price_points && product?.price_points * quantity > points
             ) && (
@@ -275,19 +408,41 @@ const RescueProduct: React.FC = (...props: any) => {
               product?.price_points * quantity > points && (
                 <AlertMessage>
                   {' '}
-                  Atenção: Você não tem saldo suficiente.{' '}
+                  Atenção: {'\n'} Você não tem saldo suficiente.{' '}
                 </AlertMessage>
               )}
 
-            <TitleDescription>
-              Minha carteira: <MyWallet> {points} </MyWallet>
-            </TitleDescription>
+            {isOpenAdress && Platform.OS === 'android' && (
+              <ModalBox
+                isOpen={isOpenAdress}
+                position="bottom"
+                onClosed={setIsOpenAdress}
+                keyboardTopOffset={0}
+                swipeToClose
+                backdropPressToClose={false}>
+                <ModalBoxContainer>
+                  <ModalHeader onPress={() => setIsOpenAdress(false)}>
+                    <Title>Selecione o endereço</Title>
 
-            <TitleDescription>
-              Total: <MyWallet> {points} </MyWallet>
-            </TitleDescription>
-            <TitleDescription> Descrição do produto </TitleDescription>
-            <Description> {product?.description} </Description>
+                    <Image
+                      source={ArrowDown}
+                      style={{marginRight: 8, marginBottom: 5}}
+                    />
+                  </ModalHeader>
+                  {addressOption.map(option => (
+                    <SelectItem
+                      key={option.value}
+                      onPress={() => {
+                        console.log(option);
+                        setAddress(option);
+                        setIsOpenAdress(false);
+                      }}>
+                      <SelectText>{option.label}</SelectText>
+                    </SelectItem>
+                  ))}
+                </ModalBoxContainer>
+              </ModalBox>
+            )}
           </Container>
         </ScrollView>
         <RootToast />

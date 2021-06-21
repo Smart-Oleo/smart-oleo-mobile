@@ -6,13 +6,16 @@ import {
   Header,
   Title,
   ContainerNotification,
+  Indicator,
   TitleNotification,
+  DateContainer,
   DateNotification,
   ContentImage,
   ImageNoContent,
   TextNoContent,
   DescriptionNoContent,
   NotificationList,
+  Content,
 } from './styles';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
@@ -20,6 +23,8 @@ import {format} from 'date-fns';
 
 import Imagem from '../../assets/images/notification.jpg';
 import api from '../../services/api';
+import {colors, metrics, android} from '../../styles/global';
+import {Platform} from 'react-native';
 
 export interface Notification {
   _id: string;
@@ -75,66 +80,60 @@ const Notifications: React.FC = () => {
   }, [navigation]);
 
   return (
-    // <KeyboardAvoidingView
-    //   style={{flex: 1, backgroundColor: '#fff'}}
-    //   behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    //   enabled>
-    //   <ScrollView
-    //     keyboardShouldPersistTaps="handled"
-    //     showsVerticalScrollIndicator={false}>
     <Container>
       <Header>
         <BackButton onPress={handleGoBack}>
-          <Icon name="chevron-left" size={24} />
+          <Icon
+            name="chevron-left"
+            size={metrics.iconSize}
+            color={colors.darkgray}
+          />
+          <Title> Notificações </Title>
         </BackButton>
-        <Title> Notificações </Title>
       </Header>
 
       {notifications.length > 0 ? (
         <NotificationList
           data={notifications}
           keyExtractor={item => item._id}
-          // style={{ marginTop: 200}}
-          // ListFooterComponent={
-          //   loading && <ActivityIndicator size="large" color="#FE2E2E" />
-          // }
-
           showsVerticalScrollIndicator={false}
-          // onRefresh={refreshList}
-          // refreshing={refreshing}
-          // onEndReachedThreshold={0.2}
-          // onEndReached={() => loadProducts()}
-          // ListFooterComponent={
-          //   loading && (
-          //     <ActivityIndicator
-          //       size="small"
-          //       color="#228B22"
-          //       style={{alignSelf: 'center', width: '100%'}}
-          //     />
-          //   )
-          // }
           renderItem={({item}) => (
-            <ContainerNotification
-              key={item._id}
-              status={item.read}
-              onPress={() =>
-                handleReadAndNavigate(
-                  item.read,
-                  item._id,
-                  item.link,
-                  item.params,
-                )
-              }>
-              <TitleNotification numberOfLines={3}>
-                {item.content}
-              </TitleNotification>
-              <DateNotification>
+            <Content
+              style={{
+                borderBottomRightRadius: 5,
+                borderTopRightRadius: 5,
+              }}>
+              <ContainerNotification
+                key={item._id}
+                status={item.read}
+                onPress={() =>
+                  handleReadAndNavigate(
+                    item.read,
+                    item._id,
+                    item.link,
+                    item.params,
+                  )
+                }>
+                <DateContainer>
+                  <Indicator status={item.read} />
+                  <DateNotification>
+                    {format(
+                      new Date(item.created_at.toLocaleString()),
+                      'dd/MM/yyy HH:MM',
+                    )}
+                  </DateNotification>
+                </DateContainer>
+                <TitleNotification numberOfLines={3}>
+                  {item.content}
+                </TitleNotification>
+                {/* <DateNotification>
                 {format(
                   new Date(item.created_at.toLocaleString()),
                   'dd/MM/yyy HH:MM',
                 )}
-              </DateNotification>
-            </ContainerNotification>
+              </DateNotification> */}
+              </ContainerNotification>
+            </Content>
           )}
         />
       ) : (

@@ -1,6 +1,7 @@
 import styled from 'styled-components/native';
 import {Platform} from 'react-native';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
+import {colors} from '../../styles/global';
 
 export const Container = styled.View`
   flex: 1px;
@@ -23,12 +24,6 @@ export const ImageFooter = styled.Image`
 
 export const Content = styled.View`
   margin: 10px;
-  /* border-radius: 16px;
-  width: 362px;
-  height: 482px;
-  padding: 30px; */
-  /* left: 32px;
-  top: 139px; */
 `;
 
 export const Header = styled.View`
@@ -36,15 +31,14 @@ export const Header = styled.View`
 `;
 
 export const Description = styled.Text`
-  /* font-family: Montserrat; */
   font-style: normal;
   font-size: 12px;
   line-height: 20px;
-  margin-top: 14px;
+  margin: 14px 5px;
 
-  text-align: center;
+  text-align: left;
 
-  color: #706c61;
+  color: ${colors.gray};
 `;
 
 export const Label = styled.Text`
@@ -63,17 +57,20 @@ export const FormContainer = styled.View`
 `;
 
 export const LogoImage = styled.Image`
-  margin-top: 80px;
-  height: 70px;
-  width: 210px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   align-self: center;
+
+  height: 100px;
+  width: 280px;
   margin-bottom: 20px;
 `;
 
 export const Text = styled.Text`
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
-  color: #000;
+  color: ${colors.gray};
   margin-top: 12px;
 `;
 
@@ -103,6 +100,8 @@ export const BackToSignIn = styled.TouchableOpacity`
 `;
 
 export const BackToSignInText = styled.Text`
-  color: #232129;
-  font-size: 18px;
+  color: ${colors.darkgray};
+  font-size: 16px;
+  font-weight: 500;
+  margin-left: 5px;
 `;

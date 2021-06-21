@@ -13,7 +13,6 @@ import {
   EnderecoText,
   CollectHeaderContent,
   ViewStatus,
-  Status,
   CollectText,
   ContentSchedule,
   Divisor,
@@ -22,14 +21,16 @@ import {
   ButtonView,
   ButtonProduct,
   TextButton,
+  StatusInfo,
 } from './styles';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 import {format} from 'date-fns';
 import api from '../../services/api';
-import {Alert, KeyboardAvoidingView, ScrollView} from 'react-native';
+import {Alert, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
 import Toast from 'react-native-toast-message';
 import RootToast from '../../components/Toast';
+import {colors, metrics, android} from '../../styles/global';
 export interface Collect {
   id: string;
   collect_number: string;
@@ -178,40 +179,49 @@ const CollectDetail: React.FC = (...props: any) => {
       enabled>
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+        style={{
+          backgroundColor: colors.secundary,
+        }}>
         <Container>
           <Header>
             <BackButton onPress={handleGoBack}>
-              <Icon name="chevron-left" size={24} />
+              <Icon
+                name="chevron-left"
+                size={metrics.iconSize}
+                color={colors.gray}
+              />
+              <Title> Coleta </Title>
             </BackButton>
-            <Title> Coleta </Title>
           </Header>
           <ContainerCollect>
             <CollectHeaderContent>
-              <Text> #{collect?.collect_number}</Text>
-              <ViewStatus status={collect?.status}>
-                <Status>
-                  <Icon name="clock" size={12} color="#fff" />
+              <Text> {collect?.collect_number}</Text>
+              <ViewStatus status={collect?.status} style={{borderRadius: 5}}>
+                <Icon name="clock" size={12} color={colors.white} />
+                <StatusInfo>
                   {collect?.status === 'created' && ' Aguardando...'}
                   {collect?.status === 'waiting' && ' Agendado...'}
                   {collect?.status === 'collected' && 'Coletado'}
                   {collect?.status === 'canceled' && 'Cancelada'}
-                </Status>
+                </StatusInfo>
               </ViewStatus>
             </CollectHeaderContent>
-            <CollectText style={{marginTop: 4}}>
+            <CollectText>
               Quantidade:{' '}
-              <Text style={{color: 'tomato'}}>{collect?.liters_oil}L</Text>
+              <Text style={{color: colors.gray, fontSize: 13}}>
+                {collect?.liters_oil}L
+              </Text>
             </CollectText>
-            <CollectText style={{marginTop: 4}}>
+            <CollectText>
               Perído de preferência:{' '}
-              <Text style={{color: 'tomato'}}>
+              <Text style={{color: colors.gray, fontSize: 13}}>
                 {collect?.period_preference === 'morning' && 'Manhã'}
                 {collect?.period_preference === 'evening' && 'Tarde'}
                 {collect?.period_preference === 'night' && 'Noite'}
               </Text>
             </CollectText>
-            <CollectText style={{marginTop: 4}}>
+            <CollectText>
               Observações :{' '}
               <Text style={{fontSize: 14}}>
                 {!collect?.observations
@@ -235,7 +245,7 @@ const CollectDetail: React.FC = (...props: any) => {
                 <Text> Informações agendamento </Text>
                 <CollectText style={{marginTop: 10}}>
                   Data do agendamento :{' '}
-                  <Text style={{fontSize: 14, color: 'tomato'}}>
+                  <Text style={{fontSize: 14, color: colors.gray}}>
                     {format(
                       new Date(collect?.schedule.date.toLocaleString()),
                       'dd/MM/yyy',
@@ -244,7 +254,7 @@ const CollectDetail: React.FC = (...props: any) => {
                 </CollectText>
                 <CollectText style={{marginTop: 4}}>
                   Perído da coleta:{' '}
-                  <Text style={{color: 'tomato'}}>
+                  <Text style={{color: colors.gray}}>
                     {collect?.schedule.period === 'morning' && 'Manhã'}
                     {collect?.schedule.period === 'evening' && 'Tarde'}
                     {collect?.schedule.period === 'night' && 'Noite'}
@@ -259,10 +269,7 @@ const CollectDetail: React.FC = (...props: any) => {
                 </CollectorContent>
                 {collect?.schedule.user_status === 'waiting' && (
                   <>
-                    <ButtonView
-                      start={{x: 0.2, y: 0.6}}
-                      end={{x: 0, y: 0}}
-                      colors={['#228B22', '#00FF00']}>
+                    <ButtonView colors={[colors.primary, colors.success]}>
                       <ButtonProduct
                         onPress={() =>
                           handleConfirm(collect?.schedule?.id, 'aproved')
@@ -271,10 +278,8 @@ const CollectDetail: React.FC = (...props: any) => {
                       </ButtonProduct>
                     </ButtonView>
                     <ButtonView
-                      start={{x: 0.2, y: 0.6}}
-                      end={{x: 0, y: 0}}
                       style={{marginTop: 10}}
-                      colors={['#B22222', '#A52A2A']}>
+                      colors={['#B22222', colors.danger]}>
                       <ButtonProduct onPress={() => handleConfirm('rejected')}>
                         <TextButton> Rejeitar Agendamento</TextButton>
                       </ButtonProduct>

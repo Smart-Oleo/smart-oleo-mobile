@@ -16,9 +16,6 @@ import {Form} from '@unform/mobile';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import {FormHandles} from '@unform/core';
-// import {useAuth} from '../../hooks/auth';
-// import Toast from 'react-native-toast-message';
-// import RootToast from '../../components/Toast';
 import {KeyboardAvoidingView, ScrollView, Platform} from 'react-native';
 import * as Yup from 'yup';
 import getValidationErros from '../../utils/getValidationErrors';
@@ -26,6 +23,7 @@ import Background from '../../components/Background';
 import imageLogo from '../../assets/images/logo_horizontal.png';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
+import {colors, metrics} from '../../styles/global';
 
 interface SignInFormData {
   email: string;
@@ -35,11 +33,8 @@ interface SignInFormData {
 const ForgotPassword: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
-  // const [loading, setLoading] = useState<boolean>(false);
-  // const {signIn} = useAuth();
 
   const handleSignIn = useCallback(async (data: SignInFormData) => {
-    // setLoading(true);
     try {
       formRef.current?.setErrors({});
 
@@ -53,12 +48,6 @@ const ForgotPassword: React.FC = () => {
       await schema.validate(data, {
         abortEarly: false,
       });
-
-      // await signIn({
-      //   email: data.email,
-      //   password: data.password,
-      // });
-      // setLoading(false);
     } catch (err) {
       // setLoading(false);
       if (err instanceof Yup.ValidationError) {
@@ -67,17 +56,6 @@ const ForgotPassword: React.FC = () => {
         formRef.current?.setErrors(errors);
         return;
       }
-
-      // Toast.show({
-      //   type: 'error',
-      //   position: 'top',
-      //   text1: 'Erro ao fazer o login!',
-      //   text2: 'O email ou senha estão incorretos',
-      //   visibilityTime: 4000,
-      //   autoHide: true,
-      //   topOffset: 200,
-      //   bottomOffset: 40,
-      // });
     }
   }, []);
 
@@ -87,11 +65,6 @@ const ForgotPassword: React.FC = () => {
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         enabled>
-        <Background
-          fillOpacity={0.1}
-          fill="#1EE494"
-          style={{position: 'absolute', left: -64, top: 140}}
-        />
         <ScrollView
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{flex: 1}}>
@@ -107,7 +80,7 @@ const ForgotPassword: React.FC = () => {
               </Header>
               <FormContainer>
                 <Form ref={formRef} onSubmit={handleSignIn}>
-                  <Label> EMAIL / TELEFONE </Label>
+                  <Text> EMAIL / TELEFONE </Text>
                   <Input
                     name="email"
                     icon="mail"
@@ -127,7 +100,11 @@ const ForgotPassword: React.FC = () => {
         </ScrollView>
       </KeyboardAvoidingView>
       <BackToSignIn onPress={() => navigation.navigate('Login')}>
-        <Icon name="arrow-left" size={20} color="#00c200" />
+        <Icon
+          name="arrow-left"
+          size={metrics.iconSize}
+          color={colors.primary}
+        />
         <BackToSignInText> Voltar </BackToSignInText>
       </BackToSignIn>
     </>

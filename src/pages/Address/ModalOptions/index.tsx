@@ -10,6 +10,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import {Address} from '..';
 import {useNavigation} from '@react-navigation/native';
+import {colors, metrics} from '../../../styles/global';
 
 interface PropsModal {
   visible: boolean;
@@ -50,21 +51,16 @@ const ModalOptions: React.FC<PropsModal> = ({
             name="x"
             size={24}
             style={{position: 'absolute', right: 10, top: 0}}
+            color={colors.gray}
           />
         </ButtonHeader>
         <Title>
-          {item?.address}, {item?.number} 📌
+          {item?.address}, {item?.number}
         </Title>
         <ButtonOptions onPress={navigateEditAddress}>
-          <TextButton>
-            Editar <Icon name="edit-2" size={16} color="#a9a9a9" />{' '}
-          </TextButton>
+          <TextButton>Editar</TextButton>
+          <Icon name="edit-2" size={metrics.iconSize - 5} color={colors.gray} />
         </ButtonOptions>
-        {/* <ButtonOptions onPress={() => removeOption(item)}>
-          <TextButton>
-            Remover <Icon name="trash" size={16} color="#a9a9a9" />{' '}
-          </TextButton>
-        </ButtonOptions> */}
       </Container>
     </Modal>
   );

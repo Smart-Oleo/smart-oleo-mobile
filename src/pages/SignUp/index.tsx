@@ -30,6 +30,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 
 import api from '../../services/api';
+import {colors, metrics} from '../../styles/global';
 
 interface SignInFormData {
   email: string;
@@ -115,11 +116,6 @@ const SignUp: React.FC = () => {
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         enabled>
-        <Background
-          fillOpacity={0.1}
-          fill="#1EE494"
-          style={{position: 'absolute', left: -64, top: 140}}
-        />
         <ScrollView
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
@@ -128,10 +124,6 @@ const SignUp: React.FC = () => {
               <Header>
                 <LogoImage source={imageLogo} />
                 <Text> Cadastro</Text>
-                {/* <Description>
-                  Informe seu email ou telefone cadastrado na plataforma para
-                  recuperar a sua palavra chave
-                </Description> */}
               </Header>
 
               <Form ref={formRef} onSubmit={handleSignUp}>
@@ -184,14 +176,18 @@ const SignUp: React.FC = () => {
                   Confirmar
                 </Button>
               ) : (
-                <ActivityIndicator size="large" color="#00c200" />
+                <ActivityIndicator size="large" color={colors.primary} />
               )}
             </Content>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
       <BackToSignIn onPress={() => navigation.navigate('Login')}>
-        <Icon name="arrow-left" size={20} color="#00c200" />
+        <Icon
+          name="arrow-left"
+          size={metrics.iconSize}
+          color={colors.success}
+        />
         <BackToSignInText> Voltar </BackToSignInText>
       </BackToSignIn>
     </>

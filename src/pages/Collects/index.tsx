@@ -25,6 +25,7 @@ import {
   StatusTextActive,
   StatusContent,
   StatusText,
+  StatusInfo,
 } from './styles';
 import Icon from 'react-native-vector-icons/Feather';
 import NoContentImage from '../../assets/images/coleta_info.jpg';
@@ -32,8 +33,8 @@ import api from '../../services/api';
 import {ActivityIndicator, View} from 'react-native';
 import _ from 'lodash';
 import {useNavigation} from '@react-navigation/native';
-// import {ActivityIndicator} from 'react-native';
-
+import {colors, metrics, android} from '../../styles/global';
+import {Platform} from 'react-native';
 export interface Collect {
   id: string;
   collect_number: string;
@@ -155,13 +156,13 @@ const Collects: React.FC = () => {
     <Container>
       <Header>
         <FilterView>
-          <Icon name="search" size={24} color="#312e38" />
+          <Icon name="search" size={metrics.iconSize} color={colors.gray} />
           <FilterText
             placeholder="Pesquisar Coletas..."
             onChangeText={text => {
               filterCollects(text);
             }}
-            placeholderTextColor="#000"
+            placeholderTextColor={colors.gray}
           />
         </FilterView>
         <StatusContainer>
@@ -190,12 +191,14 @@ const Collects: React.FC = () => {
         <>
           {collects.length > 0 ? (
             <CollectList
+              style={{
+                ...Platform.select({
+                  android,
+                }),
+                backgroundColor: 'transparent',
+              }}
               data={collects}
               keyExtractor={item => item.id}
-              // style={{ marginTop: 200}}
-              // ListFooterComponent={
-              //   loading && <ActivityIndicator size="large" color="#FE2E2E" />
-              // }
               onRefresh={refreshList}
               refreshing={refreshing}
               onEndReachedThreshold={0.2}
@@ -204,7 +207,7 @@ const Collects: React.FC = () => {
                 loading && (
                   <ActivityIndicator
                     size="small"
-                    color="#228B22"
+                    color={colors.primary}
                     style={{alignSelf: 'center', width: '100%'}}
                   />
                 )
@@ -223,20 +226,26 @@ const Collects: React.FC = () => {
 
                     <ViewStatus status={item.status}>
                       <Status>
-                        <Icon name="clock" size={12} color="#fff" />
-                        {item.status === 'created' && ' Aguardando...'}
-                        {item.status === 'waiting' && ' Agendado...'}
-                        {item.status === 'collected' && 'Coletado'}
-                        {item.status === 'canceled' && 'Cancelada'}
+                        <Icon name="clock" size={12} color={colors.white} />{' '}
+                        <StatusInfo>
+                          {item.status === 'created' && ' Aguardando...'}
+                          {item.status === 'waiting' && ' Agendado...'}
+                          {item.status === 'collected' && 'Coletado'}
+                          {item.status === 'canceled' && 'Cancelada'}
+                        </StatusInfo>
                       </Status>
                     </ViewStatus>
                   </CollectHeader>
 
                   <CollectBody>
                     <TextOilNumber>
-                      Litros p/ coleta: {item.liters_oil}L{' '}
-                      <Icon name="droplet" size={16} color="#228B22" />
+                      Litros p/ coleta: {item.liters_oil}L
                     </TextOilNumber>
+                    <Icon
+                      name="droplet"
+                      size={metrics.iconSize - 5}
+                      color={colors.success}
+                    />
                   </CollectBody>
                   <EnderecoContent>
                     <EnderecoText numberOfLines={2}>
@@ -244,8 +253,9 @@ const Collects: React.FC = () => {
                     </EnderecoText>
                     <EnderecoText numberOfLines={2}>
                       {item.address.district}, {item.address.city}/
-                      {item.address.state} - Complemento:{' '}
-                      {item.address.complement}
+                      {item.address.state}{' '}
+                      {item.address?.complement &&
+                        ` - Complemento: ${item.address.complement}`}
                     </EnderecoText>
                   </EnderecoContent>
                 </ContainerCollect>
@@ -262,8 +272,15 @@ const Collects: React.FC = () => {
           )}
         </>
       ) : (
-        <View style={{flex: 1, justifyContent: 'center'}}>
-          <ActivityIndicator size="small" color="#228B22" />
+        <View
+          style={{
+            flex: 1,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignSelf: 'center',
+          }}>
+          <ActivityIndicator size="small" color={colors.primary} />
         </View>
       )}
     </Container>

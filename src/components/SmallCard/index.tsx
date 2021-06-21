@@ -1,22 +1,19 @@
 import React from 'react';
-
-import {Container, Title, Content} from './styles';
-// import Areia from '../../assets/images/Areia.jpg';
+import {Title, Content} from './styles';
 import Icon from 'react-native-vector-icons/Feather';
+import {colors, metrics} from '../../styles/global';
 
 interface IContent {
   name: string;
   icon: string;
 }
+
 const SmallCard: React.FC<IContent> = (content: IContent) => {
   return (
-    <Container>
-      <Content>
-        <Title> {content.name} </Title>
-        <Icon name={content.icon} color="#fff" size={26} />
-      </Content>
-      {/* <ImageView  source={Areia}/> */}
-    </Container>
+    <Content colors={[colors.primary, colors.success]}>
+      <Title> {content.name}</Title>
+      <Icon name={content.icon} color={colors.white} size={metrics.iconSize} />
+    </Content>
   );
 };
 

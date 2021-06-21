@@ -9,6 +9,7 @@ import React, {
 import {Container, TextInput, ErrorMessage, Icon} from './styles';
 import {TextInputProps} from 'react-native';
 import {useField} from '@unform/core';
+import {colors, metrics} from '../../styles/global';
 
 interface InputProps extends TextInputProps {
   name: string;
@@ -65,7 +66,7 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
         isFilled={isFilled}
         isFocused={isFocused}
         isErrored={!!error}>
-        <Icon name={icon} size={20} color="#666360" />
+        <Icon name={icon} size={metrics.iconSize} color={colors.gray} />
         <TextInput
           ref={inputRef}
           onFocus={() => setIsFocused(true)}
@@ -77,7 +78,7 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
               inputRef.current.value = value;
             }
           }}
-          placeholderTextColor="#666360"
+          placeholderTextColor={colors.lightgray}
           {...rest}
         />
       </Container>

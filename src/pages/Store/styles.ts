@@ -1,15 +1,12 @@
 import styled from 'styled-components/native';
 import {getStatusBarHeight} from 'react-native-iphone-x-helper';
-import {FlatList} from 'react-native';
+import {FlatList, Platform} from 'react-native';
 import {Product} from '.';
 import LinearGradient from 'react-native-linear-gradient';
-
-export const Container = styled.View`
-  flex: 1;
-  background-color: #fff;
-`;
+import {colors, metrics} from '../../styles/global';
 
 export const Content = styled.View`
+  display: flex;
   justify-content: center;
   align-items: flex-start;
   flex: 1;
@@ -17,9 +14,9 @@ export const Content = styled.View`
 `;
 
 export const Header = styled.View`
-  padding: 22px;
-  background: #fafafa;
-  padding-top: ${getStatusBarHeight() + 24}px;
+  padding: ${metrics.basePadding}px;
+  background: ${colors.secundary};
+  padding-top: ${Platform.OS === 'ios' ? getStatusBarHeight() + 24 : 24}px;
 
   flex-direction: row;
   justify-content: space-between;
@@ -27,29 +24,24 @@ export const Header = styled.View`
 `;
 
 export const FilterView = styled.View`
-  width: 100%;
-  height: 46px;
-  padding: 0px 14px;
-  background: #fff;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #e6e6e6;
-
+  display: flex;
   flex-direction: row;
   align-items: center;
+
+  width: 100%;
+  height: 50px;
+  padding: 0px ${metrics.basePadding}px;
+  background: ${colors.white};
+  border-radius: ${metrics.secundaryRadius}px;
+  margin-bottom: 10px;
+  border: none;
+  box-shadow: 0px 6px 16px ${colors.lightgray};
 `;
 
 export const FilterText = styled.TextInput`
-  flex: 1;
   margin-left: 10px;
-  color: #312e38;
+  color: ${colors.black};
   font-size: 14px;
-`;
-
-export const ImageNoContent = styled.Image`
-  height: 250px;
-  width: 320px;
-  border-radius: 50px;
 `;
 
 export const TextNoContent = styled.Text`
@@ -58,25 +50,31 @@ export const TextNoContent = styled.Text`
 `;
 
 export const ProductList = styled(FlatList as new () => FlatList<Product>)`
-  margin-top: 10px;
+  flex-wrap: wrap;
+  box-shadow: 3px 3px 16px ${colors.lightgray};
+  width: 100%;
 `;
 
-export const ProductDetail = styled.TouchableOpacity`
-  margin: 6px 10px;
-  opacity: 1;
-  background: #ffffff 0% 0% no-repeat padding-box;
-  box-shadow: 0px 3px 6px #0000001a;
-  border-radius: 10px;
+export const ProductDetail = styled.View`
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-self: center;
+
+  background-color: ${colors.white};
+  margin: ${metrics.baseMargin}px;
+  border-radius: ${metrics.secundaryRadius}px;
   height: 280px;
   width: 170px;
   align-items: center;
 `;
 
 export const ProductImage = styled.Image`
-  height: 180px;
-  width: 120px;
-  border-radius: 10px;
-  margin: 4px;
+  height: 160px;
+  width: 170px;
+
+  border-top-left-radius: ${metrics.secundaryRadius}px;
+  border-top-right-radius: ${metrics.secundaryRadius}px;
 `;
 
 export const ViewIcon = styled.View`
@@ -89,50 +87,81 @@ export const ViewIcon = styled.View`
 `;
 
 export const ProductContent = styled.View`
-  padding: 10px;
+  padding: ${metrics.baseMargin}px;
+  width: 100%;
 `;
 
 export const Title = styled.Text`
-  font-size: 12px;
-  color: #000;
-  font-weight: 500;
+  font-size: 13px;
+  color: ${colors.darkgray};
+  font-weight: 600;
+  letter-spacing: 0.02px;
 `;
 
-export const PriceView = styled(LinearGradient)`
-  position: absolute;
-  top: 16px;
-  right: 4px;
-  width: 50px;
-  height: 20px;
-  border-radius: 4px;
+export const Shadow = styled.View`
+  display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: row;
+
+  position: absolute;
+  width: 100%;
+  height: 160px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-top-left-radius: ${metrics.secundaryRadius}px;
+  border-top-right-radius: ${metrics.secundaryRadius}px;
 `;
 
 export const ButtonView = styled(LinearGradient)`
-  width: 90%;
-  border-radius: 6px;
-  justify-content: center;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-`;
+  flex-direction: row;
 
-export const PriceText = styled.Text`
-  color: #fff;
-  font-size: 12px;
-  font-weight: bold;
+  position: absolute;
+  top: 70;
+  left: 10;
+  width: 100%;
+  border-radius: 6px;
+  padding: 0px ${metrics.basePadding}px;
 `;
 
 export const ButtonProduct = styled.TouchableOpacity`
-  width: 90%;
   padding: 10px;
   justify-content: center;
   align-items: center;
   border-radius: 6px;
 `;
 
+export const PriceProduct = styled.TouchableOpacity`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+
+  padding: 5px 0px;
+  position: absolute;
+  top: 42;
+  left: 10;
+`;
+
+export const PriceText = styled.Text`
+  color: ${colors.success};
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  padding: 2px;
+`;
+
 export const TextButton = styled.Text`
-  color: #fff;
+  color: ${colors.white};
   font-weight: bold;
   font-size: 14px;
+`;
+
+export const ContentVoid = styled.View`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
 `;

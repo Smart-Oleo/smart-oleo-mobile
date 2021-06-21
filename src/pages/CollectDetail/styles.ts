@@ -1,5 +1,7 @@
 import styled, {css} from 'styled-components/native';
 import LinearGradient from 'react-native-linear-gradient';
+import {Platform} from 'react-native';
+import {colors, metrics} from '../../styles/global';
 
 export interface StatusProps {
   status: string;
@@ -7,42 +9,40 @@ export interface StatusProps {
 
 export const Container = styled.View`
   flex: 1;
-  background-color: #fff;
+  padding: ${Platform.OS === 'android' ? 10 : 40}px ${metrics.basePadding}px;
 `;
 
 export const Header = styled.View`
   flex-direction: row;
-  padding-left: 20px;
-  padding-top: 10px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 `;
 
 export const BackButton = styled.TouchableOpacity`
-  margin-top: 50px;
-  left: -10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
 `;
 
 export const Title = styled.Text`
-  font-size: 20px;
-  color: #000;
-  margin: 24px 0;
-  align-self: flex-start;
-  font-weight: bold;
-  margin-top: 50px;
+  font-size: 18px;
+  color: ${colors.gray};
+  font-weight: 500;
 `;
 
 export const ContainerCollect = styled.View`
-  margin: 6px 10px;
-  opacity: 1;
-  background: #ffffff 0% 0% no-repeat padding-box;
-  box-shadow: 0px 3px 6px #0000001a;
-  border-radius: 10px;
-  padding: 10px;
   justify-content: space-between;
+  background-color: ${colors.white};
+  box-shadow: 0px 6px 16px ${colors.lightgray};
+  border-radius: ${metrics.basePadding}px;
+  padding: ${metrics.basePadding}px;
+  margin-top: ${metrics.baseMargin}px;
 `;
 
 export const Text = styled.Text`
   font-size: 16px;
-  color: #000;
+  color: ${colors.gray};
   font-weight: bold;
 `;
 
@@ -55,7 +55,7 @@ export const ImageNotification = styled.Image`
 
 export const DateNotification = styled.Text`
   font-size: 12px;
-  color: #808080;
+  color: ${colors.darkgray};
   top: 10px;
   align-self: flex-start;
 `;
@@ -87,7 +87,7 @@ export const CancelButtonText = styled.Text`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  color: #fff;
+  color: ${colors.white};
   font-weight: bold;
 `;
 
@@ -107,12 +107,12 @@ export const TextAcept = styled.Text`
 
 export const EnderecoContent = styled.View`
   margin: 0px 6px;
-  padding-top: 6px;
+  padding-top: 10px;
 `;
 export const EnderecoText = styled.Text`
-  font-size: 14px;
-  color: #a9a9a9;
-  font-weight: bold;
+  font-size: 13px;
+  color: ${colors.gray};
+  font-weight: 500;
 `;
 
 export const ReviewContent = styled.View`
@@ -132,31 +132,33 @@ export const CollectHeaderContent = styled.View`
   justify-content: space-between;
 `;
 export const ViewStatus = styled.View<StatusProps>`
+  display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: row;
 
-  padding: 4px;
+  padding: 5px;
   border-radius: 4px;
   margin: 4px;
   ${props =>
     props.status === 'created' &&
     css`
-      background-color: #545b62;
+      background-color: ${colors.darkgray};
     `};
   ${props =>
     props.status === 'waiting' &&
     css`
-      background-color: #daa520;
+      background-color: ${colors.waring};
     `};
   ${props =>
     props.status === 'collected' &&
     css`
-      background-color: #32cd32;
+      background-color: ${colors.primary};
     `};
   ${props =>
     props.status === 'canceled' &&
     css`
-      background-color: red;
+      background-color: ${colors.danger};
     `};
 `;
 
@@ -168,8 +170,10 @@ export const Status = styled.Text`
 
 export const CollectText = styled.Text`
   font-size: 14px;
-  color: #000;
-  font-weight: bold;
+  color: ${colors.gray};
+  font-weight: 900;
+  margin-left: 5px;
+  margin-top: 3px;
 `;
 
 export const ContentSchedule = styled.View`
@@ -212,4 +216,11 @@ export const TextButton = styled.Text`
   color: #fff;
   font-weight: bold;
   font-size: 14px;
+`;
+
+export const StatusInfo = styled.Text`
+  font-size: 10px;
+  color: ${colors.white};
+  font-weight: bold;
+  margin-left: 4px;
 `;

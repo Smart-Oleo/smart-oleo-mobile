@@ -1,12 +1,10 @@
 import styled from 'styled-components/native';
+import {colors, metrics} from '../../../styles/global';
 
 export const Container = styled.View`
-  /* flex: 1; */
-  /* justify-content: flex-end; */
-  background-color: #fff;
-  /* align-items: center; */
-  /* height: 300px; */
-  border-radius: 20px;
+  background-color: ${colors.white};
+  border-top-left-radius: ${metrics.secundaryRadius}px;
+  border-top-right-radius: ${metrics.secundaryRadius}px;
   padding: 30px;
 `;
 
@@ -18,31 +16,28 @@ export const ButtonHeader = styled.TouchableOpacity`
   right: 10px;
 `;
 
-// export const Header = styled.View`
-//   background-color: #fff;
-//   border-radius: 20px;
-//   padding: 30px;
-// `;
-
 export const Title = styled.Text`
-  font-size: 20px;
-  color: #000;
+  font-size: 15px;
+  color: ${colors.gray};
   align-self: flex-start;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  margin-left: 8px;
 `;
 
 export const ButtonOptions = styled.TouchableOpacity`
-  border: 0.6px solid #a9a9a9;
+  border: 1px solid ${colors.lightgray};
   width: 100%;
   height: 40px;
   justify-content: center;
   align-items: center;
+  flex-direction: row;
   border-radius: 10px;
   margin: 6px;
 `;
 
 export const TextButton = styled.Text`
-  font-size: 14px;
-  color: #000;
+  font-size: 18px;
+  color: ${colors.gray};
   font-weight: bold;
+  margin-right: 5px;
 `;

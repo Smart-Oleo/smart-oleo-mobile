@@ -1,7 +1,8 @@
 import styled, {css} from 'styled-components/native';
-import {FlatList} from 'react-native';
-// import {Platform} from 'react-native';
+import {FlatList, Platform} from 'react-native';
+// import {Platform} from 'react-native'; box-shadow: 0px 6px 16px ${colors.lightgray};
 import {Notification} from './index';
+import {colors, metrics} from '../../styles/global';
 
 export interface StatusProps {
   status: boolean;
@@ -9,46 +10,65 @@ export interface StatusProps {
 
 export const Container = styled.View`
   flex: 1;
-  background-color: #fff;
+  padding: ${Platform.OS === 'android' ? metrics.basePadding : 60}px
+    ${metrics.basePadding}px;
+  background-color: ${colors.secundary};
 `;
 
 export const Header = styled.View`
   flex-direction: row;
-  padding-left: 20px;
-  padding-top: 10px;
-  border-bottom-width: 1px;
-  border-color: #dcdcdc;
+  align-items: center;
 `;
 
 export const BackButton = styled.TouchableOpacity`
-  margin-top: 50px;
-  left: -10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  margin-bottom: 20px;
 `;
 
 export const Title = styled.Text`
-  font-size: 20px;
-  color: #000;
-  margin: 24px 0;
-  align-self: flex-start;
-  font-weight: bold;
-  margin-top: 50px;
+  font-size: 18px;
+  color: ${colors.darkgray};
+  font-weight: 500;
+  margin-left: 5px;
+`;
+
+export const NotificationList = styled(
+  FlatList as new () => FlatList<Notification>,
+)``;
+
+export const Content = styled.View`
+  padding: 0px 10px;
+  box-shadow: 0px 6px 16px ${colors.lightgray};
 `;
 
 export const ContainerNotification = styled.TouchableOpacity<StatusProps>`
-  padding: 10px;
-  border-bottom-width: 1px;
-  border-color: #dcdcdc;
-  justify-content: space-between;
-  padding-bottom: 20px;
-  background-color: #fafafa;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  padding: ${metrics.basePadding}px;
+  background-color: ${colors.white};
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  margin-bottom: ${metrics.basePadding}px;
 
   ${props =>
     props.status !== true
       ? css`
-          background-color: #fafafa;
+          border-left-color: ${colors.success};
+          border-top-color: transparent;
+          border-right-color: transparent;
+          border-bottom-color: transparent;
+          border-width: 2px;
         `
       : css`
-          background-color: #fff;
+          border-left-color: ${colors.gray};
+          border-top-color: transparent;
+          border-right-color: transparent;
+          border-bottom-color: transparent;
+          border-width: 2px;
         `};
 `;
 
@@ -60,17 +80,45 @@ export const ImageNotification = styled.Image`
 `;
 
 export const TitleNotification = styled.Text`
-  font-size: 14px;
-  color: #000;
+  font-size: 13px;
+  color: ${colors.darkgray};
   font-weight: 500;
   align-self: flex-start;
 `;
 
+export const DateContainer = styled.View`
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+
+  border-left-color: ${colors.secundary};
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-width: 1px;
+  margin-bottom: 5px;
+`;
+export const Indicator = styled.View<StatusProps>`
+  border-radius: 100px;
+  height: 8px;
+  width: 8px;
+
+  ${props =>
+    props.status !== true
+      ? css`
+          background-color: ${colors.success};
+        `
+      : css`
+          background-color: ${colors.gray};
+        `};
+`;
+
 export const DateNotification = styled.Text`
   font-size: 12px;
-  color: #808080;
-  top: 10px;
+  color: ${colors.gray};
+  font-weight: bold;
   align-self: flex-start;
+  margin-left: 5px;
 `;
 
 export const ContentImage = styled.View`
@@ -96,10 +144,6 @@ export const DescriptionNoContent = styled.Text`
   text-align: center;
 `;
 
-export const NotificationList = styled(
-  FlatList as new () => FlatList<Notification>,
-)``;
-
 export const ContainerButtons = styled.Text`
   flex-direction: row;
   justify-content: center;
@@ -120,18 +164,3 @@ export const TextAcept = styled.Text`
   color: #fff;
   font-weight: bold;
 `;
-
-// export const ButtonNoAcept = styled.TouchableOpacity`
-//   border-radius: 10px;
-//   background-color: #fff;
-//   justify-content: center;
-//   align-items: center;
-//   padding: 10px;
-//   width: 40%;
-//   border: 1px solid black;
-// `;
-
-// export const TextNoAcept = styled.Text`
-//   color: #000;
-//   font-weight: bold;
-// `;

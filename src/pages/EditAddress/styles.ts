@@ -1,10 +1,12 @@
 import styled from 'styled-components/native';
 import {Platform} from 'react-native';
+import {colors, metrics} from '../../styles/global';
 
 export const Container = styled.View`
   flex: 1;
-  background-color: #fff;
-  padding: 0 30px ${Platform.OS === 'android' ? 150 : 40}px;
+  padding: ${Platform.OS === 'android' ? metrics.basePadding : 80}px
+    ${metrics.basePadding}px;
+  background-color: ${colors.white};
 `;
 
 export const Header = styled.View`
@@ -13,14 +15,16 @@ export const Header = styled.View`
 `;
 
 export const BackButton = styled.TouchableOpacity`
-  margin-top: 50px;
-  left: -10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  margin-bottom: 20px;
 `;
 
 export const Title = styled.Text`
-  font-size: 20px;
-  color: #000;
-  margin: 24px 0;
-  align-self: flex-start;
-  margin-right: 10px;
+  font-size: 18px;
+  color: ${colors.darkgray};
+  font-weight: 500;
+  margin-left: 5px;
 `;

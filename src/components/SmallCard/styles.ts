@@ -1,39 +1,23 @@
 import styled from 'styled-components/native';
+import {colors, metrics} from '../../styles/global';
+import LinearGradient from 'react-native-linear-gradient';
 
-export const Container = styled.View`
-  left: 0px;
-  width: 100px;
-  height: 100px;
-  background-color: #fff;
-  elevation: 6;
-  border-radius: 10px;
-  box-shadow: 2px 3px 2px #808080;
-  margin-left: 6px;
-  margin-bottom: 10px;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const Content = styled.View`
-  height: 80px;
-  width: 80px;
-  border-radius: 80px;
-  background: #9acd32;
+export const Content = styled(LinearGradient)`
+  display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: row;
+
+  width: 30%;
+  height: 100%;
+  padding: ${metrics.basePadding}px 10px;
+  border-top-right-radius: ${metrics.secundaryRadius}px;
+  border-bottom-right-radius: ${metrics.secundaryRadius}px;
 `;
 
 export const Title = styled.Text`
-  color: #fff;
-  font-size: 30px;
+  color: ${colors.white};
+  font-size: 25px;
   font-weight: bold;
-`;
-
-export const ImageView = styled.Image`
-  height: 100px;
-  width: 100px;
-  border-radius: 10px;
-  border-radius: 60px;
-  margin-bottom: 24px;
+  margin-right: 12px;
 `;

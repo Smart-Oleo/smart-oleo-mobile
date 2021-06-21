@@ -2,34 +2,42 @@ import styled from 'styled-components/native';
 import {Platform, FlatList} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {Address} from '.';
+import {colors, metrics} from '../../styles/global';
 
 export const Container = styled.View`
   flex: 1;
-  background-color: #fff;
-  padding: 0 20px ${Platform.OS === 'android' ? 150 : 40}px;
+  /* background-color: ${colors.white}; */
+  padding: ${Platform.OS === 'android' ? metrics.basePadding : 80}px
+    ${metrics.basePadding}px;
 `;
 
-export const ContainerAddress = styled.View`
-  margin-top: 20px;
-  border: 0.4px solid #c0c0c0;
-  border-radius: 10px;
-  background-color: #fff;
+export const ContainerAddress = styled.TouchableOpacity`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   flex-direction: row;
-  align-items: center;
-  padding: 10px;
+
+  background-color: ${colors.white};
+  box-shadow: 0px 6px 16px ${colors.lightgray};
+  border-radius: ${metrics.basePadding}px;
+  padding: ${metrics.basePadding}px;
+  margin-top: ${metrics.baseMargin + 5}px;
 `;
 
 export const Text = styled.Text`
   font-size: 14px;
-  color: #000;
-  line-height: 20px;
+  color: ${colors.gray};
+
   font-weight: 400;
-  padding-right: 10px;
+  width: 90%;
+  align-self: flex-start;
 `;
 
 export const BackButton = styled.TouchableOpacity`
-  margin-top: 50px;
-  left: -10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
 `;
 
 export const ButtonCreate = styled.TouchableOpacity`
@@ -45,7 +53,6 @@ export const ContentAddress = styled.View`
 export const ContentImage = styled.View`
   justify-content: center;
   align-items: center;
-  flex: 1;
 `;
 
 export const ImageNoContent = styled.Image`
@@ -55,7 +62,7 @@ export const ImageNoContent = styled.Image`
 `;
 
 export const AddressList = styled(FlatList as new () => FlatList<Address>)`
-  margin: 10px;
+  padding: ${metrics.basePadding}px;
 `;
 
 export const TextNoContent = styled.Text`
@@ -71,10 +78,16 @@ export const DescriptionNoContent = styled.Text`
 `;
 
 export const ButtonView = styled(LinearGradient)`
-  width: 100%;
-  border-radius: 6px;
+  display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: row;
+
+  width: 90%;
+  height: 50px;
+  border-radius: ${metrics.secundaryRadius}px;
+  padding: 0px ${metrics.basePadding}px;
+  margin: ${metrics.basePadding}px;
 `;
 
 export const ViewReference = styled.View`
@@ -82,35 +95,39 @@ export const ViewReference = styled.View`
 `;
 
 export const TextReference = styled.Text`
-  color: #000;
+  color: ${colors.gray};
   font-weight: bold;
-  font-size: 14px;
+  font-size: 15px;
 `;
 
 export const ButtonProduct = styled.TouchableOpacity`
-  width: 100%;
-  padding: 10px;
+  display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: row;
+
+  width: 100%;
+  padding: 10px;
   border-radius: 6px;
 `;
 
 export const TextButton = styled.Text`
-  color: #fff;
+  color: ${colors.white};
   font-weight: bold;
-  font-size: 14px;
+  font-size: 16px;
 `;
 
 export const ButtonHeader = styled.TouchableOpacity`
   height: 30px;
   width: 20px;
   position: absolute;
-  right: 0px;
+  right: -25px;
+  top: 10px;
 `;
 
 export const Title = styled.Text`
-  font-size: 20px;
-  color: #000;
-  margin-top: 20px;
-  align-self: flex-start;
+  font-size: 18px;
+  color: ${colors.darkgray};
+  font-weight: 500;
+  margin-left: 5px;
 `;

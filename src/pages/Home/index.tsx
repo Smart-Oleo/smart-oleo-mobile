@@ -4,24 +4,25 @@ import {
   ImageSourcePropType,
   ScrollView,
   RefreshControl,
+  Platform,
 } from 'react-native';
 import {useAuth} from '../../hooks/auth';
+import {Container, Title} from './../../styles/global/general';
 import {
-  Container,
   Header,
-  ContentUser,
-  ContentHeader,
-  ImageHeader,
   Body,
   Badge,
   TextBadge,
   HighligthsList,
+  ContentUser,
+  ImageHeader,
   Content,
-  TextRight,
-  UserContainer,
-  ContentUserHeader,
+  ContentHeader,
   TitleList,
-  TitleUser,
+  IndicatorList,
+  TextRight,
+  ContentUserHeader,
+  UserContainer,
 } from './styles';
 import Icon from 'react-native-vector-icons/Feather';
 import FontIcon from 'react-native-vector-icons/FontAwesome5';
@@ -33,6 +34,8 @@ import Imagem from '../../assets/images/natureza.jpg';
 import Planet from '../../assets/images/planet.png';
 import Cashback from '../../assets/images/cashback.jpg';
 import Notify from '../../assets/images/notify.jpg';
+import {colors, metrics, android} from '../../styles/global';
+
 export interface HighlightsI {
   image: ImageSourcePropType;
   title: string;
@@ -118,27 +121,34 @@ const Home: React.FC = () => {
             <ImageHeader source={{uri: user.photo}} />
           ) : (
             <ContentUser>
-              <Icon name="user" size={24} />
+              <Icon name="user" size={metrics.iconSize} color={colors.gray} />
             </ContentUser>
           )}
         </ContentHeader>
         <ContentHeader>
           <TouchableOpacity onPress={() => navigation.navigate('Orders')}>
             <FontIcon
-              style={{paddingRight: 10, color: '#009e00'}}
+              style={{paddingRight: 10}}
               name="shopping-bag"
-              size={24}
+              size={metrics.iconSize}
+              color={colors.success}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('Address')}>
-            <Icon name="map-pin" size={24} />
+            <Icon name="map-pin" size={metrics.iconSize} color={colors.gray} />
           </TouchableOpacity>
           <TouchableOpacity
             style={{marginLeft: 10}}
             onPress={() => navigation.navigate('Notifications')}>
-            <FontIcon name="bell" size={24} />
+            <Icon name="bell" size={metrics.iconSize} color={colors.gray} />
+
             <Badge>
-              <TextBadge>{totalNotification} </TextBadge>
+              <TextBadge
+                style={{
+                  top: Platform.OS === 'android' ? -1.5 : 0,
+                }}>
+                {totalNotification}
+              </TextBadge>
             </Badge>
           </TouchableOpacity>
         </ContentHeader>
@@ -151,18 +161,24 @@ const Home: React.FC = () => {
         }
         showsVerticalScrollIndicator={false}>
         <Body>
-          {/* <Title>Olá, {user?.name}!</Title> */}
-          <ContentUserHeader>
+          <ContentUserHeader
+            style={{
+              ...Platform.select({
+                android,
+              }),
+            }}>
             <UserContainer>
-              <TitleUser> Olá, {user.name}, Bem-vindo(a).</TitleUser>
+              <Title>Olá, {user.name},</Title>
+              <Title>Bem-vindo(a).</Title>
             </UserContainer>
             <SmallCard name={points.toString()} icon="droplet" />
           </ContentUserHeader>
-
           <Content>
             <ContentHeader>
               <TitleList> Informativos </TitleList>
-              <TextRight> (2)</TextRight>
+              <IndicatorList>
+                <TextRight>(2)</TextRight>
+              </IndicatorList>
             </ContentHeader>
 
             <HighligthsList
@@ -171,7 +187,6 @@ const Home: React.FC = () => {
               data={info}
               keyExtractor={item => item.title}
               renderItem={({item}) => (
-                // <Categorys categoria={item}/>
                 <Highlights
                   image={item.image}
                   title={item.title}
@@ -184,7 +199,9 @@ const Home: React.FC = () => {
           <Content>
             <ContentHeader>
               <TitleList> Para saber </TitleList>
-              <TextRight> (2)</TextRight>
+              <IndicatorList>
+                <TextRight>(2)</TextRight>
+              </IndicatorList>
             </ContentHeader>
 
             <HighligthsList
@@ -193,7 +210,6 @@ const Home: React.FC = () => {
               data={hightlist}
               keyExtractor={item => item.title}
               renderItem={({item}) => (
-                // <Categorys categoria={item}/>
                 <Highlights
                   image={item.image}
                   title={item.title}

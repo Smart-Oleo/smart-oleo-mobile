@@ -32,6 +32,7 @@ import {useNavigation} from '@react-navigation/native';
 import RootToast from '../../components/Toast';
 
 import api from '../../services/api';
+import {colors, metrics} from '../../styles/global';
 
 interface FormCollector {
   name: string;
@@ -113,14 +114,11 @@ const CollectorForm: React.FC = () => {
   return (
     <>
       <KeyboardAvoidingView
-        style={{flex: 1}}
+        style={{
+          flex: 1,
+        }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         enabled>
-        <Background
-          fillOpacity={0.1}
-          fill="#1EE494"
-          style={{position: 'absolute', left: -64, top: 140}}
-        />
         <ScrollView
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
@@ -163,7 +161,7 @@ const CollectorForm: React.FC = () => {
                   Confirmar
                 </Button>
               ) : (
-                <ActivityIndicator size="large" color="#00c200" />
+                <ActivityIndicator size="large" color={colors.primary} />
               )}
             </Content>
           </Container>
@@ -171,7 +169,11 @@ const CollectorForm: React.FC = () => {
         <RootToast />
       </KeyboardAvoidingView>
       <BackToSignIn onPress={() => navigation.navigate('Login')}>
-        <Icon name="arrow-left" size={20} color="#00c200" />
+        <Icon
+          name="arrow-left"
+          size={metrics.iconSize}
+          color={colors.success}
+        />
         <BackToSignInText> Voltar </BackToSignInText>
       </BackToSignIn>
     </>

@@ -1,4 +1,5 @@
 import React from 'react';
+import {StatusBar} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../pages/Home';
@@ -7,7 +8,7 @@ import Store from '../pages/Store';
 import Collects from '../pages/Collects';
 import Profile from '../pages/Profile';
 import NewCollect from '../pages/NewCollect';
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Address from '../pages/Address';
 import NewAddress from '../pages/NewAddress';
@@ -17,6 +18,7 @@ import Notifications from '../pages/Notifications';
 import RescueProduct from '../pages/RescueProduct';
 import Orders from '../pages/Orders';
 import CollectDetail from '../pages/CollectDetail';
+import {colors, metrics, android} from '../styles/global';
 
 const App = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -37,20 +39,12 @@ function Tabs() {
           } else if (route.name === 'Profile') {
             iconName = focused ? 'user' : 'user';
           }
-          //  else if (route.name === 'Notificacoes') {
-          //    iconName = focused ? 'ios-notifications' : 'ios-notifications-outline';
-          //  }
-          //  else if (route.name === 'Perfil') {
-          //    iconName = focused ? 'ios-person' : 'ios-person-outline';
-          //  }
-
-          // You can return any component that you like here!
           return <Icon name={iconName} size={size} color={color} />;
         },
       })}
       tabBarOptions={{
-        activeTintColor: '#00c200',
-        inactiveTintColor: 'gray',
+        activeTintColor: colors.success,
+        inactiveTintColor: colors.gray,
       }}>
       <Tab.Screen
         name="Home"
@@ -72,26 +66,34 @@ function Tabs() {
         options={() => ({
           tabBarLabel: 'Criar',
           tabBarIcon: ({}) => (
-            <View>
+            <View
+              style={{
+                shadowColor: colors.gray,
+                shadowOffset: {width: 0, height: 3},
+                shadowOpacity: 0.4,
+                shadowRadius: 12,
+              }}>
               <LinearGradient
                 style={{
                   width: 50,
                   height: 50,
                   borderRadius: 30,
-                  marginBottom: 20,
+                  marginBottom: 30,
+                  display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  elevation: 6,
-                  shadowColor: '#9C27B0',
-                  shadowOffset: {width: 0, height: 2},
-                  shadowOpacity: 0.2,
-                  shadowRadius: 5,
+                  backgroundColor: Platform.OS === 'android' && 'transparent',
+                  ...Platform.select({
+                    android,
+                  }),
                 }}
-                start={{x: 0, y: 1}}
-                end={{x: 0, y: 0}}
-                colors={['#00FF00', '#228B22']}>
-                <Icon name="plus" size={30} color="#FFF" />
+                colors={[colors.primary, colors.success]}>
+                <Icon
+                  name="plus"
+                  size={metrics.iconSize + 5}
+                  color={colors.white}
+                />
               </LinearGradient>
             </View>
           ),
@@ -111,60 +113,88 @@ function Tabs() {
         })}
         component={Profile}
       />
-      {/* <Tab.Screen name="Notificacoes" component={Notifications}/>
-        <Tab.Screen name="Perfil" component={Profile} /> */}
     </Tab.Navigator>
   );
 }
 
 const AppRoutes: React.FC = () => (
-  <App.Navigator>
-    <App.Screen
-      name="Dashboard"
-      options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
-      component={Tabs}
-    />
-    <App.Screen
-      name="Address"
-      options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
-      component={Address}
-    />
-    <App.Screen
-      name="NewAddress"
-      options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
-      component={NewAddress}
-    />
-    <App.Screen
-      name="Success"
-      component={Success}
-      options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
-    />
-    <App.Screen
-      name="EditAddress"
-      component={EditAddress}
-      options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
-    />
-    <App.Screen
-      name="Notifications"
-      component={Notifications}
-      options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
-    />
-    <App.Screen
-      name="Rescue"
-      component={RescueProduct}
-      options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
-    />
-    <App.Screen
-      name="Orders"
-      component={Orders}
-      options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
-    />
-    <App.Screen
-      name="CollectDetail"
-      component={CollectDetail}
-      options={{headerShown: false, cardStyle: {backgroundColor: '#FAFAFA'}}}
-    />
-  </App.Navigator>
+  <>
+    <StatusBar backgroundColor={colors.success} />
+    <App.Navigator>
+      <App.Screen
+        name="Dashboard"
+        options={{
+          headerShown: false,
+          cardStyle: {backgroundColor: colors.secundary},
+        }}
+        component={Tabs}
+      />
+      <App.Screen
+        name="Address"
+        options={{
+          headerShown: false,
+          cardStyle: {backgroundColor: colors.secundary},
+        }}
+        component={Address}
+      />
+      <App.Screen
+        name="NewAddress"
+        options={{
+          headerShown: false,
+          cardStyle: {backgroundColor: colors.secundary},
+        }}
+        component={NewAddress}
+      />
+      <App.Screen
+        name="Success"
+        component={Success}
+        options={{
+          headerShown: false,
+          cardStyle: {backgroundColor: colors.secundary},
+        }}
+      />
+      <App.Screen
+        name="EditAddress"
+        component={EditAddress}
+        options={{
+          headerShown: false,
+          cardStyle: {backgroundColor: colors.secundary},
+        }}
+      />
+      <App.Screen
+        name="Notifications"
+        component={Notifications}
+        options={{
+          headerShown: false,
+          cardStyle: {backgroundColor: colors.secundary},
+        }}
+      />
+      <App.Screen
+        name="Rescue"
+        component={RescueProduct}
+        options={{
+          headerShown: false,
+          cardStyle: {backgroundColor: colors.secundary},
+        }}
+      />
+      <App.Screen
+        name="Orders"
+        component={Orders}
+        options={{
+          headerShown: false,
+          cardStyle: {backgroundColor: colors.secundary},
+        }}
+      />
+      <App.Screen
+        name="CollectDetail"
+        component={CollectDetail}
+        options={{
+          headerShown: false,
+          cardStyle: {backgroundColor: colors.secundary},
+        }}
+      />
+    </App.Navigator>
+  </>
 );
 
 export default AppRoutes;

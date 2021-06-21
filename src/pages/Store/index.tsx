@@ -1,32 +1,33 @@
 import React, {useEffect, useState, useCallback} from 'react';
+import {Platform} from 'react-native';
 import {
-  Container,
   Header,
   FilterView,
   FilterText,
   Content,
-  // ImageNoContent,
-  // TextNoContent,
   ProductList,
   ProductDetail,
   ProductImage,
   ProductContent,
+  PriceProduct,
   Title,
-  PriceView,
+  Shadow,
   PriceText,
   ButtonProduct,
   TextButton,
   ButtonView,
   ViewIcon,
+  ContentVoid,
 } from './styles';
 import Icon from 'react-native-vector-icons/Feather';
-// import NoContentImage from '../../assets/images/brinde_info.jpg';
 import api from '../../services/api';
-import {Alert, ActivityIndicator, View} from 'react-native';
+import {Alert, ActivityIndicator, View, Image} from 'react-native';
 import _ from 'lodash';
 import ModalRescue from './ModalRescue';
 import {useNavigation} from '@react-navigation/native';
-
+import {colors, metrics, android} from '../../styles/global';
+import {Container, Text} from '../../styles/global/general';
+import notFoundImage from './../../assets/images/not_found.png';
 export interface Product {
   id: string;
   title: string;
@@ -42,7 +43,6 @@ const Store: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [total, setTotal] = useState<Number>(0);
   const [page, setPage] = useState<Number>(1);
-  // const [filter, setFilter] = useState<String>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
@@ -106,97 +106,105 @@ const Store: React.FC = () => {
   return (
     <Container>
       <Header>
-        <FilterView>
-          <Icon name="search" size={28} color="#312e38" />
+        <FilterView
+          style={{
+            ...Platform.select({
+              android,
+            }),
+          }}>
+          <Icon name="search" size={metrics.iconSize} color={colors.gray} />
           <FilterText
             placeholder="Pesquisar Produtos"
             onChangeText={text => {
               filterProducts(text);
             }}
-            placeholderTextColor="#000"
+            placeholderTextColor={colors.gray}
           />
         </FilterView>
       </Header>
       <Content>
-        {/* {!loading ? ( */}
-        <ProductList
-          data={products}
-          keyExtractor={item => item.id}
-          // style={{ marginTop: 200}}
-          // ListFooterComponent={
-          //   loading && <ActivityIndicator size="large" color="#FE2E2E" />
-          // }
-
-          showsVerticalScrollIndicator={false}
-          numColumns={2}
-          onRefresh={refreshList}
-          refreshing={refreshing}
-          onEndReachedThreshold={0.2}
-          onEndReached={() => loadProducts()}
-          ListFooterComponent={
-            loading && (
-              <View
+        {products.length > 0 ? (
+          <ProductList
+            data={products}
+            keyExtractor={item => item.id}
+            showsVerticalScrollIndicator={false}
+            numColumns={2}
+            onRefresh={refreshList}
+            refreshing={refreshing}
+            onEndReachedThreshold={0.2}
+            onEndReached={() => loadProducts()}
+            ListFooterComponent={
+              loading && (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <ActivityIndicator
+                    size="small"
+                    color={colors.primary}
+                    style={{alignSelf: 'center', width: '100%'}}
+                  />
+                </View>
+              )
+            }
+            renderItem={({item}) => (
+              <ProductDetail
+                key={item.id}
                 style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  ...Platform.select({
+                    android,
+                  }),
                 }}>
-                <ActivityIndicator
-                  size="small"
-                  color="#228B22"
-                  style={{alignSelf: 'center', width: '100%'}}
-                />
-              </View>
-            )
-          }
-          renderItem={({item}) => (
-            <ProductDetail key={item.id}>
-              {item.image ? (
-                <ProductImage source={{uri: item.image}} />
-              ) : (
-                <ViewIcon>
-                  <Icon name="image" size={40} />
-                </ViewIcon>
-              )}
-
-              <PriceView
-                start={{x: 0, y: 1}}
-                end={{x: 0, y: 0}}
-                colors={['#D500F9', '#4A148C']}>
-                <PriceText>
-                  {item.price_points} <Icon name="droplet" size={14} />
-                </PriceText>
-              </PriceView>
-              <ProductContent>
-                <Title numberOfLines={2}>{item.title} </Title>
-              </ProductContent>
-              <ButtonView
-                start={{x: 0.2, y: 0.6}}
-                end={{x: 0, y: 0}}
-                colors={['#228B22', '#00FF00']}>
-                <ButtonProduct
-                  onPress={() => navigation.navigate('Rescue', {id: item.id})}>
-                  <TextButton>
-                    Resgatar <Icon name="shopping-bag" size={14} />
-                  </TextButton>
-                </ButtonProduct>
-              </ButtonView>
-
-              {/* <TextNoContent> </TextNoContent> */}
-            </ProductDetail>
-          )}
-        />
+                {item.image ? (
+                  <ProductImage source={{uri: item.image}} />
+                ) : (
+                  <ViewIcon>
+                    <Icon name="image" size={40} />
+                  </ViewIcon>
+                )}
+                <Shadow />
+                <ProductContent>
+                  <Title numberOfLines={2}>{item.title}</Title>
+                  <PriceProduct>
+                    <PriceText>{item.price_points}</PriceText>
+                    <Icon
+                      name="droplet"
+                      size={metrics.iconSize - 8}
+                      color={colors.success}
+                    />
+                  </PriceProduct>
+                  <ButtonView colors={[colors.primary, colors.success]}>
+                    <ButtonProduct
+                      onPress={() =>
+                        navigation.navigate('Rescue', {id: item.id})
+                      }>
+                      <TextButton>Resgatar</TextButton>
+                    </ButtonProduct>
+                    <Icon
+                      name="shopping-bag"
+                      size={metrics.iconSize - 6}
+                      color={colors.white}
+                    />
+                  </ButtonView>
+                </ProductContent>
+              </ProductDetail>
+            )}
+          />
+        ) : (
+          <ContentVoid>
+            <Image source={notFoundImage} style={{width: 300, height: 400}} />
+            <Text>Desculpe, nenhum produto foi</Text>
+            <Text>encontrado encontrado.</Text>
+          </ContentVoid>
+        )}
       </Content>
       <ModalRescue
         visible={visible}
         onRequestClose={toggleModal}
         item={selected}
-        // requestDelete={openDeleteOption}
       />
-      {/* <Content>
-        <ImageNoContent source={NoContentImage} />
-        <TextNoContent> A Loja está vazia 😢 </TextNoContent>
-      </Content> */}
     </Container>
   );
 };

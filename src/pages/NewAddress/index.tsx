@@ -20,6 +20,7 @@ import Toast from 'react-native-toast-message';
 import RootToast from '../../components/Toast';
 import Address from '../Address';
 import getValidationErros from '../../utils/getValidationErrors';
+import {colors, metrics} from '../../styles/global';
 
 interface Address {
   address: string;
@@ -164,12 +165,18 @@ const NewAddress: React.FC = () => {
           showsVerticalScrollIndicator={false}>
           <Container>
             <BackButton onPress={handleGoBack}>
-              <Icon name="chevron-left" size={24} />
+              <Icon
+                name="chevron-left"
+                size={metrics.iconSize}
+                color={colors.darkgray}
+              />
+              <Title> Novo endereço</Title>
             </BackButton>
 
             <Header>
-              <Title> Novo endereço</Title>
-              {loadingCep && <ActivityIndicator size="small" color="#000" />}
+              {loadingCep && (
+                <ActivityIndicator size="small" color={colors.darkgray} />
+              )}
             </Header>
 
             <Form

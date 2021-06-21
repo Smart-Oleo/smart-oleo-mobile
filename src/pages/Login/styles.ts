@@ -1,6 +1,7 @@
 import styled from 'styled-components/native';
 import {Platform} from 'react-native';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
+import {colors, metrics} from '../../styles/global';
 
 export const Container = styled.View`
   flex: 1;
@@ -23,12 +24,6 @@ export const ImageFooter = styled.Image`
 
 export const Content = styled.View`
   width: 90%;
-  /* border-radius: 16px;
-  width: 362px;
-  height: 482px;
-  padding: 30px; */
-  /* left: 32px;
-  top: 139px; */
 `;
 
 export const Header = styled.View`
@@ -44,15 +39,13 @@ export const SubHeader = styled.View`
 `;
 
 export const Description = styled.Text`
-  /* font-family: Montserrat; */
   font-style: normal;
   font-size: 12px;
   line-height: 20px;
-  margin-top: 14px;
+  margin: 0px 5px;
 
-  text-align: center;
-
-  color: #706c61;
+  text-align: left;
+  color: ${colors.gray};
 `;
 
 export const FormContainer = styled.View`
@@ -60,17 +53,20 @@ export const FormContainer = styled.View`
 `;
 
 export const LogoImage = styled.Image`
-  margin-top: 80px;
-  margin-bottom: 20px;
-  height: 70px;
-  width: 210px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   align-self: center;
+
+  height: 100px;
+  width: 280px;
+  margin-bottom: 20px;
 `;
 
 export const Text = styled.Text`
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
-  color: #000;
+  color: ${colors.gray};
   margin-top: 12px;
 `;
 
@@ -84,18 +80,8 @@ export const ForgotPassword = styled.TouchableOpacity`
   align-self: center;
 `;
 
-export const ForgotPasswordText = styled.Text`
-  color: #232129;
-  font-size: 14px;
-`;
-
 export const CollectorInfo = styled.TouchableOpacity`
   align-self: center;
-`;
-
-export const CollectorInfoText = styled.Text`
-  color: #232129;
-  font-size: 14px;
 `;
 
 export const CreateAccountButton = styled.TouchableOpacity`
@@ -104,9 +90,9 @@ export const CreateAccountButton = styled.TouchableOpacity`
   bottom: 0;
   right: 0%;
   border-top-width: 1px;
-  border-color: #f4ede8;
-  padding: 16px 0 ${8 + getBottomSpace()}px;
-  background-color: #fff;
+  border-color: ${colors.secundary};
+  padding: ${metrics.basePadding}px 0 ${10 + getBottomSpace()}px;
+  background-color: ${colors.white};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -114,6 +100,8 @@ export const CreateAccountButton = styled.TouchableOpacity`
 `;
 
 export const CreateAccountButtonText = styled.Text`
-  color: #232129;
-  font-size: 18px;
+  color: ${colors.darkgray};
+  font-size: 16px;
+  font-weight: 500;
+  margin-left: 5px;
 `;

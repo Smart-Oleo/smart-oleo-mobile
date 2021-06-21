@@ -19,6 +19,7 @@ import api from '../../services/api';
 import Toast from 'react-native-toast-message';
 import RootToast from '../../components/Toast';
 import getValidationErros from '../../utils/getValidationErrors';
+import {colors, metrics} from '../../styles/global';
 
 interface Address {
   address: string;
@@ -48,7 +49,7 @@ const EditAddress: React.FC = (...props: any) => {
   const [loadingCep, setLoadingCep] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  console.log(addressEdit);
+  console.log('addressEdit', addressEdit);
   // const address = formRef.current?.getFieldValue('address');
   // const district = formRef.current?.getFieldValue('district');
   // const city = formRef.current?.getFieldValue('city');
@@ -192,12 +193,18 @@ const EditAddress: React.FC = (...props: any) => {
           showsVerticalScrollIndicator={false}>
           <Container>
             <BackButton onPress={handleGoBack}>
-              <Icon name="chevron-left" size={24} />
+              <Icon
+                name="chevron-left"
+                size={metrics.iconSize}
+                color={colors.darkgray}
+              />
+              <Title> Editar endereço</Title>
             </BackButton>
 
             <Header>
-              <Title> Editar endereço</Title>
-              {loadingCep && <ActivityIndicator size="small" color="#000" />}
+              {loadingCep && (
+                <ActivityIndicator size="small" color={colors.darkgray} />
+              )}
             </Header>
 
             <Form

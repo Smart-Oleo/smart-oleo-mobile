@@ -25,7 +25,8 @@ import {useNavigation} from '@react-navigation/native';
 import api from '../../services/api';
 import ModalOptions from './ModalOptions';
 import ModalDelete from './ModelDelete';
-import {Alert} from 'react-native';
+import {Alert, Platform} from 'react-native';
+import {colors, metrics, android} from '../../styles/global';
 
 export interface Address {
   id: string;
@@ -113,27 +114,48 @@ const Address: React.FC = () => {
     navigation.goBack();
   }, [navigation]);
 
+  const navigateEditAddress = useCallback(() => {
+    navigation.navigate('EditAddress', {address: adresses});
+  }, [navigation, adresses]);
+
   return (
     <Container>
       <BackButton onPress={handleGoBack}>
-        <Icon name="chevron-left" size={24} />
+        <Icon
+          name="chevron-left"
+          size={metrics.iconSize}
+          color={colors.darkgray}
+        />
+        <Title> Meus endereços </Title>
       </BackButton>
-      <Title> Meus endereços 📍 </Title>
+
       {adresses.length > 0 ? (
         <>
           <AddressList
+            style={{
+              ...Platform.select({
+                android: {
+                  backgroundColor: 'transparent',
+                  shadowColor: `${colors.lightgray}`,
+                  elevation: 24,
+
+                  shadowRadius: 16,
+                },
+              }),
+            }}
             data={adresses}
             onRefresh={loadAdresses}
             refreshing={refreshing}
             keyExtractor={item => item.id}
-            // style={{ marginTop: 200}}
-            // ListFooterComponent={
-            //   loading && <ActivityIndicator size="large" color="#FE2E2E" />
-            // }
             showsVerticalScrollIndicator={false}
             renderItem={({item}) => (
-              <ContainerAddress>
-                <Icon name="map-pin" size={34} color="#c0c0c0" />
+              <ContainerAddress onPress={navigateEditAddress}>
+                {/* <Icon
+                  name="map-pin"
+                  size={metrics.iconSize}
+                  color={colors.gray}
+                  style={{marginTop: 10}}
+                /> */}
                 <ContentAddress>
                   <Text numberOfLines={4}>
                     {item.address}, {item.number}. {item.district}, {item.city}{' '}
@@ -141,27 +163,27 @@ const Address: React.FC = () => {
                     {item.complement ? ', ' + item.complement + '.' : ''}
                   </Text>
                   <ViewReference>
-                    <TextReference> {item.reference} 📌 </TextReference>
+                    <TextReference> {item.reference} </TextReference>
                   </ViewReference>
-                  <ButtonHeader onPress={() => toggleModal(item)}>
+                  <ButtonHeader>
                     <Icon
-                      name="more-vertical"
-                      size={24}
-                      style={{position: 'absolute', right: 10, top: 0}}
+                      name="edit"
+                      size={metrics.iconSize - 8}
+                      color={colors.gray}
                     />
                   </ButtonHeader>
                 </ContentAddress>
               </ContainerAddress>
             )}
           />
-          <ButtonView
-            start={{x: 0.2, y: 0.6}}
-            end={{x: 0, y: 0}}
-            colors={['#228B22', '#00FF00']}>
+          <ButtonView colors={[colors.primary, colors.success]}>
             <ButtonProduct onPress={() => navigation.navigate('NewAddress')}>
-              <TextButton>
-                Novo endereço <Icon name="map-pin" size={16} />
-              </TextButton>
+              <TextButton>Novo endereço </TextButton>
+              <Icon
+                name="map-pin"
+                size={metrics.iconSize - 5}
+                color={colors.white}
+              />
             </ButtonProduct>
           </ButtonView>
         </>
@@ -176,34 +198,24 @@ const Address: React.FC = () => {
             Cadastre um endereço para solicitar uma coleta no endereço desejado.
             🎁
           </DescriptionNoContent>
-          <ButtonView
-            start={{x: 0.2, y: 0.6}}
-            end={{x: 0, y: 0}}
-            colors={['#228B22', '#00FF00']}>
+          <ButtonView colors={[colors.primary, colors.success]}>
             <ButtonProduct onPress={() => navigation.navigate('NewAddress')}>
-              <TextButton>
-                Novo endereço <Icon name="map-pin" size={16} />
-              </TextButton>
+              <TextButton>Novo endereço </TextButton>
+              <Icon
+                name="map-pin"
+                size={metrics.iconSize - 5}
+                color={colors.white}
+              />
             </ButtonProduct>
           </ButtonView>
         </ContentImage>
       )}
-
-      {/* <ContainerAddress>
-        <Icon name="map-pin" size={34} color="#c0c0c0" />
-        <ContentAddress>
-          <Text numberOfLines={2}>
-            {' '}
-            Rua caramuru, 99 - Bairro Divino Espírito Santo{' '}
-          </Text>
-        </ContentAddress>
-      </ContainerAddress> */}
-      <ModalOptions
+      {/* <ModalOptions
         visible={visible}
         onRequestClose={toggleModal}
         item={selected}
         requestDelete={openDeleteOption}
-      />
+      /> */}
     </Container>
   );
 };

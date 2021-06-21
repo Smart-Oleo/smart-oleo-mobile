@@ -1,35 +1,41 @@
 import styled from 'styled-components/native';
 import {FlatList} from 'react-native';
-// import {Platform} from 'react-native';
+import {Platform} from 'react-native';
 import {Order} from './index';
+import {colors, metrics} from '../../styles/global';
 export const Container = styled.View`
   flex: 1;
-  background-color: #fff;
+  padding: ${Platform.OS === 'android' ? metrics.basePadding : 60}px
+    ${metrics.basePadding}px;
+  background-color: ${colors.secundary};
 `;
 
 export const Header = styled.View`
-  flex-direction: row;
+  /* flex-direction: row;
   padding-left: 20px;
   padding-top: 10px;
-  border-color: #dcdcdc;
+  border-color: #dcdcdc; */
+  flex-direction: row;
+  align-items: center;
 `;
 
 export const OrderList = styled(FlatList as new () => FlatList<Order>)`
-  margin: 10px;
+  margin: 0px ${metrics.baseMargin}px;
 `;
 
 export const BackButton = styled.TouchableOpacity`
-  margin-top: 50px;
-  left: -10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  margin-bottom: 20px;
 `;
 
 export const Title = styled.Text`
-  font-size: 20px;
-  color: #000;
-  margin: 24px 0;
-  align-self: flex-start;
-  font-weight: bold;
-  margin-top: 50px;
+  font-size: 18px;
+  color: ${colors.darkgray};
+  font-weight: 500;
+  margin-left: 5px;
 `;
 
 export const ContainerOrder = styled.View`
@@ -66,44 +72,68 @@ export const ContainerInfo = styled.View`
 `;
 
 export const EmpresaDetail = styled.TouchableOpacity`
-  margin: 6px 0px;
-  opacity: 1;
-  background: #ffffff 0% 0% no-repeat padding-box;
-  box-shadow: 2px 3px 2px #808080;
-  border-radius: 10px;
-  padding: 10px;
-  elevation: 10;
-  flex-direction: row;
-  justify-content: space-between;
+  margin: 50px 0px 25px 0px;
+  background-color: ${colors.white};
+  box-shadow: 0px 6px 16px ${colors.lightgray};
+  border-radius: ${metrics.secundaryRadius}px;
+  padding: 10px 0px;
+  elevation: 27;
+
+  justify-content: center;
+  align-items: center;
 `;
 export const EmpresaImage = styled.Image`
-  height: 80px;
-  width: 80px;
-  border-radius: 10px;
+  height: 100px;
+  width: 100px;
+  border-radius: 50px;
+  margin-top: -50px;
 `;
 
 export const EmpresaContent = styled.View`
-  flex: 1;
-  margin-left: 10px;
+  /* flex: 1; */
 `;
 
 export const EmpresaText = styled.Text`
   font-size: 14px;
-  color: #000;
+  color: ${colors.gray};
   font-weight: bold;
+  margin-top: 1px;
+  margin-left: ${Platform.OS === 'ios' ? 14 : 32};
+`;
+export const EmpresaTextInfo = styled.Text`
+  font-size: 13px;
+  color: ${colors.gray};
+  font-weight: 500;
+  margin-top: 8px;
 `;
 
 export const NameView = styled.View`
-  width: 300px;
+  width: 90%;
+  /* background-color: blue; */
+  /* justify-content: center;
+  align-items: center; */
+  align-self: flex-start;
+  margin: 2px ${metrics.baseMargin + 8}px;
 `;
+export const EnderecoTitle = styled.Text`
+  font-size: 14px;
+  color: ${colors.darkgray};
+  font-weight: bold;
+  align-self: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+`;
+
 export const EnderecoContent = styled.View`
   margin: 0px 6px;
   padding-top: 6px;
 `;
 export const EnderecoText = styled.Text`
   font-size: 12px;
-  color: #a9a9a9;
+  color: ${colors.gray};
   font-weight: bold;
+  align-self: center;
+  margin-top: 5px;
 `;
 
 export const ReviewContent = styled.View`

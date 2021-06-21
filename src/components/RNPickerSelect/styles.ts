@@ -1,4 +1,5 @@
 import styled, {css} from 'styled-components/native';
+import {colors, metrics} from '../../styles/global';
 
 export interface ContainerProps {
   // isFocused: boolean;
@@ -8,25 +9,24 @@ export interface ContainerProps {
 
 export const Container = styled.View<ContainerProps>`
   width: 100%;
-  height: 50px;
+  height: 60px;
   padding: 0 16px;
-  background: #fff;
-  border: 2px solid #000;
-  border-width: 0.4px;
+  background: ${colors.secundary};
+  border: none;
 
   border-radius: 10px;
-  margin-bottom: 8px;
+  margin-bottom: ${metrics.baseMargin}px;
   justify-content: center;
 
   ${props =>
     props.isErrored &&
     css`
-      border: 1px solid red;
+      border: 1px solid ${colors.danger};
     `};
 `;
 
 export const ErrorMessage = styled.Text`
-  color: #ff377f;
+  color: ${colors.danger};
   font-size: 14px;
   margin: 4px;
 `;

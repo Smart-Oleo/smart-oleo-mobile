@@ -1,5 +1,6 @@
 import styled, {css} from 'styled-components/native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import {colors, metrics} from '../../styles/global';
 
 export interface ContainerProps {
   isFocused: boolean;
@@ -8,13 +9,13 @@ export interface ContainerProps {
 }
 
 export const TextInput = styled.TextInput`
-  color: #000;
+  color: ${colors.darkgray};
   font-size: 16px;
   flex: 1;
 `;
 
 export const ErrorMessage = styled.Text`
-  color: #ff377f;
+  color: ${colors.danger};
   font-size: 14px;
   margin: 4px;
 `;
@@ -22,23 +23,24 @@ export const ErrorMessage = styled.Text`
 export const Container = styled.View<ContainerProps>`
   width: 100%;
   height: 60px;
-  padding: 0 16px;
-  background: #fafafa;
-  border-radius: 10px;
-  margin-bottom: 8px;
+  padding: 0px 16px;
+  background: ${colors.secundary};
+  border-radius: ${metrics.secundaryRadius}px;
+  margin: ${metrics.baseMargin}px 0px;
 
+  display: flex;
   flex-direction: row;
   align-items: center;
   ${props =>
     props.isErrored &&
     css`
-      border: 1px solid red;
+      border: 1px solid ${colors.danger};
     `};
 
   ${props =>
     props.isFocused &&
     css`
-      border: 1px solid #4b0082;
+      border: 1px solid ${colors.gray};
     `};
 `;
 

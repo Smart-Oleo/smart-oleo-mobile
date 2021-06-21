@@ -9,12 +9,10 @@ import {
   Text,
   ViewBottom,
   ForgotPassword,
-  ForgotPasswordText,
   CreateAccountButton,
   CreateAccountButtonText,
   FormContainer,
   CollectorInfo,
-  CollectorInfoText,
 } from './styles';
 import {Form} from '@unform/mobile';
 import Input from '../../components/Input';
@@ -32,10 +30,10 @@ import {
 } from 'react-native';
 import * as Yup from 'yup';
 import getValidationErros from '../../utils/getValidationErrors';
-import Background from '../../components/Background';
 import imageLogo from '../../assets/images/logo_horizontal.png';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
+import {colors, metrics} from '../../styles/global';
 
 interface SignInFormData {
   login: string;
@@ -99,11 +97,6 @@ const Login: React.FC = () => {
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         enabled>
-        <Background
-          fillOpacity={0.1}
-          fill="#1EE494"
-          style={{position: 'absolute', left: -64, top: 140}}
-        />
         <ScrollView
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{flex: 1}}>
@@ -111,7 +104,7 @@ const Login: React.FC = () => {
             <Content>
               <Header>
                 <LogoImage source={imageLogo} />
-                <Text> Entrar </Text>
+                <Text> Entrar</Text>
                 <Description>
                   Faça o login no Smart Oleo para começar a ajudar o meio
                   ambiente por meio do descarte correto de óleo vegetal.
@@ -146,17 +139,17 @@ const Login: React.FC = () => {
                     Entrar
                   </Button>
                 ) : (
-                  <ActivityIndicator size="large" color="#00c200" />
+                  <ActivityIndicator size="large" color={colors.primary} />
                 )}
 
                 <ViewBottom>
                   <ForgotPassword
                     onPress={() => navigation.navigate('ForgotPassword')}>
-                    <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
+                    <Text>Esqueci minha senha</Text>
                   </ForgotPassword>
                   <CollectorInfo
                     onPress={() => navigation.navigate('CollectorForm')}>
-                    <CollectorInfoText>Quero ser um coletor</CollectorInfoText>
+                    <Text>Quero ser um coletor</Text>
                   </CollectorInfo>
                 </ViewBottom>
               </FormContainer>
@@ -168,7 +161,7 @@ const Login: React.FC = () => {
       </KeyboardAvoidingView>
 
       <CreateAccountButton onPress={() => navigation.navigate('SignUp')}>
-        <Icon name="log-in" size={20} color="#00c200" />
+        <Icon name="log-in" size={metrics.iconSize} color={colors.success} />
         <CreateAccountButtonText> Criar Conta </CreateAccountButtonText>
       </CreateAccountButton>
     </>

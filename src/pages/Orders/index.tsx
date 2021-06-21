@@ -6,20 +6,13 @@ import {
   Header,
   Title,
   OrderList,
-  ContainerOrder,
-  ImageProduct,
-  ContainerDetail,
-  TitleProduct,
-  InfoText,
   EmpresaDetail,
   EmpresaContent,
   EmpresaImage,
   EmpresaText,
-  EnderecoContent,
-  EnderecoText,
   NameView,
-  ReviewContent,
-  ReviewText,
+  EmpresaTextInfo,
+  EnderecoTitle,
 } from './styles';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
@@ -27,6 +20,7 @@ import _ from 'lodash';
 import api from '../../services/api';
 import {Text} from 'react-native';
 import {ActivityIndicator} from 'react-native';
+import {colors, metrics} from '../../styles/global';
 
 export interface Order {
   id: string;
@@ -134,28 +128,21 @@ const Orders: React.FC = () => {
   }, [navigation]);
 
   return (
-    // <KeyboardAvoidingView
-    //   style={{flex: 1, backgroundColor: '#fff'}}
-    //   behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    //   enabled>
-    //   <ScrollView
-    //     keyboardShouldPersistTaps="handled"
-    //     showsVerticalScrollIndicator={false}>
     <Container>
       <Header>
         <BackButton onPress={handleGoBack}>
-          <Icon name="chevron-left" size={24} />
+          <Icon
+            name="chevron-left"
+            size={metrics.iconSize}
+            color={colors.darkgray}
+          />
+          <Title> Meus Pedidos </Title>
         </BackButton>
-        <Title> Meus Pedidos </Title>
       </Header>
 
       <OrderList
         data={orders}
         keyExtractor={item => item.id}
-        // style={{ marginTop: 200}}
-        // ListFooterComponent={
-        //   loading && <ActivityIndicator size="large" color="#FE2E2E" />
-        // }
         onRefresh={refreshList}
         refreshing={refreshing}
         onEndReachedThreshold={0.2}
@@ -164,7 +151,7 @@ const Orders: React.FC = () => {
           loading && (
             <ActivityIndicator
               size="small"
-              color="#228B22"
+              color={colors.primary}
               style={{alignSelf: 'center', width: '100%'}}
             />
           )
@@ -173,27 +160,55 @@ const Orders: React.FC = () => {
         renderItem={({item}) => (
           <EmpresaDetail key={item.id}>
             <EmpresaImage source={{uri: item.product.image}} />
-            <EmpresaContent>
-              <NameView>
-                <EmpresaText>{item?.product.title}</EmpresaText>
-                <EmpresaText style={{marginTop: 4}}>
-                  N ordem:{' '}
-                  <Text style={{color: 'green'}}> {item.order_number} </Text>
-                </EmpresaText>
-                <EmpresaText style={{marginTop: 4}}>
-                  Status{' '}
-                  <Text style={{color: 'tomato'}}>
-                    {item.status === 1 && 'Aguardando confirmação'}
-                    {item.status === 2 && 'Enviado'}
-                    {item.status === 3 && 'Recebido'}
-                  </Text>
-                </EmpresaText>
-                <EmpresaText style={{marginTop: 4}}>
-                  Quantidade:{' '}
-                  <Text style={{color: 'tomato'}}>{item.quantity}x</Text>
-                </EmpresaText>
-              </NameView>
-              <EnderecoContent>
+
+            {/* <ReviewContent>
+              <ReviewText style={{color: 'tomato'}}>
+                {' '}
+                {item.product.price_points}P{' '}
+              </ReviewText>
+            </ReviewContent> */}
+            <NameView>
+              <EnderecoTitle numberOfLines={1}>
+                {item?.product.title}
+              </EnderecoTitle>
+              <EmpresaText>
+                Ordem:{' '}
+                <EmpresaTextInfo style={{color: colors.gray}}>
+                  {' '}
+                  {item.order_number}{' '}
+                </EmpresaTextInfo>
+              </EmpresaText>
+              {/* <EmpresaText>
+                Status:{' '}
+
+                {item.status === 1 && (
+                  <EmpresaTextInfo style={{color: colors.darkgray}}>
+                    aguardando confirmação
+                  </EmpresaTextInfo>
+                )}
+                {item.status === 2 && (
+                  <EmpresaTextInfo style={{color: colors.success}}>
+                    enviado
+                  </EmpresaTextInfo>
+                )}
+                {item.status === 3 && (
+                  <EmpresaTextInfo style={{color: colors.gray}}>
+                    recebido
+                  </EmpresaTextInfo>
+                )}
+              </EmpresaText> */}
+
+              <EmpresaText>
+                Quantidade: <EmpresaTextInfo>{item.quantity}x</EmpresaTextInfo>
+              </EmpresaText>
+              <EmpresaText>
+                Endereço:{' '}
+                <EmpresaTextInfo numberOfLines={1}>
+                  {item.destiny?.address} - {item.destiny?.number}
+                </EmpresaTextInfo>
+              </EmpresaText>
+            </NameView>
+            {/* <EnderecoContent>
                 <EnderecoText numberOfLines={2}>
                   {item.destiny?.address} - {item.destiny?.number} /{' '}
                   {item.destiny?.zipcode}
@@ -202,14 +217,7 @@ const Orders: React.FC = () => {
                   {item.destiny?.district} - {item.destiny?.city}/{' '}
                   {item.destiny?.state}
                 </EnderecoText>
-              </EnderecoContent>
-            </EmpresaContent>
-            <ReviewContent>
-              <ReviewText style={{color: 'tomato'}}>
-                {' '}
-                {item.product.price_points}P{' '}
-              </ReviewText>
-            </ReviewContent>
+              </EnderecoContent> */}
           </EmpresaDetail>
           // <ContainerOrder key={item.id}>
           //   <ImageProduct source={{uri: item?.product.image}} />

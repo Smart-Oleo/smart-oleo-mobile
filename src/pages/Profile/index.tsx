@@ -2,6 +2,7 @@ import React, {useRef, useCallback, useState} from 'react';
 import {
   Container,
   Title,
+  UserAvatarContainer,
   UserAvatarButton,
   UserAvatar,
   ButtonSignOut,
@@ -23,7 +24,8 @@ import {
 import api from '../../services/api';
 import {launchImageLibrary} from 'react-native-image-picker';
 import getValidationErros from '../../utils/getValidationErrors';
-
+import {android, colors, metrics} from '../../styles/global';
+import Icon from 'react-native-vector-icons/Feather';
 interface ProfileFormData {
   name: string;
   last_name: string;
@@ -148,26 +150,51 @@ const Profile: React.FC = () => {
       },
     );
   }, []);
-
+  console.log(user);
   return (
     <>
       <KeyboardAvoidingView
-        style={{flex: 1, backgroundColor: '#fff'}}
+        style={{flex: 1, backgroundColor: colors.white}}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         enabled>
         <ScrollView
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           <Container>
-            <ButtonSignOut onPress={signOut}>
-              <SignOutText> Sair </SignOutText>
-            </ButtonSignOut>
-            <UserAvatarButton onPress={handleUpdateAvatar}>
-              <UserAvatar source={{uri: user.photo}} />
-            </UserAvatarButton>
-            <Title> Meu perfil </Title>
+            <UserAvatarContainer
+              style={{
+                backgroundColor: Platform.OS === 'android' && 'transparent',
+              }}>
+              <UserAvatarButton
+                onPress={handleUpdateAvatar}
+                style={{
+                  borderRadius: 100,
+                  ...Platform.select({
+                    android,
+                  }),
+                  backgroundColor: Platform.OS === 'android' && 'transparent',
+                }}>
+                {user.photo === null ? (
+                  <UserAvatar
+                    source={require('../../assets/images/ic_launcher.png')}
+                  />
+                ) : (
+                  <UserAvatar source={{uri: user.photo}} />
+                )}
+              </UserAvatarButton>
+              <ButtonSignOut onPress={signOut}>
+                <Icon
+                  style={{marginRight: 5}}
+                  name="log-out"
+                  size={metrics.iconSize - 6}
+                  color={colors.success}
+                />
+                <SignOutText>Sair</SignOutText>
+              </ButtonSignOut>
+            </UserAvatarContainer>
 
             <Form initialData={user} ref={formRef} onSubmit={handleUpdate}>
+              <Title> Meu perfil </Title>
               <Input
                 name="name"
                 icon="user"
