@@ -78,7 +78,7 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
               inputRef.current.value = value;
             }
           }}
-          placeholderTextColor={colors.lightgray}
+          placeholderTextColor={colors.gray}
           {...rest}
         />
       </Container>

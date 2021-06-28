@@ -175,7 +175,7 @@ const NewCollect: React.FC = () => {
                         right: 10,
                       },
                       placeholder: {
-                        color: colors.lightgray,
+                        color: colors.gray,
                         fontSize: 16,
                       },
                     }}
@@ -205,7 +205,7 @@ const NewCollect: React.FC = () => {
                         right: 10,
                       },
                       placeholder: {
-                        color: colors.lightgray,
+                        color: colors.gray,
                         fontSize: 16,
                       },
                     }}

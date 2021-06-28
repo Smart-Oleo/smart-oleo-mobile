@@ -15,6 +15,7 @@ import Input from '../../../components/Input';
 import {FormHandles} from '@unform/core';
 import api from '../../../services/api';
 import Button from '../../../components/Button';
+import {colors} from '../../../styles/global';
 
 interface PropsModal {
   visible: boolean;
@@ -98,7 +99,7 @@ const ModalRescue: React.FC<PropsModal> = ({
           <RNPickerSelect
             placeholder={{
               label: 'Informe o endereço',
-              color: '#000',
+              color: colors.gray,
             }}
             name="address_id"
             onOpen={loadAdresses}

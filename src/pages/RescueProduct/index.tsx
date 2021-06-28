@@ -319,7 +319,7 @@ const RescueProduct: React.FC = (...props: any) => {
                   <RNPickerSelect
                     placeholder={{
                       label: 'Selecione o endereço',
-                      color: colors.lightgray,
+                      color: colors.gray,
                     }}
                     name="destination_id"
                     items={addressOption}
@@ -349,7 +349,7 @@ const RescueProduct: React.FC = (...props: any) => {
                         right: 10,
                       },
                       placeholder: {
-                        color: colors.lightgray,
+                        color: colors.gray,
                         fontSize: 16,
                       },
                       inputIOSContainer: {
