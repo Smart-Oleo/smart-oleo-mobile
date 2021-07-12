@@ -261,6 +261,7 @@ const Profile: React.FC = () => {
                 icon="mail"
                 placeholder="Informe o email"
                 editable={false}
+                style={{opacity: 0.4}}
                 autoCorrect={false}
                 autoCapitalize="none"
                 onSubmitEditing={() => oldPasswordInputRef.current?.focus()}

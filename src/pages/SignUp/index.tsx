@@ -24,7 +24,6 @@ import {
 } from 'react-native';
 import * as Yup from 'yup';
 import getValidationErros from '../../utils/getValidationErrors';
-import Background from '../../components/Background';
 import imageLogo from '../../assets/images/logo_horizontal.png';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';

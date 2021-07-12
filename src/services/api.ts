@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://192.168.100.21:3333/api/',
+  baseURL: 'https://smartoleodeploy.smartoleo.net/api/',
 });
 
 export default api;
