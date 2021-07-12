@@ -125,6 +125,7 @@ const RescueProduct: React.FC = (...props: any) => {
   useEffect(() => {
     loadProduct();
     loadPoints();
+    loadAdresses();
   }, []);
 
   const handleSubmit = useCallback(async (data: Data) => {
@@ -148,9 +149,11 @@ const RescueProduct: React.FC = (...props: any) => {
         abortEarly: false,
       });
 
+      setLoading(true);
       await api
         .post('user-products', data)
         .then(res => {
+          setLoading(false);
           loadPoints();
           Toast.show({
             type: 'success',
@@ -164,6 +167,7 @@ const RescueProduct: React.FC = (...props: any) => {
           });
         })
         .catch(err => {
+          setLoading(false);
           Toast.show({
             type: 'error',
             position: 'top',
@@ -358,26 +362,46 @@ const RescueProduct: React.FC = (...props: any) => {
                     }}
                   />
                 ) : (
-                  <SelectBottom
-                    onPress={() => {
-                      setIsOpenAdress(!isOpenAdress);
-                      loadAdresses();
-                    }}>
-                    <TextSelect
-                      style={{
-                        color:
-                          address !== null ? colors.darkgray : colors.lightgray,
-                      }}>
-                      {address === null
-                        ? 'Selecione o endereço'
-                        : address.label}
-                    </TextSelect>
-                    {isOpenAdress ? (
-                      <Image source={ArrowUp} style={{marginRight: 2}} />
-                    ) : (
-                      <Image source={ArrowDown} style={{marginRight: 2}} />
-                    )}
-                  </SelectBottom>
+                  <RNPickerSelect
+                    name="destination_id"
+                    placeholder={{
+                      label: 'Informe o período de preferência',
+                      color: colors.darkBlue,
+                    }}
+                    items={addressOption}
+                    style={{
+                      inputAndroidContainer: {
+                        width: '70%',
+                        backgroundColor: '#fff',
+                      },
+                      placeholder: {
+                        color: '#000',
+                      },
+                      inputAndroid: {
+                        color: '#000',
+                      },
+                    }}
+                  />
+                  // <SelectBottom
+                  //   onPress={() => {
+                  //     setIsOpenAdress(!isOpenAdress);
+                  //     loadAdresses();
+                  //   }}>
+                  //   <TextSelect
+                  //     style={{
+                  //       color:
+                  //         address !== null ? colors.darkgray : colors.lightgray,
+                  //     }}>
+                  //     {address === null
+                  //       ? 'Selecione o endereço'
+                  //       : address.label}
+                  //   </TextSelect>
+                  //   {isOpenAdress ? (
+                  //     <Image source={ArrowUp} style={{marginRight: 2}} />
+                  //   ) : (
+                  //     <Image source={ArrowDown} style={{marginRight: 2}} />
+                  //   )}
+                  // </SelectBottom>
                 )}
               </ContainerBody>
             </Form>
@@ -399,7 +423,7 @@ const RescueProduct: React.FC = (...props: any) => {
                     : 1
                 }
                 onPress={() => formRef.current?.submitForm()}
-                isLoading={false}>
+                isLoading={loading}>
                 Confirmar
               </Button>
             )}

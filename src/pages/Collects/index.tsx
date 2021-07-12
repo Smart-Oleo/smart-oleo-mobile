@@ -145,10 +145,10 @@ const Collects: React.FC = () => {
     getCollects();
   }, []);
 
-  const [status, setStatus] = useState<IStatus[]>([
+  const [status] = useState<IStatus[]>([
     {name: 'Aguardando', value: 'created'},
     {name: 'Agendado', value: 'waiting'},
-    {name: 'Coletado', value: 'colected'},
+    {name: 'Coletado', value: 'collected'},
     {name: 'Cancelada', value: 'canceled'},
   ]);
 

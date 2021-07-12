@@ -24,7 +24,7 @@ import {format} from 'date-fns';
 import Imagem from '../../assets/images/notification.jpg';
 import api from '../../services/api';
 import {colors, metrics, android} from '../../styles/global';
-import {Platform} from 'react-native';
+import {Platform, View, ActivityIndicator} from 'react-native';
 
 export interface Notification {
   _id: string;
@@ -43,6 +43,11 @@ const Notifications: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const [total, setTotal] = useState<Number>(0);
+  const [page, setPage] = useState<Number>(1);
+  // const [filter, setFilter] = useState<String>('');
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+
   const handleReadAndNavigate = useCallback(
     async (read: boolean, id: string, route: string, params: string) => {
       if (!read) {
@@ -58,18 +63,45 @@ const Notifications: React.FC = () => {
     [navigation],
   );
 
-  const loadNotifications = useCallback(async () => {
-    setLoading(true);
-    await api
-      .get('notifications/list')
-      .then(res => {
-        setNotifications(res.data.data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setLoading(false);
-      });
-  }, []);
+  const loadNotifications = useCallback(
+    async (pageNumber = page, shouldRefresh = false) => {
+      if (pageNumber === total) {
+        return;
+      }
+      if (loading) {
+        return;
+      }
+      setLoading(true);
+      await api
+        .get(
+          `notifications/list/collector?pageNumber=${
+            pageNumber - 1
+          }&pageView=8`,
+        )
+        .then(res => {
+          setLoading(false);
+
+          setNotifications(
+            shouldRefresh
+              ? res.data.data
+              : [...notifications, ...res.data.data],
+          );
+          setTotal(res.data.pages + 1);
+          setLoading(false);
+        })
+        .catch(err => {
+          setLoading(false);
+        });
+      setPage(pageNumber + 1);
+    },
+    [loading, notifications, page, total],
+  );
+
+  const refreshList = useCallback(async () => {
+    setRefreshing(true);
+    await loadNotifications(1, true);
+    setRefreshing(false);
+  }, [loadNotifications]);
 
   useEffect(() => {
     loadNotifications();
@@ -92,58 +124,78 @@ const Notifications: React.FC = () => {
         </BackButton>
       </Header>
 
-      {notifications.length > 0 ? (
-        <NotificationList
-          data={notifications}
-          keyExtractor={item => item._id}
-          showsVerticalScrollIndicator={false}
-          renderItem={({item}) => (
-            <Content
-              style={{
-                borderBottomRightRadius: 5,
-                borderTopRightRadius: 5,
-              }}>
-              <ContainerNotification
-                key={item._id}
-                status={item.read}
-                onPress={() =>
-                  handleReadAndNavigate(
-                    item.read,
-                    item._id,
-                    item.link,
-                    item.params,
-                  )
-                }>
-                <DateContainer>
-                  <Indicator status={item.read} />
-                  <DateNotification>
-                    {format(
-                      new Date(item.created_at.toLocaleString()),
-                      'dd/MM/yyy HH:MM',
-                    )}
-                  </DateNotification>
-                </DateContainer>
-                <TitleNotification numberOfLines={3}>
-                  {item.content}
-                </TitleNotification>
-                {/* <DateNotification>
+      {!loading ? (
+        <>
+          {notifications.length > 0 ? (
+            <NotificationList
+              onRefresh={refreshList}
+              refreshing={refreshing}
+              onEndReachedThreshold={0.2}
+              onEndReached={() => loadNotifications()}
+              data={notifications}
+              keyExtractor={item => item._id}
+              showsVerticalScrollIndicator={false}
+              renderItem={({item}) => (
+                <Content
+                  style={{
+                    borderBottomRightRadius: 5,
+                    borderTopRightRadius: 5,
+                  }}>
+                  <ContainerNotification
+                    key={item._id}
+                    status={item.read}
+                    onPress={() =>
+                      handleReadAndNavigate(
+                        item.read,
+                        item._id,
+                        item.link,
+                        item.params,
+                      )
+                    }>
+                    <DateContainer>
+                      <Indicator status={item.read} />
+                      <DateNotification>
+                        {format(
+                          new Date(item.created_at.toLocaleString()),
+                          'dd/MM/yyy HH:MM',
+                        )}
+                      </DateNotification>
+                    </DateContainer>
+                    <TitleNotification numberOfLines={3}>
+                      {item.content}
+                    </TitleNotification>
+                    {/* <DateNotification>
                 {format(
                   new Date(item.created_at.toLocaleString()),
                   'dd/MM/yyy HH:MM',
                 )}
               </DateNotification> */}
-              </ContainerNotification>
-            </Content>
+                  </ContainerNotification>
+                </Content>
+              )}
+            />
+          ) : (
+            <ContentImage>
+              <ImageNoContent source={Imagem} />
+              <TextNoContent> Ainda não há notificações. </TextNoContent>
+              <DescriptionNoContent>
+                Fique tranquilo, quando houver alguma novidade, nós
+                informaremos. 🔔
+              </DescriptionNoContent>
+            </ContentImage>
           )}
-        />
+        </>
       ) : (
-        <ContentImage>
-          <ImageNoContent source={Imagem} />
-          <TextNoContent> Ainda não há notificações. </TextNoContent>
-          <DescriptionNoContent>
-            Fique tranquilo, quando houver alguma novidade, nós informaremos. 🔔
-          </DescriptionNoContent>
-        </ContentImage>
+        <View
+          style={{
+            flex: 1,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignSelf: 'center',
+          }}>
+          <ActivityIndicator size="small" color={colors.primary} />
+        </View>
       )}
     </Container>
     //   </ScrollView>

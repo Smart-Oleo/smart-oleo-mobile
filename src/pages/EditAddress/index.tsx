@@ -43,13 +43,14 @@ interface AddressByCep {
 const EditAddress: React.FC = (...props: any) => {
   const formRef = useRef<FormHandles>(null);
 
-  const addressEdit = props[0].route.params.address;
+  const [addressEdit, setAddressEdit] = useState<Address>(
+    props[0].route.params.address,
+  );
 
   const navigation = useNavigation();
   const [loadingCep, setLoadingCep] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  console.log('addressEdit', addressEdit);
   // const address = formRef.current?.getFieldValue('address');
   // const district = formRef.current?.getFieldValue('district');
   // const city = formRef.current?.getFieldValue('city');
@@ -84,16 +85,14 @@ const EditAddress: React.FC = (...props: any) => {
         });
 
         await api
-          .post('address', data)
-          .then(res => {
-            console.log(res);
+          .put(`address/${props[0].route.params.address.id}`, data)
+          .then(() => {
             setLoading(false);
             navigation.navigate('Success', {
-              message: 'Endereço cadastrado.',
+              message: 'Endereço Editar com sucesso!.',
             });
           })
           .catch(err => {
-            console.log(err);
             setLoading(false);
             Toast.show({
               type: 'error',
@@ -130,45 +129,6 @@ const EditAddress: React.FC = (...props: any) => {
     },
     [navigation],
   );
-
-  const loadAddress = useCallback(async (cep: string) => {
-    if (cep.length === 8) {
-      setLoadingCep(true);
-      api
-        .get(`address/getbycep/${cep}`)
-        .then(res => {
-          setLoadingCep(false);
-          console.log(formRef);
-          addressEdit.address = res.data.logradouro;
-          console.log(res);
-          // formRef.current?.setData({
-          //   zipcode: cep,
-          //   address: res.data.logradouro,
-          //   district: res.data.bairro,
-          //   city: res.data.localidade,
-          //   state: res.data.uf,
-          // });
-          // formRef.current?.setFieldValue('zipcode', cep);
-          // formRef.current?.setFieldValue('address', res.data.logradouro);
-          // formRef.current?.setFieldValue('district', res.data.bairro);
-          // formRef.current?.setFieldValue('city', res.data.localidade);
-          // formRef.current?.setFieldValue('state', res.data.uf);
-        })
-        .catch(err => {
-          setLoadingCep(false);
-          Toast.show({
-            type: 'error',
-            position: 'top',
-            text1: 'Ops! Houve um problema',
-            text2: err.response.data.error,
-            visibilityTime: 4000,
-            autoHide: true,
-            topOffset: 200,
-            bottomOffset: 40,
-          });
-        });
-    }
-  }, []);
 
   const numberInputRef = useRef<TextInput>(null);
   const addressInputRef = useRef<TextInput>(null);
@@ -216,9 +176,8 @@ const EditAddress: React.FC = (...props: any) => {
                 icon="navigation"
                 placeholder="CEP"
                 returnKeyType="send"
-                onChangeText={text => {
-                  loadAddress(text);
-                }}
+                editable={false}
+                selectTextOnFocus={false}
                 onSubmitEditing={() => addressInputRef.current?.focus()}
               />
               <Input
@@ -227,6 +186,8 @@ const EditAddress: React.FC = (...props: any) => {
                 icon="map-pin"
                 placeholder="Endereço"
                 autoCapitalize="none"
+                editable={false}
+                selectTextOnFocus={false}
                 onSubmitEditing={() => numberInputRef.current?.focus()}
               />
               <Input
@@ -243,6 +204,8 @@ const EditAddress: React.FC = (...props: any) => {
                 icon="map-pin"
                 placeholder="Bairro"
                 returnKeyType="next"
+                editable={false}
+                selectTextOnFocus={false}
                 onSubmitEditing={() => cityInputRef.current?.focus()}
               />
               <Input
@@ -251,6 +214,8 @@ const EditAddress: React.FC = (...props: any) => {
                 icon="map"
                 placeholder="Cidade"
                 returnKeyType="next"
+                editable={false}
+                selectTextOnFocus={false}
                 onSubmitEditing={() => complementInputRef.current?.focus()}
               />
               <Input
@@ -267,6 +232,8 @@ const EditAddress: React.FC = (...props: any) => {
                 icon="map"
                 placeholder="Estado"
                 returnKeyType="send"
+                editable={false}
+                selectTextOnFocus={false}
                 onSubmitEditing={() => referenceInputRef.current?.focus()}
               />
               <Input

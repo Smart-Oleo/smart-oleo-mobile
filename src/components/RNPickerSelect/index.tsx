@@ -3,6 +3,7 @@ import Picker, {PickerSelectProps} from 'react-native-picker-select';
 import {useField} from '@unform/core';
 import {Container} from './styles';
 import {ErrorMessage} from '../Input/styles';
+import {colors} from '../../styles/global';
 
 interface Props extends Omit<PickerSelectProps, 'onValueChange'> {
   name: string;
@@ -14,7 +15,6 @@ export default function RNPickerSelect({name, items, ...rest}: Props) {
   // const [isFocused, setIsFocused] = useState<boolean>(false);
   // const [isFilled, setIsFilled] = useState<boolean>(false);
 
-  console.log('do lado', error);
   useEffect(() => {
     registerField({
       name: fieldName,
@@ -48,7 +48,13 @@ export default function RNPickerSelect({name, items, ...rest}: Props) {
           value={selectedValue}
           onValueChange={setSelectedValue}
           items={items}
+          style={{
+            chevron: {
+              backgroundColor: colors.black,
+            },
+          }}
           useNativeAndroidPickerStyle={false}
+          fixAndroidTouchableBug={false}
           {...rest}
         />
       </Container>

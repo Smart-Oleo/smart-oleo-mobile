@@ -25,7 +25,7 @@ import {useNavigation} from '@react-navigation/native';
 import api from '../../services/api';
 import ModalOptions from './ModalOptions';
 import ModalDelete from './ModelDelete';
-import {Alert, Platform} from 'react-native';
+import {Alert, Platform, View, ActivityIndicator} from 'react-native';
 import {colors, metrics, android} from '../../styles/global';
 
 export interface Address {
@@ -44,25 +44,20 @@ const Address: React.FC = () => {
   const navigation = useNavigation();
   const [adresses, setAdresses] = useState<Address[]>([]);
   const [visible, setVisible] = useState<boolean>(false);
-  const [visibleDelete, setVisibleDelete] = useState<boolean>(false);
   const [selected, setSelected] = useState<Address>();
   const [refreshing, setRefreshing] = useState<boolean>(false);
-
-  const toggleModal = useCallback(
-    (item: Address) => {
-      setSelected(item);
-      setVisible(!visible);
-    },
-    [visible],
-  );
+  const [loading, setLoading] = useState<boolean>(false);
 
   const loadAdresses = useCallback(async () => {
+    setLoading(true);
     await api
       .get('address/user')
       .then(res => {
+        setLoading(false);
         setAdresses(res.data);
       })
       .catch(err => {
+        setLoading(false);
         console.log(err);
       });
   }, []);
@@ -108,15 +103,18 @@ const Address: React.FC = () => {
 
   useEffect(() => {
     loadAdresses();
-  }, [loadAdresses]);
+  }, []);
 
   const handleGoBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
-  const navigateEditAddress = useCallback(() => {
-    navigation.navigate('EditAddress', {address: adresses});
-  }, [navigation, adresses]);
+  const navigateEditAddress = useCallback(
+    (item: Address) => {
+      navigation.navigate('EditAddress', {address: item});
+    },
+    [navigation],
+  );
 
   return (
     <Container>
@@ -128,8 +126,43 @@ const Address: React.FC = () => {
         />
         <Title> Meus endereços </Title>
       </BackButton>
-
-      {adresses.length > 0 ? (
+      <>
+        {loading && (
+          <View style={{flex: 1, justifyContent: 'center'}}>
+            <ActivityIndicator
+              size="small"
+              color={colors.primary}
+              style={{alignSelf: 'center', width: '100%'}}
+            />
+          </View>
+        )}
+      </>
+      <>
+        {adresses.length === 0 && !loading && (
+          <ContentImage>
+            <ImageNoContent source={ImageAddress} />
+            <TextNoContent>
+              {' '}
+              Você ainda não possuí nenhum endereço.{' '}
+            </TextNoContent>
+            <DescriptionNoContent>
+              Cadastre um endereço para solicitar uma coleta no endereço
+              desejado. 🎁
+            </DescriptionNoContent>
+            <ButtonView colors={[colors.primary, colors.success]}>
+              <ButtonProduct onPress={() => navigation.navigate('NewAddress')}>
+                <TextButton>Novo endereço </TextButton>
+                <Icon
+                  name="map-pin"
+                  size={metrics.iconSize - 5}
+                  color={colors.white}
+                />
+              </ButtonProduct>
+            </ButtonView>
+          </ContentImage>
+        )}
+      </>
+      {adresses.length > 0 && !loading && (
         <>
           <AddressList
             style={{
@@ -149,7 +182,7 @@ const Address: React.FC = () => {
             keyExtractor={item => item.id}
             showsVerticalScrollIndicator={false}
             renderItem={({item}) => (
-              <ContainerAddress onPress={navigateEditAddress}>
+              <ContainerAddress onPress={() => navigateEditAddress(item)}>
                 {/* <Icon
                   name="map-pin"
                   size={metrics.iconSize}
@@ -187,28 +220,6 @@ const Address: React.FC = () => {
             </ButtonProduct>
           </ButtonView>
         </>
-      ) : (
-        <ContentImage>
-          <ImageNoContent source={ImageAddress} />
-          <TextNoContent>
-            {' '}
-            Você ainda não possuí nenhum endereço.{' '}
-          </TextNoContent>
-          <DescriptionNoContent>
-            Cadastre um endereço para solicitar uma coleta no endereço desejado.
-            🎁
-          </DescriptionNoContent>
-          <ButtonView colors={[colors.primary, colors.success]}>
-            <ButtonProduct onPress={() => navigation.navigate('NewAddress')}>
-              <TextButton>Novo endereço </TextButton>
-              <Icon
-                name="map-pin"
-                size={metrics.iconSize - 5}
-                color={colors.white}
-              />
-            </ButtonProduct>
-          </ButtonView>
-        </ContentImage>
       )}
       {/* <ModalOptions
         visible={visible}

@@ -30,7 +30,7 @@ import api from '../../services/api';
 import {Alert, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
 import Toast from 'react-native-toast-message';
 import RootToast from '../../components/Toast';
-import {colors, metrics, android} from '../../styles/global';
+import {colors, metrics} from '../../styles/global';
 export interface Collect {
   id: string;
   collect_number: string;
@@ -79,10 +79,11 @@ const CollectDetail: React.FC = (...props: any) => {
   const loadCollect = useCallback(async () => {
     setLoading(true);
     console.log(props[0]?.route.params.id);
+    console.log('Caiu aquiiiii');
     await api
       .get(`collects/${props[0]?.route.params.id}`)
       .then(res => {
-        console.log(res.data);
+        console.log(res);
         setCollect(res.data);
         setLoading(false);
       })
@@ -90,7 +91,7 @@ const CollectDetail: React.FC = (...props: any) => {
         console.log(err);
         setLoading(false);
       });
-  }, []);
+  }, [props]);
 
   useEffect(() => {
     loadCollect();
@@ -230,14 +231,14 @@ const CollectDetail: React.FC = (...props: any) => {
               </Text>
             </CollectText>
             <EnderecoContent>
-              <EnderecoText numberOfLines={2}>
+              {/* <EnderecoText numberOfLines={2}>
                 {collect?.address.address} - {collect?.address.number} /{' '}
                 {collect?.address.zipcode}
               </EnderecoText>
               <EnderecoText numberOfLines={2}>
                 {collect?.address.district} - {collect?.address.city}/{' '}
                 {collect?.address.state}
-              </EnderecoText>
+              </EnderecoText> */}
             </EnderecoContent>
             {collect?.schedule && (
               <ContentSchedule>
@@ -280,8 +281,11 @@ const CollectDetail: React.FC = (...props: any) => {
                     <ButtonView
                       style={{marginTop: 10}}
                       colors={['#B22222', colors.danger]}>
-                      <ButtonProduct onPress={() => handleConfirm('rejected')}>
-                        <TextButton> Rejeitar Agendamento</TextButton>
+                      <ButtonProduct
+                        onPress={() =>
+                          handleConfirm(collect?.schedule?.id, 'rejected')
+                        }>
+                        <TextButton> Cancelar Agendamento</TextButton>
                       </ButtonProduct>
                     </ButtonView>
                   </>

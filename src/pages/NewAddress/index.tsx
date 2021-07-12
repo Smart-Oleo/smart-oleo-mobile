@@ -116,7 +116,6 @@ const NewAddress: React.FC = () => {
       api
         .get(`address/getbycep/${cep}`)
         .then(res => {
-          console.log(res);
           setLoadingCep(false);
           setAddressByCep({
             zipcode: res.data.cep.replace('-', ''),

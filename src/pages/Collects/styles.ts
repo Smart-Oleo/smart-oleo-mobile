@@ -211,3 +211,14 @@ export const StatusInfo = styled.Text`
   font-weight: bold;
   margin-left: 4px;
 `;
+
+export const ButtonRefresh = styled.TouchableOpacity`
+  padding: 10px 20px;
+  background-color: ${colors.primary};
+  justify-content: center;
+  border-radius: 10px;
+`;
+
+export const TextButtonRefresh = styled.Text`
+  color: ${colors.white};
+`;

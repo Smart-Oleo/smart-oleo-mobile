@@ -62,7 +62,7 @@ export const ProductDetail = styled.View`
   align-self: center;
 
   background-color: ${colors.white};
-  margin: ${metrics.baseMargin}px;
+  margin: 4px;
   border-radius: ${metrics.secundaryRadius}px;
   height: 280px;
   width: 170px;
@@ -164,4 +164,15 @@ export const ContentVoid = styled.View`
   justify-content: center;
   align-items: center;
   align-self: center;
+`;
+
+export const ButtonRefresh = styled.TouchableOpacity`
+  padding: 10px 20px;
+  background-color: ${colors.primary};
+  justify-content: center;
+  border-radius: 10px;
+`;
+
+export const TextButtonRefresh = styled.Text`
+  color: ${colors.white};
 `;

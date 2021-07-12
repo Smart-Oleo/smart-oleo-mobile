@@ -1,4 +1,4 @@
-import React, {useRef, useCallback, useState} from 'react';
+import React, {useRef, useCallback, useState, useEffect} from 'react';
 import {Container} from './../../styles/global/general';
 import {
   Content,
@@ -19,7 +19,13 @@ import RNPickerSelect from '../../components/RNPickerSelect';
 import Button from '../../components/Button';
 import api from '../../services/api';
 import imageLogo from '../../assets/images/logo_horizontal.png';
-import {KeyboardAvoidingView, ScrollView, Platform, Image} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  Image,
+  Alert,
+} from 'react-native';
 import * as Yup from 'yup';
 import getValidationErros from '../../utils/getValidationErrors';
 import Toast from 'react-native-toast-message';
@@ -40,13 +46,25 @@ interface Select {
   value: string;
   label: string;
 }
+
+interface ValueAddress {
+  value: string;
+  label: string;
+}
+
+interface ValuePreference {
+  value: string;
+  label: string;
+}
 const NewCollect: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const [isOpenPreference, setIsOpenPreference] = useState(false);
   const [isOpenAddress, setIsOpenAddress] = useState(false);
-  const [preference, setPreference] = useState(null);
-  const [address, setAddress] = useState(null);
+  const [preference, setPreference] = useState<ValuePreference>(null);
+  const [address, setAddress] = useState<ValueAddress>(null);
   const [addressOption, setAddressOption] = useState<Select[]>([]);
+  const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
+
   const pickerOptions = [
     {value: 'morning', label: 'Manhã'},
     {value: 'evening', label: 'Tarde'},
@@ -54,10 +72,10 @@ const NewCollect: React.FC = () => {
   ];
 
   const loadAdresses = useCallback(async () => {
+    console.log('caiu aqui');
     await api
       .get('address/user')
       .then(res => {
-        console.log(res);
         const arr: [{value: string; label: string}] = [{value: '', label: ''}];
         for (let i = 0; i < res.data.length; i++) {
           arr.push({
@@ -74,21 +92,29 @@ const NewCollect: React.FC = () => {
   }, []);
 
   const handleSubmit = useCallback(async (data: CollectData) => {
-    console.log(data);
+    // console.log(data);
+    // console.log(preference.value);
+    // if (address.value === '') {
+    //   Alert.alert('O endereço deve ser informado');
+    // }
+
+    // data.address_id = address.value;
+    // data.period_preference = preference.value;
+
+    // console.log(data);
+
     try {
       formRef.current?.setErrors({});
-
-      // data.liters_oil = parseInt(data.liters_oil);
 
       const schema = Yup.object().shape({
         liters_oil: Yup.number()
           .integer('Deve ser um número inteiro')
           .moreThan(1, 'A quantidade deve ser maior que 1')
-          .required('Endereço obrigatório'),
+          .required('A quantidade é obrigatória'),
         period_preference: Yup.string().required(
           'O período deve ser informado',
         ),
-        address_id: Yup.string().required('O endereço deve ser informado'),
+        address_id: Yup.string().required('O Endereço deve ser informado'),
         observations: Yup.string(),
       });
 
@@ -96,9 +122,14 @@ const NewCollect: React.FC = () => {
         abortEarly: false,
       });
 
+      console.log(data);
+
+      setLoadingSubmit(true);
+
       await api
         .post('collects', data)
         .then(res => {
+          setLoadingSubmit(false);
           Toast.show({
             type: 'success',
             position: 'top',
@@ -111,6 +142,7 @@ const NewCollect: React.FC = () => {
           });
         })
         .catch(err => {
+          setLoadingSubmit(false);
           Toast.show({
             type: 'error',
             position: 'top',
@@ -130,6 +162,10 @@ const NewCollect: React.FC = () => {
       formRef.current?.setErrors(errors);
       return;
     }
+  }, []);
+
+  useEffect(() => {
+    loadAdresses();
   }, []);
 
   return (
@@ -221,7 +257,44 @@ const NewCollect: React.FC = () => {
                     name="address_id"
                     vdefaultValuealue={address?.value}
                   /> */}
-                  <SelectBottom
+                  <RNPickerSelect
+                    name="period_preference"
+                    placeholder={{
+                      label: 'Informe o período de preferência',
+                      color: colors.darkBlue,
+                    }}
+                    items={pickerOptions}
+                    style={{
+                      placeholder: {
+                        color: '#000',
+                      },
+                      inputAndroid: {
+                        color: '#000',
+                      },
+                    }}
+                  />
+                  <RNPickerSelect
+                    name="address_id"
+                    placeholder={{
+                      label: 'Informe o endereço',
+                      color: colors.darkBlue,
+                    }}
+                    pickerProps={{
+                      onAccessibilityAction: () => loadAdresses(),
+                    }}
+                    style={{
+                      inputAndroid: {
+                        color: '#000',
+                      },
+                      chevronDown: {
+                        backgroundColor: '#000',
+                      },
+                    }}
+                    // onDownArrow={() => loadAdresses()}
+                    // onOpen={() => loadAdresses()}
+                    items={addressOption}
+                  />
+                  {/* <SelectBottom
                     name="period_preference"
                     onPress={() => setIsOpenPreference(!isOpenPreference)}>
                     <TextSelect
@@ -233,15 +306,15 @@ const NewCollect: React.FC = () => {
                       }}>
                       {preference === null
                         ? 'Selecione o período de preferência'
-                        : preference.label}
+                        : preference?.label}
                     </TextSelect>
                     {isOpenPreference ? (
                       <Image source={ArrowUp} style={{marginRight: 8}} />
                     ) : (
                       <Image source={ArrowDown} style={{marginRight: 8}} />
                     )}
-                  </SelectBottom>
-                  <SelectBottom
+                  </SelectBottom> */}
+                  {/* <SelectBottom
                     name="address_id"
                     onPress={() => {
                       setIsOpenAddress(!isOpenAddress);
@@ -261,7 +334,7 @@ const NewCollect: React.FC = () => {
                     ) : (
                       <Image source={ArrowDown} style={{marginRight: 8}} />
                     )}
-                  </SelectBottom>
+                  </SelectBottom> */}
                 </>
               )}
               <Input
@@ -280,7 +353,7 @@ const NewCollect: React.FC = () => {
               />
               <Button
                 onPress={() => formRef.current?.submitForm()}
-                isLoading={false}>
+                isLoading={loadingSubmit}>
                 Confirmar
               </Button>
             </Content>

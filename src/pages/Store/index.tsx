@@ -18,6 +18,8 @@ import {
   ButtonView,
   ViewIcon,
   ContentVoid,
+  ButtonRefresh,
+  TextButtonRefresh,
 } from './styles';
 import Icon from 'react-native-vector-icons/Feather';
 import api from '../../services/api';
@@ -80,6 +82,7 @@ const Store: React.FC = () => {
           Alert.alert(err.response.data.error);
           setLoading(false);
         });
+      setLoading(false);
       setPage(pageNumber + 1);
     },
     [page, total, loading, products],
@@ -100,6 +103,7 @@ const Store: React.FC = () => {
   );
 
   useEffect(() => {
+    console.log(loading);
     loadProducts();
   }, []);
 
@@ -123,81 +127,114 @@ const Store: React.FC = () => {
         </FilterView>
       </Header>
       <Content>
-        {products.length > 0 ? (
-          <ProductList
-            data={products}
-            keyExtractor={item => item.id}
-            showsVerticalScrollIndicator={false}
-            numColumns={2}
-            onRefresh={refreshList}
-            refreshing={refreshing}
-            onEndReachedThreshold={0.2}
-            onEndReached={() => loadProducts()}
-            ListFooterComponent={
-              loading && (
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <ActivityIndicator
-                    size="small"
-                    color={colors.primary}
-                    style={{alignSelf: 'center', width: '100%'}}
-                  />
-                </View>
-              )
-            }
-            renderItem={({item}) => (
-              <ProductDetail
-                key={item.id}
-                style={{
-                  ...Platform.select({
-                    android,
-                  }),
-                }}>
-                {item.image ? (
-                  <ProductImage source={{uri: item.image}} />
-                ) : (
-                  <ViewIcon>
-                    <Icon name="image" size={40} />
-                  </ViewIcon>
+        {!loading ? (
+          <>
+            {products.length > 0 ? (
+              <ProductList
+                data={products}
+                keyExtractor={item => item.id}
+                showsVerticalScrollIndicator={false}
+                numColumns={2}
+                onRefresh={refreshList}
+                refreshing={refreshing}
+                onEndReachedThreshold={0.2}
+                onEndReached={() => loadProducts()}
+                ListFooterComponent={
+                  loading && (
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <ActivityIndicator
+                        size="small"
+                        color={colors.primary}
+                        style={{alignSelf: 'center', width: '100%'}}
+                      />
+                    </View>
+                  )
+                }
+                renderItem={({item}) => (
+                  <ProductDetail
+                    key={item.id}
+                    style={{
+                      ...Platform.select({
+                        android,
+                      }),
+                    }}>
+                    {item.image ? (
+                      <ProductImage source={{uri: item.image}} />
+                    ) : (
+                      <ViewIcon>
+                        <Icon name="image" size={40} />
+                      </ViewIcon>
+                    )}
+                    <Shadow />
+                    <ProductContent>
+                      <Title numberOfLines={2}>{item.title}</Title>
+                      <PriceProduct>
+                        <PriceText>{item.price_points}</PriceText>
+                        <Icon
+                          name="droplet"
+                          size={metrics.iconSize - 8}
+                          color={colors.success}
+                        />
+                      </PriceProduct>
+                      <ButtonView colors={[colors.primary, colors.success]}>
+                        <ButtonProduct
+                          onPress={() =>
+                            navigation.navigate('Rescue', {id: item.id})
+                          }>
+                          <TextButton>Resgatar</TextButton>
+                        </ButtonProduct>
+                        <Icon
+                          name="shopping-bag"
+                          size={metrics.iconSize - 6}
+                          color={colors.white}
+                        />
+                      </ButtonView>
+                    </ProductContent>
+                  </ProductDetail>
                 )}
-                <Shadow />
-                <ProductContent>
-                  <Title numberOfLines={2}>{item.title}</Title>
-                  <PriceProduct>
-                    <PriceText>{item.price_points}</PriceText>
-                    <Icon
-                      name="droplet"
-                      size={metrics.iconSize - 8}
-                      color={colors.success}
-                    />
-                  </PriceProduct>
-                  <ButtonView colors={[colors.primary, colors.success]}>
-                    <ButtonProduct
-                      onPress={() =>
-                        navigation.navigate('Rescue', {id: item.id})
-                      }>
-                      <TextButton>Resgatar</TextButton>
-                    </ButtonProduct>
-                    <Icon
-                      name="shopping-bag"
-                      size={metrics.iconSize - 6}
-                      color={colors.white}
-                    />
-                  </ButtonView>
-                </ProductContent>
-              </ProductDetail>
+              />
+            ) : (
+              <ContentVoid>
+                <Image
+                  source={notFoundImage}
+                  style={{width: 300, height: 400}}
+                />
+                <Text>Desculpe, nenhum produto foi</Text>
+                <Text>encontrado encontrado.</Text>
+                <ButtonRefresh onPress={loadProducts}>
+                  <TextButtonRefresh>
+                    {' '}
+                    Atualizar{' '}
+                    {loading ? (
+                      <ActivityIndicator
+                        size="small"
+                        color={colors.white}
+                        style={{alignSelf: 'center', width: '100%'}}
+                      />
+                    ) : (
+                      ''
+                    )}{' '}
+                  </TextButtonRefresh>
+                </ButtonRefresh>
+              </ContentVoid>
             )}
-          />
+          </>
         ) : (
-          <ContentVoid>
-            <Image source={notFoundImage} style={{width: 300, height: 400}} />
-            <Text>Desculpe, nenhum produto foi</Text>
-            <Text>encontrado encontrado.</Text>
-          </ContentVoid>
+          <View
+            style={{
+              flex: 1,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              alignSelf: 'center',
+            }}>
+            <ActivityIndicator size="small" color={colors.primary} />
+          </View>
         )}
       </Content>
       <ModalRescue

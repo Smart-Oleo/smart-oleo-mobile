@@ -20,6 +20,8 @@ import {
   TextInput,
   Platform,
   Alert,
+  View,
+  ActivityIndicator,
 } from 'react-native';
 import api from '../../services/api';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -40,6 +42,7 @@ const Profile: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const {user, updateUser, signOut} = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingImage, setImageLoading] = useState<boolean>(false);
 
   const lastNameInputRef = useRef<TextInput>(null);
   const cellphoneInputRef = useRef<TextInput>(null);
@@ -136,7 +139,7 @@ const Profile: React.FC = () => {
         mediaType: 'photo',
         includeBase64: false,
       },
-      response => {
+      async response => {
         if (response.didCancel) {
           return;
         }
@@ -146,10 +149,30 @@ const Profile: React.FC = () => {
 
         const source = {uri: response.uri};
 
-        console.log(source);
+        const data = new FormData();
+
+        setImageLoading(true);
+        data.append('avatar', {
+          type: 'image/jpg',
+          name: `${user.id}`,
+          uri: source.uri,
+        });
+
+        await api
+          .patch('users/avatar', data)
+          .then(res => {
+            console.log('Tô aquiiiii');
+            updateUser(res.data.user);
+            setImageLoading(false);
+          })
+          .catch(err => console.log(err));
+
+        setImageLoading(false);
+
+        console.log(source.uri);
       },
     );
-  }, []);
+  }, [updateUser, user.id]);
   console.log(user);
   return (
     <>
@@ -165,23 +188,36 @@ const Profile: React.FC = () => {
               style={{
                 backgroundColor: Platform.OS === 'android' && 'transparent',
               }}>
-              <UserAvatarButton
-                onPress={handleUpdateAvatar}
-                style={{
-                  borderRadius: 100,
-                  ...Platform.select({
-                    android,
-                  }),
-                  backgroundColor: Platform.OS === 'android' && 'transparent',
-                }}>
-                {user.photo === null ? (
-                  <UserAvatar
-                    source={require('../../assets/images/ic_launcher.png')}
-                  />
-                ) : (
-                  <UserAvatar source={{uri: user.photo}} />
-                )}
-              </UserAvatarButton>
+              {loadingImage ? (
+                <View
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                    alignSelf: 'flex-start',
+                  }}>
+                  <ActivityIndicator size="small" color={colors.primary} />
+                </View>
+              ) : (
+                <UserAvatarButton
+                  onPress={handleUpdateAvatar}
+                  style={{
+                    borderRadius: 100,
+                    ...Platform.select({
+                      android,
+                    }),
+                    backgroundColor: Platform.OS === 'android' && 'transparent',
+                  }}>
+                  {user.photo === null ? (
+                    <UserAvatar
+                      source={require('../../assets/images/ic_launcher.png')}
+                    />
+                  ) : (
+                    <UserAvatar source={{uri: user.photo}} />
+                  )}
+                </UserAvatarButton>
+              )}
               <ButtonSignOut onPress={signOut}>
                 <Icon
                   style={{marginRight: 5}}
@@ -224,6 +260,7 @@ const Profile: React.FC = () => {
                 name="email"
                 icon="mail"
                 placeholder="Informe o email"
+                editable={false}
                 autoCorrect={false}
                 autoCapitalize="none"
                 onSubmitEditing={() => oldPasswordInputRef.current?.focus()}
